@@ -326,6 +326,9 @@
                 <p>&nbsp; — поля не подлежащие редактированию</p>
             </div> 
         </div>
+        {# <div class="no-input"> 
+            <a>{{ _('Тип') }}: {{ plan.plan_type if plan.plan_type else '--'}}</a>
+        </div>#}
         <div class="no-input"> 
             <img src="/static/img/Calendar_gray.svg" alt="" >
             <a>{{ _('Создан') }}: {{ plan.begin_time.strftime('%d-%m-%Y %H:%M') if plan.begin_time else '-- -- --' }}</a>
@@ -346,6 +349,47 @@
         </div>
     </div>
 </div>
+
+<div id="planTypeModal" class="modal {% if show_plan_type_modal %}active-delay{% endif %}">
+    <div class="modal-content" style = "width: fit-content;">
+        <div class="modal-header">
+            <a id="modal-title">{{ _('Какой у вас тип плана?') }}</a>
+        </div>
+        
+        <p class="support-text non">Экспорт плана, зависит от данного парамметра</p>
+        <form action="{{ url_for('views.edit_plan_type') }}" method="POST">
+            <input type="hidden" name="plan_id" value="{{ plan.id if plan else '' }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <div class="radio-org-container">
+                <label>
+                    <input type="radio" name="entity_type" value="organization_org_small" class="radio-org-input" checked>
+                    <div class="radio-org-card" data-type="organization">
+                        <span class="radio-org-icon"></span>
+                        <div class="radio-org-subtitle">Организация с потреблением</div>
+                        <div class="radio-org-title">До 25 тыс. т.</div>
+                    </div>
+                </label>
+                
+                <label>
+                    <input type="radio" name="entity_type" value="organization_org_large" class="radio-org-input">
+                    <div class="radio-org-card" data-type="organization">
+                        <span class="radio-org-icon"></span>
+                        <div class="radio-org-subtitle">Организация с потреблением</div>
+                        <div class="radio-org-title">Более 25 тыс. т.</div>
+                    </div>
+                </label>
+            </div>
+            <div class="button-auth-area">
+              <a></a>
+              <button type="submit" class="no-submit-button blue">
+                  <img src="/static/img/Submit-Progress-wh.svg" alt="" class="btn-icon">
+                  <span class="btn-text">{{ _('Подтвердить') }}</span>
+              </button>
+            </div>
+        </form>
+    </div>
+</div>
+
 
 <script>
 function checkExistingPlan(year) {

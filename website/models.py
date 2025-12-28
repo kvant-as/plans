@@ -33,8 +33,6 @@ class User(db.Model, UserMixin):
     last_active = db.Column(db.DateTime, nullable=False, default=current_utc_time)
     begin_time = db.Column(db.DateTime, nullable=False, default=current_utc_time)
     
-    plan_type = db.Column(db.String(50), nullable=True)  # 'org_small', 'org_large', 'ministry', 'region'
-        
     reset_password_token = db.Column(db.String(255), nullable=True)
     reset_password_expires = db.Column(db.DateTime, nullable=True)
     
@@ -122,6 +120,8 @@ class Plan(db.Model):
     is_sent = db.Column(db.Boolean, default=False)
     is_error = db.Column(db.Boolean, default=False)
     is_approved = db.Column(db.Boolean, default=False)
+      
+    plan_type = db.Column(db.String(50), nullable=True)  # 'org_small', 'org_large', 'ministry', 'region'  
         
     user_id = db.Column(db.Integer, db.ForeignKey('users.id')) 
     

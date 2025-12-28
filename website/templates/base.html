@@ -369,59 +369,17 @@
       </div>
     </div>    
 
-<div id="planTypeModal" class="modal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <button type="button" class="modal-close">&times;</button>
-            <h2>Выберите тип плана</h2>
-            <p class="modal-subtitle">Пожалуйста, выберите подходящий тип плана для вашей организации</p>
-        </div>
-        
-        <form id="planTypeForm">
-            <div class="modal-body">
-                <div class="form-error" style="display: none;"></div>
-                
-                <div class="plan-type-options">
-                    <label class="option-card" data-value="before_25k">
-                        <input type="radio" name="plan_type" value="before_25k" required>
-                        <div class="option-content">
-                            <div class="option-icon">📋</div>
-                            <h3>До 25 тыс. т.</h3>
-                            <p>Для организаций с выбросами менее 25 тыс. тонн CO₂-эквивалента в год</p>
-                        </div>
-                    </label>
-                    
-                    <label class="option-card" data-value="after_25k">
-                        <input type="radio" name="plan_type" value="after_25k" required>
-                        <div class="option-content">
-                            <div class="option-icon">📊</div>
-                            <h3>После 25 тыс. т.</h3>
-                            <p>Для организаций с выбросами более 25 тыс. тонн CO₂-эквивалента в год</p>
-                        </div>
-                    </label>
-                </div>
-            </div>
-            
-            <div class="modal-footer">
-                <button type="button" id="remindLaterBtn" class="btn btn-secondary">Напомнить позже</button>
-                <button type="submit" id="submitPlanType" class="btn btn-primary">Сохранить выбор</button>
-            </div>
-        </form>
-    </div>
-</div>
-
-
     {% if add_direction_modal %}
     <div id="AddDirectionModal" class="modal">
       <div class="modal-content">
           <div class="modal-header">
-              <a id="modal-title">{{ _('Выберите направление') }}</a>
+              <a id="modal-title">{{ _('Добавление направл') }}</a>
               <img class="close" src="/static/img/Close.svg" alt="">  
           </div>
           <div class="progress-modal-bar-container">
               <div class="progress-modal-bar" id="modal-progress-bar" style="width: 50%"></div>
           </div>
-          
+          <p class="support-text"><strong>Выберите</strong> направление, перейдите по кнопке <strong>Далее →</strong>и заполните необходимые</p>
             <div id="step1" class="modal-step">
                 <div class="app-group">
                     <label>{{ _('Поиск направления') }}</label>
@@ -562,11 +520,11 @@
             <div class="modal-header">
                 <a id="modal-title">{{ _('Добавление мероприятия') }}</a>
                 <img class="close" src="/static/img/Close.svg" alt="">  
-            </div>
+            </div>      {% if econ_measures %}  
             <div class="progress-modal-bar-container">
                 <div class="progress-modal-bar" id="modal-progress-bar" style="width: 33%"></div>
             </div>
-            {% if econ_measures %}
+            
                 <div id="step1" class="modal-step">
                     <div class="app-group">
                         <label>{{ _('Поиск мероприятия') }}</label>
@@ -1054,11 +1012,11 @@
                         </div>
                     </div>
                     <div class="app-group" style = "display:none;">
-                    <label>id</label>
-                    <div class="input-with-icon">
-                        <img src="/static/img/Eco_gray.svg" alt="" class="input-icon">
-                        <input class="app-input" name = "id_indicator" data-action="selected-direction" readonly>
-                    </div>  
+                        <label>id</label>
+                        <div class="input-with-icon">
+                            <img src="/static/img/Eco_gray.svg" alt="" class="input-icon">
+                            <input class="app-input" name = "id_indicator" data-action="selected-direction" readonly>
+                        </div>  
                     </div>
                     <div class="button-auth-area" id="step2-buttons" style="display: flex; justify-content: space-between;">
                         <button type="button" class="auth-next-button" id="step2-back-btn">

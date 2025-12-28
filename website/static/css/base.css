@@ -2298,6 +2298,11 @@ input::placeholder {
   margin-bottom: 20px;
 }
 
+
+.support-text.non{
+  margin-bottom: 0;
+}
+
 .short-acc-info{
   display: flex;
   flex-direction: row;
@@ -2370,7 +2375,7 @@ input::placeholder {
   background-color: var(--background-grey);
   border-radius: 8px;
   overflow-x: auto;
-  max-width: 100%;
+  max-width: fit-content;
   white-space: nowrap;  
   display: inline-block;
 }
@@ -2541,6 +2546,13 @@ hr {
   font-weight: 500;
   color: var(--placeholder-color);
   margin-bottom: 8px;
+}
+
+.no-input img{
+  width: 17px;
+  height: 17px;
+  object-fit: contain;
+  filter: grayscale(1);
 }
 
 /*/personal page-pages*/
@@ -2925,6 +2937,16 @@ input[type="checkbox"]:focus {
 .no-submit-button.red {
   color: rgb(255, 255, 255);
   background: linear-gradient(135deg, #8f0000 0%, #ff0000 100%) !important;
+}
+
+.no-submit-button.blue {
+  color: rgb(255, 255, 255);
+  background: linear-gradient(135deg, #00628f 0%, #0084ff 100%) !important;
+}
+
+.no-submit-button.blue:hover {
+
+  background: linear-gradient(135deg, #0091d4 0%, #47a6ff 100%) !important;
 }
 
 .no-submit-button:hover {
@@ -3861,6 +3883,27 @@ tr.selected {
   visibility: visible;
 }
 
+.modal.active-delay {
+  opacity: 1;
+  visibility: visible;
+  animation: modalFadeIn 0.7s ease forwards;
+}
+
+@keyframes modalFadeIn {
+  0% {
+    opacity: 0;
+    visibility: hidden;
+  }
+  50% {
+    opacity: 0;
+    visibility: visible;
+  }
+  100% {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
 .modal-content {
   z-index: 999;
   background-color: #fff;
@@ -3879,6 +3922,11 @@ tr.selected {
 }
 
 .modal.active .modal-content {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+.modal.active-delay .modal-content {
     opacity: 1;
     transform: translateY(0) scale(1);
 }

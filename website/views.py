@@ -73,18 +73,11 @@ def profile():
     can_change_modal = True
     if Plan.query.filter(Plan.user_id == current_user.id).count() > 0:
         can_change_modal = False
-        
-    show_plan_type_modal = (
-        current_user.organization_id and
-        not current_user.plan_type and    
-        not Plan.query.filter(Plan.user_id == current_user.id).count() > 0
-    )
-        
+
     return render_template('profile.html', 
                         can_change_modal=can_change_modal,
                         hide_header=False,
                         second_header = True,
-                        plan_type_modal=show_plan_type_modal,
                         active_tab='account',
                         current_user=current_user,
                         change_orgUser_modal = True
@@ -107,7 +100,6 @@ def edit_user_org():
             return redirect(url_for('views.profile'))
         
         if item_type == 'organization':
-            # Сбрасываем тип плана, чтобы показать модальное окно
             current_user.plan_type = None
             selected_item = Organization.query.filter_by(id=item_id).first()
             
@@ -128,7 +120,6 @@ def edit_user_org():
                 flash('Министерство не найдено!', 'error')
                 return redirect(request.referrer)
             
-            # Устанавливаем тип плана как министерство
             current_user.plan_type = 'ministry'
             current_user.ministry_id = selected_item.id
             current_user.organization_id = None 
@@ -142,8 +133,7 @@ def edit_user_org():
             if not selected_item:
                 flash('Регион не найден!', 'error')
                 return redirect(request.referrer)
-            
-            # Устанавливаем тип плана как регион
+
             current_user.plan_type = 'region'
             current_user.region_id = selected_item.id
             current_user.organization_id = None 
@@ -165,6 +155,69 @@ def edit_user_org():
         flash('Произошла ошибка при обновлении данных', 'error')
         return redirect(request.referrer)
     
+from datetime import datetime
+
+@views.route('/edit-plan-type', methods=['POST'])
+@login_required
+def edit_plan_type():
+    entity_type = request.form.get('entity_type')
+    plan_id = request.form.get('plan_id')
+    
+    if not entity_type:
+        flash('Пожалуйста, выберите тип плана', 'error')
+        return redirect(request.referrer or url_for('views.profile'))
+    
+    plan_type_mapping = {
+        'organization_org_small': 'org_small',  # До 25 тыс. т.
+        'organization_org_large': 'org_large'   # Более 25 тыс. т.
+    }
+    
+    plan_type_value = plan_type_mapping.get(entity_type)
+    
+    if not plan_type_value:
+        flash('Неверный тип плана', 'error')
+        return redirect(request.referrer or url_for('views.profile'))
+
+    try:
+        if not plan_id or plan_id == '':
+            flash('ID плана не указан', 'error')
+            return redirect(url_for('views.profile'))
+        
+        current_plan = Plan.query.filter_by(
+            id=plan_id,
+            user_id=current_user.id
+        ).first()
+        
+        if not current_plan:
+            flash('План не найден', 'error')
+            return redirect(url_for('views.profile'))
+            
+        if not current_plan.is_draft:
+            flash('Этот план нельзя редактировать', 'error')
+            return redirect(url_for('views.profile'))
+        
+        current_plan.plan_type = plan_type_value
+        current_plan.change_time = datetime.utcnow()
+        
+        if plan_type_value == 'org_small':
+            flash_message = 'Тип плана установлен: Организация с потреблением до 25 тыс. т.'
+        elif plan_type_value == 'org_large':
+            flash_message = 'Тип плана установлен: Организация с потреблением более 25 тыс. т.'
+        
+        db.session.commit()
+        flash(flash_message, 'success')
+
+        return redirect(url_for('views.plan_review', id=current_plan.id))
+        
+    except Exception as e:
+        db.session.rollback()
+        flash('Произошла ошибка при сохранении типа плана', 'error')
+        print(f"Error saving plan type: {e}")
+        import traceback
+        traceback.print_exc()
+    
+    return redirect(url_for('views.profile'))
+
 @views.route('/api/organizations')
 @login_required
 def get_organizations_api():
@@ -625,11 +678,20 @@ def stats():
 @owner_only
 def plan_review(id):    
     current_plan = g.current_plan
+
+    show_plan_type_modal = (
+        current_plan.is_draft and 
+        (current_plan.plan_type is None or current_plan.plan_type == '') and
+        hasattr(current_user, 'organization') and 
+        current_user.organization is not None
+    )
+    
     if request.method == 'POST':
         pass
     
     return render_template('plan_review.html', 
-                        plan=current_plan,     
+                        plan=current_plan,
+                        show_plan_type_modal=show_plan_type_modal,
                         hide_header=False,
                         plan_header=True,
                         plan_back_header=True,
