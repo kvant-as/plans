@@ -578,7 +578,7 @@
                         <label>[3] {{ _('Наименование мероприятий, работ') }}</label>
                         <div class="input-with-icon">
                             <img src="/static/img/3.svg" alt="" class="input-icon">
-                            <input type="text" maxlength="" value="Наименование"  name = "name"
+                            <input type="text" maxlength="" value=""  name = "name"
                                 placeholder="{{ _('Наименование') }}" class="app-input" required>
                         </div>
                     </div>
@@ -592,72 +592,72 @@
                         </div>
                     </div>
                     <div class="row-app-group">
-                    <div class="app-group">
-                        <label>[6] {{ _('Условно-годовой экономический эффект, т у.т.') }}</label>
-                        <div class="input-with-icon">
-                            <img src="/static/img/Half_gray.svg" alt="" class="input-icon">
-                            <input type="text" id="" maxlength="" value="0.000"  name = "EffTut"
-                                placeholder="0.000" class="app-numeric-input" required>
+                        <div class="app-group">
+                            <label>[6] {{ _('Условно-годовой экономический эффект, т у.т.') }}</label>
+                            <div class="input-with-icon">
+                                <img src="/static/img/Half_gray.svg" alt="" class="input-icon">
+                                <input type="text" id="" maxlength="" value="0.000"  name = "EffTut"
+                                    placeholder="0.000" class="app-numeric-input" required>
+                            </div>
+                        
                         </div>
-                    
-                    </div>
-                    <div class="app-group">
-                        <label>[7] {{ _('Условно-годовой экономический эффект, руб.') }}</label>
-                        <div class="input-with-icon">
-                            <img src="/static/img/Half_gray.svg" alt="" class="input-icon">
-                            <input type="text" id="" maxlength="" value="0.000"  name = "EffRub"
-                                placeholder="0.000" class="app-numeric-input" required>
+                        <div class="app-group">
+                            <label>[7] {{ _('Условно-годовой экономический эффект, руб.') }}</label>
+                            <div class="input-with-icon">
+                                <img src="/static/img/Half_gray.svg" alt="" class="input-icon">
+                                <input type="text" id="" maxlength="" value="0.000"  name = "EffRub"
+                                    placeholder="0.000" class="app-numeric-input" required>
+                            </div>
                         </div>
-                    </div>
                     </div>
                     <div class="row-app-group">
-                    <div class="app-group">
-                        <label>[8] {{ _('Ожидаемый срок внедрения мероприятия, квартал') }}</label>
-                        <div class="input-with-icon">
-                            <img src="/static/img/Calendar_gray.svg" alt="" class="input-icon">
-                            <input type="number" name="ExpectedQuarter" min="1" max="4" 
-                            pattern="[1-4]" inputmode="numeric" value="1"
-                            placeholder="Квартал" class="app-input" required
-                            oninput="this.value = this.value.replace(/[^1-4]/g, '').slice(0, 1)">
+                        <div class="app-group">
+                            <label>[8] {{ _('Ожидаемый срок внедрения мероприятия, квартал') }}</label>
+                            <div class="input-with-icon">
+                                <img src="/static/img/Calendar_gray.svg" alt="" class="input-icon">
+                                <input type="number" name="ExpectedQuarter" min="1" max="4" 
+                                pattern="[1-4]" inputmode="numeric" value="1"
+                                placeholder="Квартал" class="app-input" required
+                                oninput="this.value = this.value.replace(/[^1-4]/g, '').slice(0, 1)">
+                            </div>
                         </div>
-                    </div>
-                    <div class="app-group">
-                        <label>[9] {{ _('Ожидаемый экономический эффект от внедрения мероприятия в текущем году, т у.т.') }}</label>
-                        <div class="input-with-icon">
-                            <img src="/static/img/Half_gray.svg" alt="" class="input-icon">
-                            <input type="text" id="" maxlength="" value="0.000"  name = "EffCurrYear"
-                                placeholder="0.000" class="app-numeric-input" required>
+                        <div class="app-group">
+                            <label>[9] {{ _('Ожидаемый экономический эффект от внедрения мероприятия в текущем году, т у.т.') }}</label>
+                            <div class="input-with-icon">
+                                <img src="/static/img/Half_gray.svg" alt="" class="input-icon">
+                                <input type="text" id="" maxlength="" value="0.000"  name = "EffCurrYear"
+                                    placeholder="0.000" class="app-numeric-input" required>
+                            </div>
                         </div>
-                    </div>
                     </div>
                     <div class="row-app-group">
-                    <div class="app-group">
-                        <label>[10] {{ _('Срок окупаемости, лет') }}</label>
-                        <div class="input-with-icon">
-                            <img src="/static/img/Half_gray.svg" alt="" class="input-icon">
-                            <input type="text" id="" maxlength="" value="0.000"  name = "Payback"
-                                placeholder="0.000" class="app-numeric-input" required>
+                        <div class="app-group">
+                            <label>[10] {{ _('Срок окупаемости, лет') }}</label>
+                            <div class="input-with-icon">
+                                <img src="/static/img/Half_gray.svg" alt="" class="input-icon">
+                                <input type="text" id="" maxlength="" value="0.000"  name = "Payback"
+                                    placeholder="0.000" class="app-numeric-input" required>
+                            </div>
                         </div>
-                    </div>
-                    <div class="app-group">
-                        <label>[11] {{ _('Объем финансирования, руб.') }}</label>
-                        <div class="input-with-icon">
-                            <img src="/static/img/Half_gray.svg" alt="" class="input-icon">
-                            <input type="text" id="" maxlength="" value="0.000"  name = "VolumeFin"
-                                placeholder="0.000" class="app-numeric-input" required>
+                        <div class="app-group">
+                            <label>[11] {{ _('Объем финансирования, руб.') }}</label>
+                            <div class="input-with-icon">
+                                <img src="/static/img/Half_gray.svg" alt="" class="input-icon">
+                                <input type="text" id="" maxlength="" value="0.000"  name = "VolumeFin"
+                                    placeholder="0.000" class="app-numeric-input" required>
+                            </div>
                         </div>
-                    </div>
                     </div> 
 
                     <div class="button-auth-area" id="step2-buttons" style="display: flex; justify-content: space-between;">
-                    <button type="button" class="auth-next-button" id="step2-back-btn">
-                        <img src="/static/img/Back.svg" alt="" class="btn-icon">
-                        <span class="btn-text">{{ _('Назад') }}</span>
-                    </button>
-                    <button type="button" class="auth-next-button" id="step2-next-btn" data-action="">
-                        <span class="btn-text">{{ _('Далее') }}</span>
-                        <img src="/static/img/Next.svg" alt="" class="btn-icon">
-                    </button>
+                        <button type="button" class="auth-next-button" id="step2-back-btn">
+                            <img src="/static/img/Back.svg" alt="" class="btn-icon">
+                            <span class="btn-text">{{ _('Назад') }}</span>
+                        </button>
+                        <button type="button" class="auth-next-button" id="step2-next-btn" data-action="next-step-2" disabled>
+                            <span class="btn-text">{{ _('Далее') }}</span>
+                            <img src="/static/img/Next.svg" alt="" class="btn-icon">
+                        </button>
                     </div>
                 </div>
                 <div id="step3" class="modal-step" style="display: none;">
@@ -847,7 +847,7 @@
                 </div>
                 <div class="button-auth-area">
                     <div></div>
-                    <button type="button" class="auth-next-button" id="step1-next-btn" >
+                    <button type="button" class="auth-next-button" id="step1-next-btn" data-action="next-step-2">
                         <span class="btn-text">{{ _('Далее') }}</span>
                         <img src="/static/img/Next.svg" class="btn-icon">
                     </button>
@@ -923,7 +923,7 @@
                     </button>
 
                     <button type="submit" class="submit-button">
-                        <img src="/static/img/Edit.svg" alt="" class="btn-icon">
+                        <img src="/static/img/Edit_wh.svg" alt="" class="btn-icon">
                         <span class="btn-text">{{ _('Добавить изменения ') }}</span>
                     </button>
 
@@ -1180,7 +1180,7 @@
                     <div class="button-auth-area">
                         <div></div>
                         <button type="submit" class="submit-button" data-action="submit">
-                            <img src="/static/img/Edit.svg" alt="" class="btn-icon">
+                            <img src="/static/img/Edit_wh.svg" alt="" class="btn-icon">
                             <span class="btn-text">{{ _('Выберите элемент') }}</span>
                         </button>
                     </div>

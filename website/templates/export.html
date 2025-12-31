@@ -117,7 +117,9 @@
                             {% elif plan.is_sent %}plan-cont-sent
                             {% elif plan.is_approved %}plan-cont-sub
                             {% endif %}" 
-                            data-plan="choose"> 
+                            data-plan="choose"
+                            data-name="{{ (plan.organization.name if plan.organization else plan.ministry.name if plan.ministry else plan.region.name if plan.region else '') | lower | e }}"
+                            data-okpo="{{ (plan.organization.okpo if plan.organization else '') | lower | e }}"> 
                             <div class="plan-cont-column">
                                 <div class="plan-cont-column-header">
                                     <a class="plan-info">

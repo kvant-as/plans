@@ -112,7 +112,7 @@
             {% if current_user.is_auditor != true %}
             <div class="button-area">
                 <button id = "editPlanButton" type="submit" class="submit-button" {% if plan.is_sent or plan.is_approved %}disabled{% endif %} >
-                    <img src="/static/img/Edit.svg" alt="" class="btn-icon">
+                    <img src="/static/img/Edit_wh.svg" alt="" class="btn-icon">
                     <span class="btn-text">{{ _('Применить изменения') }}</span>
                 </button>
             </div>
@@ -248,9 +248,7 @@
                                 <img src="/static/img/Organization.svg" alt="" class="input-icon">
                                 <input type="text" value="{{ region }}" readonly class="app-input">
                         {% endif %}
-                                <div class="input-mes" title="{{ _('Не изм.') }}">
-                                    <img src="/static/img/Edit_off.svg">
-                                </div>
+                          
                             </div>
                     </div>
                 {% endif %}
@@ -260,10 +258,7 @@
                         <img src="/static/img/Account.svg" alt="" class="input-icon">
                         <input type="text" id="secondname" maxlength="15"  value="{{ plan.user.last_name }} {{ plan.user.first_name }} {{ plan.user.patronymic_name }}" 
                             placeholder="{{ _('ФИО') }}" class="app-input" readonly>
-                        <div class="input-mes" title = "{{ _('Не изм.') }}">
-                            <img src="/static/img/Edit_off.svg">
-                            
-                        </div>
+             
                     </div>
                 </div>
             </div>
@@ -273,10 +268,7 @@
                     <div class="input-with-icon">
                         <img src="/static/img/Email.svg" alt="" class="input-icon">
                         <input type="text" maxlength="15" value="{{ plan.user.email }}" placeholder="{{ _('demo@example.com') }}"  readonly class="app-input">
-                        <div class="input-mes" title = "{{ _('Не изм.') }}">
-                            <img src="/static/img/Edit_off.svg">
-                            
-                        </div>
+              
                     </div>
                 </div>
                 <div class="app-group">
@@ -284,10 +276,7 @@
                     <div class="input-with-icon">
                         <img src="/static/img/Phone.svg" alt="" class="input-icon">
                         <input type="text" maxlength="15" value="{{ plan.user.phone }}" placeholder="+375.." readonly class="app-input">
-                        <div class="input-mes" title = "{{ _('Не изм.') }}">
-                            <img src="/static/img/Edit_off.svg">
-                            
-                        </div>
+               
                     </div>
                 </div>
             </div>   
@@ -318,14 +307,6 @@
         {% endif %}
         <hr>        
         <a class="sername">{{ _('Прочая информация') }}</a>
-        <div class = "support-txt-cont">
-            <div class="row">
-                <div class="input-mes-test" title="Не изм.">
-                    <img src="/static/img/Edit_off.svg">
-                </div> 
-                <p>&nbsp; — поля не подлежащие редактированию</p>
-            </div> 
-        </div>
         {# <div class="no-input"> 
             <a>{{ _('Тип') }}: {{ plan.plan_type if plan.plan_type else '--'}}</a>
         </div>#}

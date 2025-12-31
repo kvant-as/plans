@@ -5,83 +5,79 @@
 
 <div class="pers-page">
     <div class="personal-acc-conteiner">
-        <a class="name" style="">Проверка плана</a>
+        <a class="name">Проверка плана</a>
         <p class="support-text">Если в плане существуют ошибки, укажите их, в противном случае просто одобрите план</p>
-        
-        {% if current_user.is_auditor == true %}
-            <div class="tickets-conteiner">
-                {% if plan.tickets %}
-                    {% for ticket in plan.tickets %}
-                        <div class="tickets-message {% if ticket.is_owner %}tickets-message-left{% else %}tickets-message-right{% endif %}">
-                            <div class="tickets-message-content">
-                                <a class="text-ticket">{{ ticket.note }}</a>
-                                <a class="time-ticket">{{ ticket.begin_time.strftime('%d-%m-%Y %H:%M') if ticket.begin_time else '-- -- --' }}</a>
-                            </div>
-                            <img src="/static/img/{{ 'Checkmark' if ticket.luck else 'Error' }}.svg" alt="" class="btn-icon">
-                        </div>
-                    {% endfor %}
-                {% else %}
-                    <div class="no_info-conteiner">
-                        <a>{{ _('Нет сообщений') }}</a>
-                    </div>        
-                {% endif %}
-            </div>
-        {% if plan.is_approved or plan.is_error %}
-        {% else %}
-        <div class = "bottom_ticketsArrea">
-            <form id = "sent_mesPlanForm" class="main-form" action="{{ url_for('views.create_ticket', id=plan.id) }}" method="POST">
-                <div class="message-input-container">
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                    <textarea 
-                        class="message-input" 
-                        placeholder="{{ _('Введите сообщение...') }}" 
-                        rows="1"
-                        oninput="autoResizeInput(this)"
-                        maxlength = "500"
-                        name="note"
-                    ></textarea>
-                    <button id = "sent_mesPlanButton" type = "submit" class="submit-button">
-                        <img src="/static/img/Send.svg" alt="{{ _('Отправить') }}" class="btn-icon">
-                    </button>
-                </div>
-            </form>
-            <div class = "submit-planStatus">
-                <form id = "to_deletePlanForm" action="{{ url_for('views.api_change_plan_status', id=plan.id) }}" method="POST" class="button-area" style="text-align: left;">
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                    <input type="hidden" name="status" value="error">
-                    <button id = "to_deletePlanButton" type="submit" class="submit-button delete" 
-                        {% if plan.is_approved or plan.is_error or plan.afch == false %}disabled{% endif %}>
-                        <img src="/static/img/Error_wh.svg" alt="" class="btn-icon">
-                        <span class="btn-text">{{ _('Есть ошибки') }}</span>
-                    </button>
-                </form>
-                <form id = "confirmPlanForm" action="{{ url_for('views.api_change_plan_status', id=plan.id) }}" method="POST" class="button-area" style="text-align: left;">
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                    <input type="hidden" name="status" value="approved">
-                    <button id = "confirmPlanButton" type="submit" class="submit-button approved" 
-                        {% if plan.is_approved or plan.is_error%}disabled{% endif %}>
-                        <img src="/static/img/Checkmark_wh.svg" alt="" class="btn-icon">
-                        <span class="btn-text">{{ _('Одобрить') }}</span>
-                    </button>
-                </form>
-            </div>
 
-        </div>
-        {% endif %}
+        <div class = "menu-conteiner" style = "margin: 0; margin-bottom: 10px;">
+            <form id = "to_deletePlanForm" action="{{ url_for('views.api_change_plan_status', id=plan.id) }}" method="POST">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <input type="hidden" name="status" value="error">
+                <button id = "to_deletePlanButton" type="submit" class="element {% if plan.is_approved or plan.is_error or plan.afch == false %}non{% else %}{% endif %}">
+                    <img src="/static/img/Error.svg" alt="" class="btn-icon">
+                    <span class="btn-text">{{ _('Есть ошибки') }}</span>
+                </button>
+            </form>
+            <form id = "confirmPlanForm" action="{{ url_for('views.api_change_plan_status', id=plan.id) }}" method="POST">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <input type="hidden" name="status" value="approved">
+                <button id = "confirmPlanButton" type="submit" class="element {% if plan.is_approved or plan.is_error %}non{% endif %}">
+                    <img src="/static/img/Checkmark.svg" alt="" class="btn-icon">
+                    <span class="btn-text">{{ _('Одобрить') }}</span>
+                </button>
+            </form>
+            
             {% if plan.is_approved or plan.is_error %}
-            <div class = "submit-planStatus" style = "margin-top: 10px;">
-                <form id = "cancel_auditPlanForm" action="{{ url_for('views.api_change_plan_status', id=plan.id) }}" method="POST" class="button-area" style="text-align: left;">
+                <form id = "cancel_auditPlanForm" action="{{ url_for('views.api_change_plan_status', id=plan.id) }}" method="POST">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                    <input type="hidden" name="status" value="sent">
-                    <button id = "cancel_auditPlanButton" type="submit" class="submit-button novisib">
-                        <img src="/static/img/Submit-Progress.svg" alt="" class="btn-icon">
-                        <span class="btn-text">{{ _('Отменить измененный статус плана') }}</span>
+                    <input type="hidden" name="status" value="sent_without_check">
+                    <button id = "cancel_auditPlanButton" type="submit" class="element">
+                        <img src="/static/img/clock.svg" alt="" class="btn-icon">
+                        <span class="btn-text">{{ _('Отменить') }}</span>
                     </button>
                 </form>
-            </div>
             {% endif %}
-        {% endif %}
-        <hr>        
+        </div>
+
+        <div class="tickets-conteiner">
+            {% if plan.tickets %}
+                {% for ticket in plan.tickets %}
+                    <div class="tickets-message {% if ticket.is_owner %}tickets-message-left{% else %}tickets-message-right{% endif %}">
+                        <div class="tickets-message-content">
+                            <a class="text-ticket">{{ ticket.note }}</a>
+                            <a class="time-ticket">{{ ticket.begin_time.strftime('%d-%m-%Y %H:%M') if ticket.begin_time else '-- -- --' }}</a>
+                        </div>
+                        <img src="/static/img/{{ 'Checkmark' if ticket.luck else 'Error' }}.svg" alt="" class="btn-icon">
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="no_info-conteiner">
+                    <a>{{ _('Нет сообщений') }}</a>
+                </div>        
+            {% endif %}
+
+            {% if plan.is_approved or plan.is_error %}
+            {% else %}
+                <form id = "sent_mesPlanForm" class="main-form" action="{{ url_for('views.create_ticket', id=plan.id) }}" method="POST">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <div class = "bottom_tickets_arrea">
+                        <textarea 
+                            class = "sent-textarea"
+                            placeholder="{{ _('Введите сообщение...') }}" 
+                            rows="1"
+                            maxlength = "500"
+                            name="note"
+                        ></textarea>
+                        <button id = "sent_mesPlanButton" type = "submit" class="sent-message-btn blue">
+                            <img src="/static/img/Send.svg" alt="{{ _('Отправить') }}" class="btn-icon">
+                            <span>{{ _('Отправить') }}</span>
+                        </button>   
+                    </div>       
+                </form>   
+            {% endif %}
+        </div>
+
+        <hr>  
+
         <a class="sername">{{ _('Прочая информация') }}</a>
         <div class="no-input"> 
             <img src="/static/img/Calendar_gray.svg" alt="" >

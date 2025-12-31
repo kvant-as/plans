@@ -1457,7 +1457,7 @@ def api_change_plan_status(id):
                 flash(error_message, 'error')
                 return redirect(request.referrer)
             else:
-                flash('Сертификат успешно прошел проверку', 'succes')
+                flash('Сертификат успешно прошел проверку', 'success')
     
     if not status:
         if request.is_json:
@@ -1470,6 +1470,7 @@ def api_change_plan_status(id):
         'draft': 'is_draft',
         'control': 'is_control',
         'sent': 'is_sent', 
+        'sent_without_check': 'is_sent',
         'error': 'is_error',
         'approved': 'is_approved'
     }
@@ -1501,12 +1502,28 @@ def api_change_plan_status(id):
             else:
                 flash(f'Ошибка обработки статуса: {str(e)}', 'error')
                 return redirect(request.referrer or url_for('views.plans'))
+    
+    if status == 'sent_without_check':
+        setattr(plan, status_mapping[status], True)
+        
+        for other_status, attr_name in status_mapping.items():
+            if other_status != status and attr_name != status_mapping[status]:
+                setattr(plan, attr_name, False)
+        
+        db.session.commit()
+        message = "План возвращен в изначальное состояние"
+        flash(message, 'success')
+        return redirect(url_for('views.plan_audit', id=id))
+    
     if request.is_json:
         return jsonify({'message': message, 'status': status})
     else:
         flash(message, 'success')
-        return redirect(url_for('views.plan_review', id=id))
-
+        if status in ['approved', 'error']:
+            return redirect(request.referrer or url_for('views.plans'))
+        else:
+            return redirect(url_for('views.plan_review', id=id))
+        
 @views.route('/create-ticket/<int:id>', methods=['POST'])
 @user_with_all_params()
 @login_required

@@ -6,7 +6,7 @@
     <div class="personal-plan-conteiner" >
         <div class="menu-conteiner">
             <div class="element {% if plan.is_sent or plan.is_approved %}non{% endif %}" id = "AddIndicatorModalButton">
-                <img src="/static/img/Add.svg" alt="">  
+                <img src="/static/img/add-main.svg" alt="">  
                 <a class="element-text">Добавить</a>  
             </div>
             <div class="element {% if plan.is_sent or plan.is_approved %}non{% endif %}" id="tableDeleteButton">
@@ -14,7 +14,7 @@
                 <a class="element-text">Удалить</a>  
             </div>
             <div class="element {% if plan.is_sent or plan.is_approved %}non{% endif %}" id="tableEditButton">
-                <img src="/static/img/Edit_black.svg" alt="">  
+                <img src="/static/img/Edit-main.svg" alt="">  
                 <a class="element-text">Редакт.</a>  
             </div>
             <form id = "controlPlanForm" action="/api/change-plan-status/{{ plan.id }}" method="POST">

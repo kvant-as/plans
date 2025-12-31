@@ -51,7 +51,7 @@ const messageFlash = (function() {
 
         const imgSrc = msgObj.type === 'error'
             ? '/static/img/Error.svg'
-            : '/static/img/No_error.svg';
+            : '/static/img/Checkmark.svg';
 
         alertBox.innerHTML = `
             <img src="${imgSrc}" class="alert-icon" alt="">
@@ -204,6 +204,7 @@ const Notifications = {
             notif.innerHTML = `
                 <div class="notif-message">${n.message}</div>
                 <div class="notif-time">${n.created_at}</div>
+                <div class="notif-divider-line"></div>
             `;
             this.notifListEl.appendChild(notif);
         });
@@ -4222,3 +4223,58 @@ document.addEventListener('DOMContentLoaded', () => {
     new DropNavigation();
 });
  
+
+// Кнопка далее в modal plan events add and edit
+function validateAndEnableButton() {
+    // Для AddEventModal
+    const addModal = document.getElementById('AddEventModal');
+    if (addModal && addModal.style.display !== 'none') {
+        const addFields = addModal.querySelectorAll('#step2 [name="name"], #step2 [name="Volume"], #step2 [name="ExpectedQuarter"]');
+        const addButton = addModal.querySelector('#step2-next-btn[data-action="next-step-2"]');
+        
+        if (addFields.length === 3 && addButton) {
+            const allFilled = Array.from(addFields).every(field => {
+                const value = field.value.trim();
+                if (field.name === 'name') return value !== '';
+                if (field.name === 'Volume') return value !== '' && parseFloat(value) > 0;
+                if (field.name === 'ExpectedQuarter') return value !== '' && parseInt(value) >= 1 && parseInt(value) <= 4;
+                return false;
+            });
+            
+            addButton.disabled = !allFilled;
+            console.log('AddModal validation:', allFilled);
+        }
+    }
+    
+    // Для EditEventModal
+    const editModal = document.getElementById('EditEventModal');
+    if (editModal && editModal.style.display !== 'none') {
+        const editFields = editModal.querySelectorAll('#step1 [name="name"], #step1 [name="Volume"], #step1 [name="ExpectedQuarter"]');
+        const editButton = editModal.querySelector('#step1-next-btn[data-action="next-step-2"]');
+        
+        if (editFields.length === 3 && editButton) {
+            const allFilled = Array.from(editFields).every(field => {
+                const value = field.value.trim();
+                if (field.name === 'name') return value !== '';
+                if (field.name === 'Volume') return value !== '' && parseFloat(value) > 0;
+                if (field.name === 'ExpectedQuarter') return value !== '' && parseInt(value) >= 1 && parseInt(value) <= 4;
+                return false;
+            });
+            
+            editButton.disabled = !allFilled;
+            console.log('EditModal validation:', allFilled);
+        }
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    validateAndEnableButton();
+    
+    setInterval(validateAndEnableButton, 300);
+    
+    document.addEventListener('input', function(e) {
+        if (e.target.matches('[name="name"], [name="Volume"], [name="ExpectedQuarter"]')) {
+            validateAndEnableButton();
+        }
+    });
+});
