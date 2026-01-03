@@ -2417,11 +2417,11 @@ function initConfirmModal(config) {
                 if (planId && text.includes('{id}')) {
                     text = text.replace('{id}', planId);
                 }
-                textElement.textContent = text;
+                textElement.innerHTML = text;
             }
             
             if (textElementSecond && config.modalTextSecond) {
-                textElementSecond.textContent = config.modalTextSecond;
+                textElementSecond.innerHTML = config.modalTextSecond;
             }   
             
             modalElement.classList.add('active');
@@ -4024,6 +4024,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
     //control plan
     if (document.getElementById('controlPlanButton')) {
+        const button = document.getElementById('controlPlanButton');
+        const form = document.getElementById('controlPlanForm');
+        const planType = form.dataset.planType;
+        
+        let modalText, modalTextSecond;
+        
+        if (planType === 'org_small') {
+            modalText = 'Вами было указано что вы заполняете план <strong>до 25 тыс. т.</strong>';
+            modalTextSecond = 'Вы действительно хотите пройти контроль плана? Все несохраненные изменения будут потеряны. План сменит статус.';
+        } else if (planType === 'org_large') {
+            modalText = 'Вами было указано что вы заполняете план <strong>более 25 тыс. т.</strong>';
+            modalTextSecond = 'Вы действительно хотите пройти контроль плана? Все несохраненные изменения будут потеряны. План сменит статус.';
+        } else {
+            modalText = 'Вы действительно хотите пройти контроль?';
+            modalTextSecond = 'Все несохраненные изменения будут потеряны. План сменит статус.';
+        }
+        
         initConfirmModal({
             triggerId: 'controlPlanButton',
             formId: 'controlPlanForm',
@@ -4031,9 +4048,9 @@ document.addEventListener('DOMContentLoaded', () => {
             yesId: 'confirmYes',
             noId: 'confirmNo',
             textId: 'modal-text',
-            modalText: 'Вы действительно хотите пройти контроль?',
             textSecondId: 'modal-text-second',
-            modalTextSecond: 'Все несохраненные изменения будут потеряны. План сменит статус.'
+            modalText: modalText,
+            modalTextSecond: modalTextSecond
         });
     }
 

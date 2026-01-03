@@ -1398,74 +1398,88 @@ def export_xlsx_single(plan: Plan):
                     text="Подписано ЭЦП", merge_direction='horizontal', font = regular_font_9_italic, alignment=bottom_left)   
               
             set_cell(ws, row_start=start_row+6, col_start=2, col_end=2, 
-                    text="_______________________", merge_direction='horizontal', row_height = 5, alignment=bottom_left)   
+                    text="_______________________", merge_direction='horizontal', alignment=bottom_left)   
                        
             set_cell(ws, row_start=start_row+7, col_start=2, col_end=2, 
-                    text="(подпись, инициалы и фамилия)", merge_direction='horizontal', font = regular_font_9, row_height = 11, alignment=bottom_left) 
+                    text="(подпись, инициалы и фамилия)", merge_direction='horizontal', font = regular_font_9, alignment=bottom_left) 
              
             set_cell(ws, row_start=start_row+8, col_start=2, col_end=2, 
                     text="«___» ____________ 20__ г.", merge_direction='horizontal')
             
+            okpo = plan.organization.okpo if plan.organization else None
+            org_name = get_org_name_by_okpo(okpo)
             
-            # okpo = plan.organization.okpo if plan.organization else None
-            # org_name = get_org_name_by_okpo(okpo)
+            if org_name:
+                org_text = f"{org_name} по надзору за рациональным использованием ТЭР"
+            else:
+                org_text = f"_______________ областное (городское) управление по надзору за рациональным использованием ТЭР"
             
-            # if org_name:
-            #     org_text = f"_______________ {org_name} по надзору за рациональным использованием ТЭР"
-            # else:
-            #     org_text = f"_______________ областное (городское) управление по надзору за рациональным использованием ТЭР"
+            set_cell(ws, row_start=start_row+10, col_start=2, row_end=start_row+11, col_end=2, 
+                    text=org_text, font=regular_font_10)
             
-            # set_cell(ws, row_start=start_row+10, col_start=2, row_end=start_row+3, col_end=2, 
-            #         text=org_text, font=regular_font_10)
-            
-            # set_cell(ws, row_start=start_row+12, col_start=2, col_end=2, 
-            #         text="Подписано ЭЦП", merge_direction='horizontal', font = regular_font_9_italic, alignment=bottom_left)   
+            set_cell(ws, row_start=start_row+12, col_start=2, col_end=2, 
+                    text="Подписано ЭЦП", merge_direction='horizontal', font = regular_font_9_italic, alignment=bottom_left)   
               
-            # set_cell(ws, row_start=start_row+13, col_start=2, col_end=2, 
-            #         text="_______________________", merge_direction='horizontal', row_height = 5, alignment=bottom_left)   
+            set_cell(ws, row_start=start_row+13, col_start=2, col_end=2, 
+                    text="_______________________", merge_direction='horizontal', row_height = 5, alignment=bottom_left)   
                        
-            # set_cell(ws, row_start=start_row+14, col_start=2, col_end=2, 
-            #         text="(подпись, инициалы и фамилия)", merge_direction='horizontal', font = regular_font_9, row_height = 11, alignment=bottom_left) 
+            set_cell(ws, row_start=start_row+14, col_start=2, col_end=2, 
+                    text="(подпись, инициалы и фамилия)", merge_direction='horizontal', font = regular_font_9, row_height = 11, alignment=bottom_left) 
              
-            # set_cell(ws, row_start=start_row+15, col_start=2, col_end=2, 
-            #         text="«___» ____________ 20__ г.", merge_direction='horizontal')  
+            set_cell(ws, row_start=start_row+15, col_start=2, col_end=2, 
+                    text="«___» ____________ 20__ г.", merge_direction='horizontal')   
                     
-            set_cell(ws, row_start=start_row+2, col_start=5, col_end=7, 
+            set_cell(ws, row_start=start_row+3, col_start=5, col_end=7, 
                     text="__________________________________", merge_direction='horizontal')           
                                    
-            set_cell(ws, row_start=start_row+3, col_start=5, col_end=7, 
+            set_cell(ws, row_start=start_row+4, col_start=5, col_end=7, 
                     text="(юридическое лицо)", merge_direction='horizontal', font = regular_font_9, alignment=center)      
                      
-            set_cell(ws, row_start=start_row+4, col_start=5, col_end=7, 
+            set_cell(ws, row_start=start_row+5, col_start=5, col_end=7, 
                     text="Подписано ЭЦП", merge_direction='horizontal', font = regular_font_9_italic, alignment=center)
                      
-            set_cell(ws, row_start=start_row+5, col_start=5, col_end=7, 
+            set_cell(ws, row_start=start_row+6, col_start=5, col_end=7, 
                     text="_______________________", merge_direction='horizontal', row_height = 5, alignment=bottom_left)   
                        
-            set_cell(ws, row_start=start_row+6, col_start=5, col_end=7, 
+            set_cell(ws, row_start=start_row+7, col_start=5, col_end=7, 
                     text="(подпись, инициалы и фамилия)", merge_direction='horizontal', font = regular_font_9, row_height = 11, alignment=left) 
                          
-            set_cell(ws, row_start=start_row+7, col_start=5, col_end=7, 
+            set_cell(ws, row_start=start_row+8, col_start=5, col_end=7, 
                     text="«___» ____________ 20__ г.", merge_direction='horizontal')           
                          
-            set_cell(ws, row_start=start_row+9, col_start=5, col_end=7, 
+            set_cell(ws, row_start=start_row+10, col_start=5, col_end=7, 
                     text="__________________________________", merge_direction='horizontal')               
                          
-            set_cell(ws, row_start=start_row+10, col_start=5, col_end=7, 
+            set_cell(ws, row_start=start_row+11, col_start=5, col_end=7, 
                     text="(министерство, концерн, государственный коммитет)", merge_direction='horizontal', font = regular_font_9, row_height = 11)  
                                  
-            set_cell(ws, row_start=start_row+11, col_start=5, col_end=7, 
+            set_cell(ws, row_start=start_row+12, col_start=5, col_end=7, 
                     text="Подписано ЭЦП", merge_direction='horizontal', font = regular_font_9_italic, alignment=center)
                      
-            set_cell(ws, row_start=start_row+12, col_start=5, col_end=7, 
+            set_cell(ws, row_start=start_row+13, col_start=5, col_end=7, 
                     text="_______________________", merge_direction='horizontal', row_height = 5, alignment=bottom_left)   
                        
-            set_cell(ws, row_start=start_row+13, col_start=5, col_end=7, 
+            set_cell(ws, row_start=start_row+14, col_start=5, col_end=7, 
                     text="(подпись, инициалы и фамилия)", merge_direction='horizontal', font = regular_font_9, row_height = 11, alignment=left) 
                          
-            set_cell(ws, row_start=start_row+14, col_start=5, col_end=7, 
-                    text="«___» ____________ 20__ г.", merge_direction='horizontal')  
-                 
+            set_cell(ws, row_start=start_row+15, col_start=5, col_end=7, 
+                    text="«___» ____________ 20__ г.", merge_direction='horizontal')      
+            
+            set_cell(ws, row_start=start_row+17, col_start=5, col_end=8, 
+                    text="_______________ облисполком (горисполком)", merge_direction='horizontal')               
+                               
+            set_cell(ws, row_start=start_row+18, col_start=5, col_end=7, 
+                    text="Подписано ЭЦП", merge_direction='horizontal', font = regular_font_9_italic, alignment=center)
+                     
+            set_cell(ws, row_start=start_row+19, col_start=5, col_end=7, 
+                    text="_______________________", merge_direction='horizontal', row_height = 5, alignment=bottom_left)   
+                       
+            set_cell(ws, row_start=start_row+20, col_start=5, col_end=7, 
+                    text="(подпись, инициалы и фамилия)", merge_direction='horizontal', font = regular_font_9, row_height = 11, alignment=left) 
+                         
+            set_cell(ws, row_start=start_row+21, col_start=5, col_end=7, 
+                    text="«___» ____________ 20__ г.", merge_direction='horizontal')     
+                    
         def min_signatures_indicators_xlsx(ws, start_row, plan):
              
             set_cell(ws, row_start=start_row+2, col_start=2, col_end=2, merge_direction='horizontal',  row_height = 31,
@@ -1881,17 +1895,10 @@ def export_xlsx_single(plan: Plan):
             set_cell(ws, row_start=start_row, col_start=2, col_end=9, 
                     text=text, font=regular_font_10_italic, row_height=None)
 
-            okpo = plan.organization.okpo if plan.organization else None
-            org_name = get_org_name_by_okpo(okpo)
-            
-            if org_name:
-                org_text = f"_______________ {org_name} по надзору за рациональным использованием ТЭР"
-            else:
-                org_text = f"_______________ областное (городское) управление по надзору за рациональным использованием ТЭР"
+            set_cell(ws, row_start=start_row+2, col_start=2, col_end=9, merge_direction='horizontal', font = bold_font_10, text='Департамент по энергоэффективности Госстандарта')
 
-            set_cell(ws, row_start=start_row+2, col_start=2, row_end=start_row+3, col_end=9, text=org_text)
-      
-      
+            set_cell(ws, row_start=start_row+3, col_start=2, col_end=9, merge_direction='horizontal', text='Производственно-техническое управление')
+
             set_cell(ws, row_start=start_row+4, col_start=2, col_end=3, 
                     text="Подписано ЭЦП", merge_direction='horizontal', font = regular_font_9_italic, alignment=center)   
               
@@ -1902,7 +1909,47 @@ def export_xlsx_single(plan: Plan):
                     text="(подпись, инициалы и фамилия)", merge_direction='horizontal', font = regular_font_9, row_height = 11, alignment=center) 
              
             set_cell(ws, row_start=start_row+7, col_start=2, col_end=3, 
-                    text="«___» ____________ 20__ г.", merge_direction='horizontal')  
+                    text="«___» ____________ 20__ г.", merge_direction='horizontal')
+
+
+            set_cell(ws, row_start=start_row+9, col_start=2, col_end=9, row_end=start_row+10, text='Управление экономики и финансов')
+
+            set_cell(ws, row_start=start_row+11, col_start=2, col_end=3, 
+                    text="Подписано ЭЦП", merge_direction='horizontal', font = regular_font_9_italic, alignment=center)   
+              
+            set_cell(ws, row_start=start_row+12, col_start=2, col_end=3, 
+                    text="_______________________", merge_direction='horizontal', row_height = 5, alignment=bottom_left)   
+                       
+            set_cell(ws, row_start=start_row+13, col_start=2, col_end=3, 
+                    text="(подпись, инициалы и фамилия)", merge_direction='horizontal', font = regular_font_9, row_height = 11, alignment=center) 
+             
+            set_cell(ws, row_start=start_row+14, col_start=2, col_end=3, 
+                    text="«___» ____________ 20__ г.", merge_direction='horizontal')
+
+
+            okpo = plan.organization.okpo if plan.organization else None
+            org_name = get_org_name_by_okpo(okpo)
+            
+            if org_name:
+                org_text = f"{org_name} по надзору за рациональным использованием ТЭР"
+            else:
+                org_text = f"_______________ областное (городское) управление по надзору за рациональным использованием ТЭР"
+
+            set_cell(ws, row_start=start_row+16, col_start=2, merge_direction='horizontal', col_end=9, text=org_text)
+      
+            set_cell(ws, row_start=start_row+17, col_start=2, col_end=3, 
+                    text="Подписано ЭЦП", merge_direction='horizontal', font = regular_font_9_italic, alignment=center)   
+              
+            set_cell(ws, row_start=start_row+18, col_start=2, col_end=3, 
+                    text="_______________________", merge_direction='horizontal', row_height = 5, alignment=bottom_left)   
+                       
+            set_cell(ws, row_start=start_row+19, col_start=2, col_end=3, 
+                    text="(подпись, инициалы и фамилия)", merge_direction='horizontal', font = regular_font_9, row_height = 11, alignment=center) 
+             
+            set_cell(ws, row_start=start_row+20, col_start=2, col_end=3, 
+                    text="«___» ____________ 20__ г.", merge_direction='horizontal')
+            
+                    
                     
             set_cell(ws, row_start=start_row+2, col_start=12, col_end=17, 
                     text="__________________________________", merge_direction='horizontal')           
@@ -1938,6 +1985,22 @@ def export_xlsx_single(plan: Plan):
                     text="(подпись, инициалы и фамилия)", merge_direction='horizontal', font = regular_font_9, row_height = 11, alignment=left) 
                          
             set_cell(ws, row_start=start_row+14, col_start=12, col_end=15, 
+                    text="«___» ____________ 20__ г.", merge_direction='horizontal')  
+                
+                
+            set_cell(ws, row_start=start_row+16, col_start=12, col_end=17, row_height=40,
+                    text="_______________ облисполком (горисполком)", merge_direction='horizontal')               
+                               
+            set_cell(ws, row_start=start_row+17, col_start=12, col_end=15, 
+                    text="Подписано ЭЦП", merge_direction='horizontal', font = regular_font_9_italic, alignment=center)
+                     
+            set_cell(ws, row_start=start_row+18, col_start=12, col_end=15, 
+                    text="_______________________", merge_direction='horizontal', row_height = 5, alignment=bottom_left)   
+                       
+            set_cell(ws, row_start=start_row+19, col_start=12, col_end=15, 
+                    text="(подпись, инициалы и фамилия)", merge_direction='horizontal', font = regular_font_9, row_height = 11, alignment=left) 
+                         
+            set_cell(ws, row_start=start_row+20, col_start=12, col_end=15, 
                     text="«___» ____________ 20__ г.", merge_direction='horizontal')  
                 
         def min_signatures_second_half_xlsx(ws, start_row, plan):
@@ -2376,63 +2439,113 @@ def export_xlsx_single(plan: Plan):
                     text="«___» ____________ 20__ г.", merge_direction='horizontal')  
          
         def org_large_signatures_third_half_xlsx(ws, start_row, plan):
+
+            set_cell(ws, row_start=start_row+2, col_start=2, col_end=9, merge_direction='horizontal', font = bold_font_10, text='Департамент по энергоэффективности Госстандарта')
+
+            set_cell(ws, row_start=start_row+3, col_start=2, col_end=9, merge_direction='horizontal', text='Производственно-техническое управление')
+
+            set_cell(ws, row_start=start_row+4, col_start=2, col_end=3, 
+                    text="Подписано ЭЦП", merge_direction='horizontal', font = regular_font_9_italic, alignment=center)   
+              
+            set_cell(ws, row_start=start_row+5, col_start=2, col_end=3, 
+                    text="_______________________", merge_direction='horizontal', row_height = 5, alignment=bottom_left)   
+                       
+            set_cell(ws, row_start=start_row+6, col_start=2, col_end=3, 
+                    text="(подпись, инициалы и фамилия)", merge_direction='horizontal', font = regular_font_9, row_height = 11, alignment=center) 
+             
+            set_cell(ws, row_start=start_row+7, col_start=2, col_end=3, 
+                    text="«___» ____________ 20__ г.", merge_direction='horizontal')
+
+
+            set_cell(ws, row_start=start_row+9, col_start=2, col_end=9, row_end=start_row+10, text='Управление экономики и финансов')
+
+            set_cell(ws, row_start=start_row+11, col_start=2, col_end=3, 
+                    text="Подписано ЭЦП", merge_direction='horizontal', font = regular_font_9_italic, alignment=center)   
+              
+            set_cell(ws, row_start=start_row+12, col_start=2, col_end=3, 
+                    text="_______________________", merge_direction='horizontal', row_height = 5, alignment=bottom_left)   
+                       
+            set_cell(ws, row_start=start_row+13, col_start=2, col_end=3, 
+                    text="(подпись, инициалы и фамилия)", merge_direction='horizontal', font = regular_font_9, row_height = 11, alignment=center) 
+             
+            set_cell(ws, row_start=start_row+14, col_start=2, col_end=3, 
+                    text="«___» ____________ 20__ г.", merge_direction='horizontal')
+
+
             okpo = plan.organization.okpo if plan.organization else None
             org_name = get_org_name_by_okpo(okpo)
             
             if org_name:
-                org_text = f"_______________ {org_name} по надзору за рациональным использованием ТЭР"
+                org_text = f"{org_name} по надзору за рациональным использованием ТЭР"
             else:
                 org_text = f"_______________ областное (городское) управление по надзору за рациональным использованием ТЭР"
 
-            set_cell(ws, row_start=start_row+2, col_start=2, row_end=start_row+3, col_end=9, text=org_text)
-    
-    
-            set_cell(ws, row_start=start_row+4, col_start=2, col_end=3, 
+            set_cell(ws, row_start=start_row+16, col_start=2, merge_direction='horizontal', col_end=9, text=org_text)
+      
+            set_cell(ws, row_start=start_row+17, col_start=2, col_end=3, 
                     text="Подписано ЭЦП", merge_direction='horizontal', font = regular_font_9_italic, alignment=center)   
-            
-            set_cell(ws, row_start=start_row+5, col_start=2, col_end=3, 
+              
+            set_cell(ws, row_start=start_row+18, col_start=2, col_end=3, 
                     text="_______________________", merge_direction='horizontal', row_height = 5, alignment=bottom_left)   
-                    
-            set_cell(ws, row_start=start_row+6, col_start=2, col_end=3, 
+                       
+            set_cell(ws, row_start=start_row+19, col_start=2, col_end=3, 
                     text="(подпись, инициалы и фамилия)", merge_direction='horizontal', font = regular_font_9, row_height = 11, alignment=center) 
+             
+            set_cell(ws, row_start=start_row+20, col_start=2, col_end=3, 
+                    text="«___» ____________ 20__ г.", merge_direction='horizontal')
             
-            set_cell(ws, row_start=start_row+7, col_start=2, col_end=3, 
-                    text="«___» ____________ 20__ г.", merge_direction='horizontal')  
+                    
                     
             set_cell(ws, row_start=start_row+2, col_start=12, col_end=17, 
                     text="__________________________________", merge_direction='horizontal')           
-                                
+                                   
             set_cell(ws, row_start=start_row+3, col_start=12, col_end=16, 
                     text="(юридическое лицо)", merge_direction='horizontal', font = regular_font_9, alignment=center)      
-                    
+                     
             set_cell(ws, row_start=start_row+4, col_start=12, col_end=15, 
                     text="Подписано ЭЦП", merge_direction='horizontal', font = regular_font_9_italic, alignment=center)
-                    
+                     
             set_cell(ws, row_start=start_row+5, col_start=12, col_end=15, 
                     text="_______________________", merge_direction='horizontal', row_height = 5, alignment=bottom_left)   
-                    
+                       
             set_cell(ws, row_start=start_row+6, col_start=12, col_end=15, 
                     text="(подпись, инициалы и фамилия)", merge_direction='horizontal', font = regular_font_9, row_height = 11, alignment=left) 
-                        
+                         
             set_cell(ws, row_start=start_row+7, col_start=12, col_end=15, 
                     text="«___» ____________ 20__ г.", merge_direction='horizontal')           
-                        
+                         
             set_cell(ws, row_start=start_row+9, col_start=12, col_end=17, 
                     text="__________________________________", merge_direction='horizontal')               
-                        
+                         
             set_cell(ws, row_start=start_row+10, col_start=12, col_end=17, 
                     text="(министерство, концерн, государственный коммитет)", merge_direction='horizontal', font = regular_font_9, row_height = 11)  
-                                
+                                 
             set_cell(ws, row_start=start_row+11, col_start=12, col_end=15, 
                     text="Подписано ЭЦП", merge_direction='horizontal', font = regular_font_9_italic, alignment=center)
-                    
+                     
             set_cell(ws, row_start=start_row+12, col_start=12, col_end=15, 
                     text="_______________________", merge_direction='horizontal', row_height = 5, alignment=bottom_left)   
-                    
+                       
             set_cell(ws, row_start=start_row+13, col_start=12, col_end=15, 
                     text="(подпись, инициалы и фамилия)", merge_direction='horizontal', font = regular_font_9, row_height = 11, alignment=left) 
-                        
+                         
             set_cell(ws, row_start=start_row+14, col_start=12, col_end=15, 
+                    text="«___» ____________ 20__ г.", merge_direction='horizontal')  
+                
+                
+            set_cell(ws, row_start=start_row+16, col_start=12, col_end=17, row_height=40,
+                    text="_______________ облисполком (горисполком)", merge_direction='horizontal')               
+                               
+            set_cell(ws, row_start=start_row+17, col_start=12, col_end=15, 
+                    text="Подписано ЭЦП", merge_direction='horizontal', font = regular_font_9_italic, alignment=center)
+                     
+            set_cell(ws, row_start=start_row+18, col_start=12, col_end=15, 
+                    text="_______________________", merge_direction='horizontal', row_height = 5, alignment=bottom_left)   
+                       
+            set_cell(ws, row_start=start_row+19, col_start=12, col_end=15, 
+                    text="(подпись, инициалы и фамилия)", merge_direction='horizontal', font = regular_font_9, row_height = 11, alignment=left) 
+                         
+            set_cell(ws, row_start=start_row+20, col_start=12, col_end=15, 
                     text="«___» ____________ 20__ г.", merge_direction='horizontal')  
           
         def min_signatures_third_half_xlsx(ws, start_row, plan):
@@ -2560,7 +2673,7 @@ def export_xlsx_single(plan: Plan):
           
         if export_type == "org_small":
             org_small_signatures_third_half_xlsx(ws, row_index + 1, plan)
-        elif export_type == "miniorg_largestry":
+        elif export_type == "org_large":
             org_large_signatures_third_half_xlsx(ws, row_index + 1, plan)
         elif export_type == "ministry":
             min_signatures_third_half_xlsx(ws, row_index + 1, plan)
@@ -2594,8 +2707,15 @@ def export_xlsx_single(plan: Plan):
         ValueError("Erorr export_type")
 
     first_half_xlsx(wb, plan)
-    second_half_xlsx(wb, plan)
-    third_half_xlsx(wb, plan)
+    
+    local_econ_execes = [exec_item for exec_item in plan.econ_execes if exec_item.is_local]
+    non_local_econ_execes = [exec_item for exec_item in plan.econ_execes if not exec_item.is_local]
+        
+    if non_local_econ_execes:
+        second_half_xlsx(wb, plan) 
+        
+    if local_econ_execes:
+        third_half_xlsx(wb, plan)
 
     file_stream = io.BytesIO()
     wb.save(file_stream)

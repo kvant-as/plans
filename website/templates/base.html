@@ -1092,18 +1092,20 @@
     {% endif %}
 
     {% if context_menu %}
-    <div id="MenuMainTable" class="white-panel" style="display:none;">
-        <form id="removeForm" method="POST" action="">
-            <button type="button" class="button-grey-border {% if plan.is_sent or plan.is_approved %}non{% endif %}" id="contextDeleteButton" >
-                <img src="{{ url_for('static', filename='img/Trash_black.svg') }}" class="btn-icon">
-                <span class="btn-text">{{ _('Удалить') }}</span>
-            </button> 
-        </form>
-        <button class="button-grey-border {% if plan.is_sent or plan.is_approved %}non{% endif %}" id="contextEditButton" >
-            <img src="{{ url_for('static', filename='img/Edit_black.svg') }}" class="btn-icon">
-            <span class="btn-text">{{ _('Редактировать') }}</span>
-        </button>
-    </div>   
+        {% set is_disabled = plan.is_sent or plan.is_approved or current_user.is_auditor %}
+
+        <div id="MenuMainTable" class="white-panel" style="display:none;">
+            <form id="removeForm" method="POST" action="">
+                <button type="button" class="button-grey-border {% if is_disabled %}non{% endif %}" id="contextDeleteButton">
+                    <img src="{{ url_for('static', filename='img/Trash_black.svg') }}" class="btn-icon">
+                    <span class="btn-text">{{ _('Удалить') }}</span>
+                </button> 
+            </form>
+            <button class="button-grey-border {% if is_disabled %}non{% endif %}" id="contextEditButton">
+                <img src="{{ url_for('static', filename='img/Edit_black.svg') }}" class="btn-icon">
+                <span class="btn-text">{{ _('Редактировать') }}</span>
+            </button>
+        </div>  
     {% endif %}
 
     {% if change_orgUser_modal %}

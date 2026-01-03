@@ -4,28 +4,33 @@
 
 <div class="pers-page-with-table">
     <div class="personal-plan-conteiner" >
+        {% set is_disabled = plan.is_sent or plan.is_approved or current_user.is_auditor %}
+
         <div class="menu-conteiner">
-            <div class="element {% if plan.is_sent or plan.is_approved %}non{% endif %}" id = "AddIndicatorModalButton">
+            <div class="element {% if is_disabled %}non{% endif %}" id="AddIndicatorModalButton">
                 <img src="/static/img/add-main.svg" alt="">  
                 <a class="element-text">Добавить</a>  
             </div>
-            <div class="element {% if plan.is_sent or plan.is_approved %}non{% endif %}" id="tableDeleteButton">
+            <div class="element {% if is_disabled %}non{% endif %}" id="tableDeleteButton">
                 <img src="/static/img/Delete.svg" alt="">  
                 <a class="element-text">Удалить</a>  
             </div>
-            <div class="element {% if plan.is_sent or plan.is_approved %}non{% endif %}" id="tableEditButton">
+            <div class="element {% if is_disabled %}non{% endif %}" id="tableEditButton">
                 <img src="/static/img/Edit-main.svg" alt="">  
                 <a class="element-text">Редакт.</a>  
             </div>
-            <form id = "controlPlanForm" action="/api/change-plan-status/{{ plan.id }}" method="POST">
+            <form id="controlPlanForm" data-plan-type="{{ plan.plan_type }}" action="/api/change-plan-status/{{ plan.id }}" method="POST">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <input type="hidden" name="status" value="control">
-                <button id = "controlPlanButton" type="submit" class="element {% if plan.is_sent or plan.is_approved %}non{% endif %}">
+                <button id="controlPlanButton" 
+                        data-plan-type="{{ plan.plan_type }}"
+                        type="submit" 
+                        class="element {% if is_disabled %}non{% endif %}">
                     <img src="/static/img/Control.svg" alt="">  
                     <span class="element-text">Контроль</span>  
                 </button>
             </form>
-        </div>      
+        </div>  
         <div class = "table-container">
             <table class="main-table"  id="indicatorsTable">
                 <thead class="main-table-titels">

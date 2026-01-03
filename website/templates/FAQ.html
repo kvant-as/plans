@@ -2,39 +2,455 @@
 {% block title %}{{ _('FAQ') }} - ErespondentS{% endblock %}
 {% block content %}
 
-<div class="faq-container-page">
-    <div class="faq-container">
-        <div class="faq-header">
-            <h1>Основы работы</h1>
-            <p>3 вопросов</p>
-        </div>
+<div class="faq-modern">
+    <div class="faq-content-wrapper">
+        <div class="faq-layout">
+            <aside class="faq-sidebar-modern">
+                <div class="search-container">
+                    <input type="text" class="faq-search" placeholder="Поиск по вопросам...">
+                </div>
 
-        <div class="faq-item">
-            <div class="faq-question">Что такое ErespondentS?</div>
-            <div class="faq-answer">
-                <div class="faq-answer-content">
-                    ErespondentS — это автоматизированное рабочее место для представления планов мероприятий по энергосбережению.
+                <nav class="categories-modern">
+                    <div class="category-modern ">
+                        <div class="category-header-modern">
+                            <h3>Основы работы</h3>
+                        </div>
+                        <div class="questions-list-modern">
+                            <a href="#what-is" class="question-link-modern">
+                                <span class="question-icon">📘</span>
+                                Что такое ErespondentS?
+                            </a>
+                            <a href="#getting-started" class="question-link-modern">
+                                <span class="question-icon">🚀</span>
+                                Как начать работу?
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="category-modern">
+                        <div class="category-header-modern">
+                            <h3>Работа с планами</h3>
+                        </div>
+                        <div class="questions-list-modern">
+                            <a href="#create-plan" class="question-link-modern">
+                                <span class="question-icon">✨</span>
+                                Создание плана
+                            </a>
+                            <a href="#audit-data" class="question-link-modern">
+                                <span class="question-icon">📊</span>
+                                Аудит планов
+                            </a>
+                            <a href="#export" class="question-link-modern">
+                                <span class="question-icon">📤</span>
+                                Экспорт плана
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="category-modern">
+                        <div class="category-header-modern">
+                            <h3>Планы и аналитика</h3>
+                        </div>
+                        <div class="questions-list-modern">
+                            <a href="#plans" class="question-link-modern">
+                                <span class="question-icon">📈</span>
+                                Виды планов
+                            </a>
+                        </div>
+                    </div>
+                </nav>
+            </aside>
+
+            <main class="faq-content-modern">
+                <div class="answer-placeholder" id="default-view">
+                    <div class="placeholder-icon">❓</div>
+                    <h2>Выберите вопрос</h2>
+                    <p>Выберите вопрос из списка слева, чтобы увидеть подробный ответ с инструкциями, скриншотами и примерами.</p>
+                    <div style="margin-top: 30px; font-size: 14px; opacity: 0.6;">
+                        <em>Используйте поиск для быстрого доступа к нужной информации</em>
+                    </div>
                 </div>
-            </div>
-        </div>
-        <hr>
-        <div class="faq-item">
-            <div class="faq-question">Какие основные функции доступны в системе?</div>
-            <div class="faq-answer">
-                <div class="faq-answer-content">
-                    -
-                </div>
-            </div>
-        </div>
-        <hr>
-        <div class="faq-item">
-            <div class="faq-question">Как начать работу с системой?</div>
-            <div class="faq-answer">
-                <div class="faq-answer-content">
-                    -
-                </div>
-            </div>
+
+                <article class="answer-active-modern" id="what-is">
+                    <header class="answer-header-modern">
+                        <h1 class="answer-title-modern">Что такое ErespondentS?</h1>
+                    </header>
+
+                    <div class="answer-body-modern">
+                        <div class="answer-text">
+                            <p><strong>ErespondentS</strong> — это автоматизированный комплекс для создания, анализа и представления для согласования планов энергоэффективности организаций.</p>
+                        </div>
+
+                        <div class="answer-highlight">
+                            <div class="highlight-icon">💡</div>
+                            <p><strong>Ключевая особенность:</strong> ErespondentS автоматизирует 95% рутинных расчетов, позволяя сосредоточиться на стратегических решениях.</p>
+                        </div>
+                        <div class="features-grid">
+                            <div class="feature-card">
+                                <div class="feature-icon">📊</div>
+                                <h4>Анализ данных</h4>
+                                <p>Автоматический анализ энергопотребления и выявление потенциала экономии</p>
+                            </div>
+                            <div class="feature-card">
+                                <div class="feature-icon">⚡</div>
+                                <h4>Расчет эффективности</h4>
+                                <p>Точный расчет экономических показателей и сроков окупаемости</p>
+                            </div>
+                            <div class="feature-card">
+                                
+                                <div class="feature-icon">📋</div>
+                                <h4>Формирование отчетов</h4>
+                                <p>Готовые шаблоны отчетов по требованиям 12-тэк</p>
+                            </div>
+                        </div>
+
+                        <div class="answer-text">
+                            <h3>Для кого предназначена система?</h3>
+                            <p>ErespondentS разработана для:</p>
+                            <ul style="list-style: none; padding-left: 0;">
+                                <li style="padding: 10px 0; border-bottom: 1px solid #eee;">
+                                    <strong>🏢 Респондентов</strong> — управление энергосберегающими планами
+                                </li>
+                                <li style="padding: 10px 0;">
+                                    <strong>📑 Аудиторов</strong> — анализ планов и принятие решения
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="image-gallery">
+                            <div class="gallery-item">
+                                <img src="/static/img/faq/dashboard-preview.png" alt="">
+                                <div class="gallery-overlay">
+                                    <h5>Таблицы</h5>
+                                    <p>Заполнение таблиц</p>
+                                </div>
+                            </div>
+                            <div class="gallery-item">
+                                <img src="/static/img/faq/reports-preview.png" alt="">
+                                <div class="gallery-overlay">
+                                    <h5>Генерация планов</h5>
+                                    <p></p>
+                                </div>
+                            </div>
+                            <div class="gallery-item">
+                                <img src="/static/images/faq/analytics-preview.jpg" alt="">
+                                <div class="gallery-overlay">
+                                    <h5>Аналитика</h5>
+                                    <p>Визуализация данных и статистика</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="answer-navigation">
+                            <div></div>
+                            <a href="#getting-started" class="nav-btn next">
+                                Следующий вопрос
+                                <i>→</i>
+                            </a>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="answer-active-modern" id="getting-started">
+                    <header class="answer-header-modern">
+                        <h1 class="answer-title-modern">Как начать работу с системой?</h1>
+                    </header>
+
+                    <div class="answer-body-modern">
+                        <div class="answer-text">
+                            <p>Начать работу с ErespondentS просто даже для новичков. Следуйте этому пошаговому руководству, и вы сможете создать свой первый план за 15 минут.</p>
+                        </div>
+
+                        <div class="steps-container">
+                            <div class="step-item">
+                                <div class="step-number"></div>
+                                <div class="step-content">
+                                    <h4>Регистрация и настройка аккаунта</h4>
+                                    <p>Используйте электронную почту для регистрации. После подтверждения укажите личную информацию.</p>
+                                </div>
+                            </div>
+
+                            <div class="step-item">
+                                <div class="step-number"></div>
+                                <div class="step-content">
+                                    <h4>Выбор организации</h4>
+                                    <p>Выберите организацию за которую вы будете отчитываться, это может быть: предприятие, министерство или регион.</p>
+                                </div>
+                            </div>
+
+                            <div class="step-item">
+                                <div class="step-number"></div>
+                                <div class="step-content">
+                                    <h4>Создание первого плана</h4>
+                                    <p>Перейдите на страницу "Создать план", укажите год и заполните необходимые данные.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="answer-highlight">
+                            <div class="highlight-icon">🎯</div>
+                            <p><strong>Совет для начала:</strong> Начните с просмотра демо, чтобы ознакомиться с интерфейсом и основными функциями без риска.</p>
+                        </div>
+
+                        <div class="video-container">
+                            <video controls poster="/static/img/faq/video-poster.png">
+                                <source src="/static/video/sign-demo.mp4" type="video/mp4">
+                                Ваш браузер не поддерживает видео.
+                            </video>
+                            <div class="video-caption">
+                                <h5>Быстрый старт с ErespondentS</h5>
+                                <p>Посмотрите как начать работу с ErespondentS</p>
+                            </div>
+                        </div>
+
+                        <div class="answer-text">
+                            <h3>Чеклист для начала работы:</h3>
+                            <div style="background: #f8fafc; padding: 24px; border-radius: 12px; margin-top: 20px;">
+                                <label style="display: flex; align-items: center; padding: 10px 0; cursor: pointer;">
+                                    <input type="checkbox" style="margin-right: 12px; transform: scale(1.2);">
+                                    <span>Электронная почта подтверждена</span>
+                                </label>
+                                <label style="display: flex; align-items: center; padding: 10px 0; cursor: pointer;">
+                                    <input type="checkbox" style="margin-right: 12px; transform: scale(1.2);">
+                                    <span>Заполнены личные данные</span>
+                                </label>
+                                <label style="display: flex; align-items: center; padding: 10px 0; cursor: pointer;">
+                                    <input type="checkbox" style="margin-right: 12px; transform: scale(1.2);">
+                                    <span>Выбрана организация</span>
+                                </label>
+                                <label style="display: flex; align-items: center; padding: 10px 0; cursor: pointer;">
+                                    <input type="checkbox" style="margin-right: 12px; transform: scale(1.2);">
+                                    <span>Ознакомление с руководством пользователя или же с FAQ</span>
+                                </label>
+                            </div>
+                        </div>
+                     
+                    </div>  
+                        <div class="answer-navigation">
+                            <a href="#getting-started" class="nav-btn prev">
+                                <i>←</i>
+                                Предыдущий вопрос
+                            </a>
+                            <div></div>
+                        </div>
+                </article>
+            </main>
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const questionLinks = document.querySelectorAll('.question-link-modern');
+    const categoryHeaders = document.querySelectorAll('.category-header-modern');
+    const answerSections = document.querySelectorAll('.answer-active-modern');
+    const defaultView = document.getElementById('default-view');
+    const searchInput = document.querySelector('.faq-search');
+    
+
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -100px 0px'
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, observerOptions);
+    
+    document.querySelectorAll('.feature-card, .step-item, .gallery-item').forEach(el => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(30px)';
+        el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        observer.observe(el);
+    });
+    
+    categoryHeaders.forEach(header => {
+        header.addEventListener('click', function() {
+            const category = this.parentElement;
+            const isActive = category.classList.contains('active');
+            
+            document.querySelectorAll('.category-modern').forEach(cat => {
+                cat.classList.remove('active');
+            });
+            
+            if (!isActive) {
+                category.classList.add('active');
+            }
+        });
+    });
+    
+    questionLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const targetId = this.getAttribute('href').substring(1);
+
+            answerSections.forEach(section => {
+                section.classList.remove('show');
+            });
+            
+            defaultView.style.display = 'none';
+            
+            const targetSection = document.getElementById(targetId);
+            if (targetSection) {
+                targetSection.classList.add('show');
+                
+
+                targetSection.style.opacity = '0';
+                targetSection.style.transform = 'translateX(30px)';
+                
+                setTimeout(() => {
+                    targetSection.style.opacity = '1';
+                    targetSection.style.transform = 'translateX(0)';
+                }, 50);
+            }
+            
+            questionLinks.forEach(l => {
+                l.classList.remove('active');
+                l.style.transform = 'translateX(0)';
+            });
+            
+            this.classList.add('active');
+            this.style.transform = 'translateX(10px)';
+
+            const icon = this.querySelector('.question-icon');
+            icon.style.transform = 'scale(1.5) rotate(15deg)';
+            setTimeout(() => {
+                icon.style.transform = 'scale(1) rotate(0deg)';
+            }, 300);
+
+            const category = this.closest('.category-modern');
+            if (category && !category.classList.contains('active')) {
+                category.classList.add('active');
+            }
+            
+            history.pushState(null, null, `#${targetId}`);
+        });
+    });
+
+    searchInput.addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase();
+        let foundCount = 0;
+        
+        questionLinks.forEach(link => {
+            const text = link.textContent.toLowerCase();
+            const category = link.closest('.category-modern');
+            
+            if (text.includes(searchTerm) || searchTerm.length < 2) {
+                link.style.display = 'flex';
+                if (searchTerm.length >= 2 && text.includes(searchTerm)) {
+                    link.style.background = 'rgba(67, 97, 238, 0.1)';
+                    link.style.animation = 'pulse 1s ease';
+                    foundCount++;
+                    
+                    if (category) {
+                        category.classList.add('active');
+                    }
+                } else {
+                    link.style.background = '';
+                    link.style.animation = '';
+                }
+            } else {
+                link.style.display = 'none';
+            }
+        });
+        
+        if (searchTerm.length >= 2) {
+            const resultsInfo = document.createElement('div');
+            resultsInfo.className = 'search-results-info';
+            resultsInfo.style.padding = '10px 20px';
+            resultsInfo.style.background = 'rgba(67, 97, 238, 0.1)';
+            resultsInfo.style.borderRadius = '8px';
+            resultsInfo.style.marginTop = '10px';
+            resultsInfo.style.fontSize = '14px';
+            resultsInfo.innerHTML = `Найдено вопросов: <strong>${foundCount}</strong>`;
+            
+            const oldInfo = document.querySelector('.search-results-info');
+            if (oldInfo) oldInfo.remove();
+            
+            searchInput.parentNode.appendChild(resultsInfo);
+        } else {
+            const oldInfo = document.querySelector('.search-results-info');
+            if (oldInfo) oldInfo.remove();
+        }
+    });
+    
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href').substring(1);
+            const targetLink = document.querySelector(`.question-link-modern[href="#${targetId}"]`);
+            if (targetLink) {
+                targetLink.click();
+                
+                window.scrollTo({
+                    top: document.querySelector('.faq-content-modern').offsetTop - 100,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+
+    if (window.location.hash) {
+        const hash = window.location.hash.substring(1);
+        const targetLink = document.querySelector(`.question-link-modern[href="#${hash}"]`);
+        if (targetLink) {
+            setTimeout(() => {
+                targetLink.click();
+            }, 300);
+        }
+    }
+    
+    document.querySelectorAll('.feature-card').forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            this.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+        });
+    });
+    
+    document.querySelectorAll('.answer-text input[type="checkbox"]').forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            const label = this.parentElement;
+            if (this.checked) {
+                label.style.opacity = '0.6';
+                label.style.textDecoration = 'line-through';
+                
+                label.style.transform = 'translateX(10px)';
+                setTimeout(() => {
+                    label.style.transform = 'translateX(0)';
+                }, 200);
+            } else {
+                label.style.opacity = '1';
+                label.style.textDecoration = 'none';
+            }
+        });
+    });
+    
+    const typeWriter = (element, text, speed = 50) => {
+        let i = 0;
+        element.innerHTML = '';
+        
+        const timer = setInterval(() => {
+            if (i < text.length) {
+                element.innerHTML += text.charAt(i);
+                i++;
+            } else {
+                clearInterval(timer);
+            }
+        }, speed);
+    };
+    
+    const firstAnswer = document.querySelector('.answer-active-modern.show');
+    if (firstAnswer) {
+        const title = firstAnswer.querySelector('.answer-title-modern');
+        const originalText = title.textContent;
+        typeWriter(title, originalText, 30);
+    }
+});
+</script>
+
 {% endblock %}

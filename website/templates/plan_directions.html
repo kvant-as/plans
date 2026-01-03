@@ -4,21 +4,23 @@
 
 <div class="pers-page">
     <div class="personal-plan-conteiner">
-        <div class="menu-conteiner" >
-            <div class="element {% if plan.is_sent or plan.is_approved %}non{% endif %}" id = "AddDirectionModalButton">
+        {% set is_disabled = plan.is_sent or plan.is_approved or current_user.is_auditor %}
+
+        <div class="menu-conteiner">
+            <div class="element {% if is_disabled %}non{% endif %}" id="AddDirectionModalButton">
                 <img src="/static/img/add-main.svg" alt="">  
                 <a class="element-text">Добавить</a>  
             </div>
-            <div class="element {% if plan.is_sent or plan.is_approved %}non{% endif %}" id="tableDeleteButton">
+            <div class="element {% if is_disabled %}non{% endif %}" id="tableDeleteButton">
                 <img src="/static/img/Delete.svg" alt="">  
                 <a class="element-text">Удалить</a>  
             </div>
-            <div class="element {% if plan.is_sent or plan.is_approved %}non{% endif %}" id="tableEditButton">
+            <div class="element {% if is_disabled %}non{% endif %}" id="tableEditButton">
                 <img src="/static/img/Edit-main.svg" alt="">  
                 <a class="element-text">Редакт.</a>  
             </div>
         </div>
-            
+                    
         <div class = "table-container">
             <table class="main-table" id="directionTable">
                 <thead class="main-table-titels">
