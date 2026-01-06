@@ -11,104 +11,128 @@
   </head>
   <body>
     {% if not hide_header %}
-    <header>
-        <nav>
-            <div class="header-aside" onclick="window.location.href='/'">
-                <div class="logo-wrapper 
-                    {% if current_user.is_admin %}red-shadow
-                    {% elif current_user.is_auditor %}green-shadow
-                    {% endif %}">
-                <img src="{{ url_for('static', filename='img/Logo-black.svg') }}"
-                    class="header-aside-logo">
+        <header>
+            <nav>
+                <div class="header-aside" onclick="window.location.href='/'">
+                    <div class="logo-wrapper 
+                        {% if current_user and current_user.is_authenticated %}
+                            {% if current_user.is_admin %}red-shadow
+                            {% elif current_user.is_auditor %}green-shadow
+                            {% endif %}
+                        {% endif %}">
+                    <img src="{{ url_for('static', filename='img/Logo-black.svg') }}"
+                        class="header-aside-logo">
+                    </div>
+                    <div class="header-aside-text">
+                        <a class="title">ErespondentS</a>
+                        <a class="description">{{ _('Система представления планов энергосберегающих мероприятий') }}</a>
+                    </div>
                 </div>
-                <div class="header-aside-text">
-                    <a class="title">ErespondentS</a>
-                    <a class="description">{{ _('Система представления планов энергосберегающих мероприятий') }}</a>
-                </div>
-            </div>
-            <div class="header-bside">
-                <a class="clear-but" id="notifBtn">
-                    <img src="{{ url_for('static', filename='img/Notifications.svg') }}" class="clear-icon">
-                    <span id="notifCount" class="notif-count"></span>
-                </a>
-                <div id="notifPopup" class="notif-popup">
-                    <div class="notif-header">
-                        <span>Уведомления</span>
-                        <button id="markAllRead" type="button" class="auth-next-button">
-                            <img src="/static/img/Done_all.svg" class="btn-icon">
-                            
+                <div class="header-bside">
+                    <a class="clear-but" onclick="window.location.href='/#contacts-cont'">
+                        <img src="{{ url_for('static', filename='img/Phone.svg') }}" class="clear-icon">
+                    </a>
+                    <a class="clear-but" onclick="window.location.href='/FAQ'">
+                        <img src="{{ url_for('static', filename='img/FAQ.svg') }}" class="clear-icon">
+                    </a>
+                    {% if current_user and current_user.is_authenticated %}
+                        <a class="clear-but" id="notifBtn">
+                            <img src="{{ url_for('static', filename='img/Notifications.svg') }}" class="clear-icon">
+                            <span id="notifCount" class="notif-count"></span>
+                        </a>
+                        <div id="notifPopup" class="notif-popup">
+                            <div class="notif-header">
+                                <span>Уведомления</span>
+                                <button id="markAllRead" type="button" class="auth-next-button">
+                                    <img src="/static/img/Done_all.svg" class="btn-icon">
+                                </button>
+                            </div>
+                            <div class="notif-body" id="notifList">
+                            </div>
+                        </div>
+                        
+                        <div class="divider"></div>
+                        <div class="circle-fi-header" onclick="window.location.href='/profile'">
+                            {{ current_user.first_name[:1] | upper if current_user.first_name else '' }}{{ current_user.last_name[:1] | upper if current_user.last_name else '' }}
+                        </div>
+                        <svg id="user-info-trigger" class="dropdown-arrow" width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M1 1L6 6L11 1" stroke="#666" stroke-width="2" stroke-linecap="round"></path>
+                        </svg>
+                    {% else %}
+                        <button type="button" class="auth-next-button" style = "margin: 0;" onclick="window.location.href='{{ url_for('auth.login') }}'">
+                            {{ _('Войти') }}
                         </button>
+                    {% endif %}
+                    
+                   
+                    
+                </div>
+            </nav>
+        </header>
+        
+        {% if current_user and current_user.is_authenticated %}
+        <div class="user-sidebar" id="user-sidebar">
+            <div class="sidebar-content">
+                <div class="short-acc-info">
+                    <div class="circle-fi">
+                        {{ current_user.first_name[:1] | upper if current_user.first_name else '' }}{{ current_user.last_name[:1] | upper if current_user.last_name else '' }}
                     </div>
-
-                    <div class="notif-body" id="notifList">
+                    <div class="employee-card">
+                        <a class="employee-name">
+                            {{ current_user.first_name if current_user.first_name else '' }} 
+                            {{ current_user.last_name if current_user.last_name else '' }}
+                        </a>
+                        {% if current_user.post %}
+                        <a class="employee-position">{{ current_user.post }}</a>
+                        {% endif %}
                     </div>
                 </div>
-
-                <a class = "clear-but" onclick="window.location.href='/FAQ'">
-                    <img src="{{ url_for('static', filename='img/FAQ.svg') }}" class="clear-icon">
-                </a>
-                <div class="divider"></div>
-                <div class="circle-fi-header" onclick="window.location.href='/profile'">
-                    {{ current_user.first_name[:1] | upper }}{{ current_user.last_name[:1] | upper }}
+                {% if current_user.email %}
+                <div class="input-with-icon">
+                    <img src="/static/img/Email.svg" alt="" class="input-icon">
+                    <input type="text" value="{{ current_user.email }}" class="app-input" readonly>
                 </div>
-                <!-- <div class="info-user">
-                    <a class="fio">{{ current_user.first_name }} {{ current_user.last_name }}</a>
-                </div>  -->
-                <svg id = "user-info-trigger" class="dropdown-arrow" width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M1 1L6 6L11 1" stroke="#666" stroke-width="2" stroke-linecap="round"></path>
-                </svg>  
-            </div>
-            
-        </nav>
-    </header>
-    <div class="user-sidebar" id="user-sidebar">
-        <div class="sidebar-content">
-            <div class="short-acc-info">
-                <div class="circle-fi">{{ current_user.first_name[:1] | upper }}{{ current_user.last_name[:1] | upper }}</div>
-                <div class="employee-card">
-                    <a class="employee-name">{{ current_user.first_name}} {{ current_user.last_name}}</a>
-                    <a class="employee-position">{{ current_user.post}}</a>
+                {% endif %}
+                
+                {% if current_user.organization or current_user.ministry or current_user.region %}
+                <div class="input-with-icon">
+                    <img src="/static/img/Organization.svg" alt="" class="input-icon">
+                    <input type="text" value="{% if current_user.organization %}{{ current_user.organization.name }}{% elif current_user.ministry %}{{ current_user.ministry.name }}{% elif current_user.region %}{{ current_user.region.name }}{% endif %}" 
+                        class="app-input" readonly>
                 </div>
-            </div>
-            <div class="input-with-icon">
-                <img src="/static/img/Email.svg" alt="" class="input-icon">
-                <input type="text" value="{{current_user.email}}" 
-                    class="app-input" readonly>
-            </div>
-            <div class="input-with-icon">
-                <img src="/static/img/Organization.svg" alt="" class="input-icon">
-                <input type="text" value="{% if current_user.organization %}{{ current_user.organization.name }}{% elif current_user.ministry %}{{ current_user.ministry.name }}{% elif current_user.region %}{{ current_user.region.name }}{% endif %}" 
-                    class="app-input" readonly>
-            </div>
-            <hr>
+                {% endif %}
+                
+                <hr>
 
-            <button type="button" class="button-grey-border" onclick="window.location.href='/profile'">
-                <img src="/static/img/Account.svg" alt="" class="btn-icon">
-                <span class="btn-text">Профиль</span>
-            </button>
-            <button type="button" class="button-grey-border" onclick="window.location.href='/FAQ'">
-                <img src="/static/img/FAQ.svg" alt="" class="btn-icon">
-                <span class="btn-text">FAQ</span>
-            </button>
-            <button type="button" class="button-grey-border" onclick="window.location.href='/'">
-                <img src="/static/img/Logo-black.svg" alt="" class="btn-icon">
-                <span class="btn-text">Обзор</span>
-            </button>
-            <button type="button" class="button-grey-border" onclick="window.location.href='/#contacts-cont'">
-                <img src="/static/img/Phone.svg" alt="" class="btn-icon">
-                <span class="btn-text">Контакты</span>
-            </button>
-            <div class = "user-sidebar-buttons-area">
-                <form id = "logout_form" action="{{ url_for('auth.logout') }}" method="POST">
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                    <button type="submit" class="submit-button delete" id = "logoutButton">
-                        <img src="{{ url_for('static', filename='img/Logout_wh.svg') }}" alt="" class="btn-icon">
-                        <span class="btn-text">{{ _('Выйти из аккаунта') }}</span>
-                    </button>
-                </form>
+                <button type="button" class="button-grey-border" onclick="window.location.href='/profile'">
+                    <img src="/static/img/Account.svg" alt="" class="btn-icon">
+                    <span class="btn-text">Профиль</span>
+                </button>
+                <button type="button" class="button-grey-border" onclick="window.location.href='/FAQ'">
+                    <img src="/static/img/FAQ.svg" alt="" class="btn-icon">
+                    <span class="btn-text">FAQ</span>
+                </button>
+                <button type="button" class="button-grey-border" onclick="window.location.href='/'">
+                    <img src="/static/img/Logo-black.svg" alt="" class="btn-icon">
+                    <span class="btn-text">Обзор</span>
+                </button>
+                <button type="button" class="button-grey-border" onclick="window.location.href='/#contacts-cont'">
+                    <img src="/static/img/Phone.svg" alt="" class="btn-icon">
+                    <span class="btn-text">Контакты</span>
+                </button>
+                
+                <div class="user-sidebar-buttons-area">
+                    <form id="logout_form" action="{{ url_for('auth.logout') }}" method="POST">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button type="submit" class="submit-button delete" id="logoutButton">
+                            <img src="{{ url_for('static', filename='img/Logout_wh.svg') }}" alt="" class="btn-icon">
+                            <span class="btn-text">{{ _('Выйти из аккаунта') }}</span>
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
-    </div>
+        {% endif %}
     {% endif %}
 
     {% if show_circle_buttons %}

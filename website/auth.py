@@ -115,15 +115,15 @@ def login():
             flash('Введите данные для авторизации', 'error')
         return render_template(
             'login.html',
-            hide_header=True,
-            show_circle_buttons=True,
+            # hide_header=True,
+            # show_circle_buttons=True,
             current_user=current_user
         )
 
     return render_template(
         'login.html',
-        hide_header=True,
-        show_circle_buttons=True,
+        # hide_header=True,
+        # show_circle_buttons=True,
         current_user=current_user
     )
 
@@ -131,8 +131,9 @@ def login():
 def sign():
     if request.method == 'GET':
         return render_template('sign.html', 
-                               hide_header=True,
-                               show_circle_buttons=True)
+                            #    hide_header=True,
+                            #    show_circle_buttons=True
+                               )
     elif request.method == 'POST':
         email = request.form.get('email')
         password1 = request.form.get('password1')
@@ -145,8 +146,8 @@ def sign():
 def code():
     if request.method == 'GET':
         return render_template('code.html', 
-                        hide_header=True,
-                        show_circle_buttons = True,
+                        # hide_header=True,
+                        # show_circle_buttons = True,
                             )
     elif request.method == 'POST':
         from .user.account import activate_account
@@ -179,8 +180,8 @@ def resend_code():
 def param():
     if request.method == 'GET':
         return render_template('param.html', 
-                        hide_header=True,
-                        show_circle_buttons = True,
+                        # hide_header=True,
+                        # show_circle_buttons = True,
                             )
     elif request.method == 'POST':
         first_name = request.form.get('first_name')
@@ -230,8 +231,9 @@ from datetime import datetime, timedelta
 def forgot_password():
     if request.method == 'GET':
         return render_template('forgot_password.html', 
-                            hide_header=True,
-                            show_circle_buttons=True)
+                            # hide_header=True,
+                            # show_circle_buttons=True
+                            )
     
     elif request.method == 'POST':
         email = request.form.get('email')
@@ -267,8 +269,9 @@ def reset_password(token):
         
         return render_template('reset_password.html', 
                             token=token,
-                            hide_header=True,
-                            show_circle_buttons=True)
+                            # hide_header=True,
+                            # show_circle_buttons=True
+                            )
     
     elif request.method == 'POST':
         password = request.form.get('password')

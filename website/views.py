@@ -1548,8 +1548,8 @@ def create_ticket(id):
 @views.route('/FAQ', methods=['GET'])
 def FAQ_page():    
     return render_template('FAQ.html',
-            hide_header=True,
-            show_circle_buttons=True,
+            # hide_header=True,
+            # show_circle_buttons=True,
             active_tab = 'faq')
 
 @views.route('/', methods=['GET'])
@@ -1561,8 +1561,8 @@ def begin_page():
             user_data=user_data,
             organization_data=organization_data,
             plan_data=plan_data,
-            hide_header=True,
-            show_circle_buttons=True,
+            # hide_header=True,
+            # show_circle_buttons=True,
             active_tab = 'begin'
             )
 

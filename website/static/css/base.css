@@ -522,6 +522,7 @@ body {
 /*-----------------------mes flash end*/
 
 header {   
+  position: relative;
   width: calc(100% - 80px);
   height: 40px;
   border-bottom: 1px solid var(--border-color);
@@ -1096,7 +1097,7 @@ footer {
 .modern-container {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 90px 20px;
+  padding: 50px 20px;
   position: relative;
   width: calc(100% - 40px);
 }
@@ -1570,7 +1571,7 @@ footer {
 
 .auth-page {
   position: relative;
-  min-height: 100vh;
+  min-height: calc(100vh - 71px);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -3523,12 +3524,10 @@ input[type="checkbox"]:focus {
 .faq-content-wrapper {
     position: relative;
     z-index: 2;
-    padding: 120px 20px 60px;
+    padding: 60px 20px 60px;
     max-width: 1400px;
     margin: 0 auto;
 }
-
-
 
 /* Основной контейнер */
 .faq-layout {
@@ -3547,7 +3546,6 @@ input[type="checkbox"]:focus {
     }
 }
 
-/* Боковая панель - современная версия */
 .faq-sidebar-modern {
     position: sticky;
     top: 100px;
@@ -3818,6 +3816,8 @@ input[type="checkbox"]:focus {
 .answer-body-modern {
     padding: 40px;
 }
+
+
 
 .answer-text {
     font-size: 17px;
@@ -4092,6 +4092,227 @@ video::-webkit-media-controls-timeline {
     margin: 0;
 }
 
+/* Современные стили для списков в FAQ */
+.step-content ul {
+    list-style: none;
+    padding: 0;
+    margin: 16px 0 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    position: relative;
+}
+
+.step-content ul::before {
+    content: '';
+    position: absolute;
+    left: 16px;
+    top: 8px;
+    bottom: 8px;
+    width: 2px;
+    background: linear-gradient(to bottom, 
+        rgba(0, 0, 0, 0.1) 0%, 
+        rgba(0, 0, 0, 0.3) 50%, 
+        rgba(0, 0, 0, 0.1) 100%);
+    z-index: 1;
+    border-radius: 1px;
+}
+
+.step-content ul li {
+    position: relative;
+    padding: 16px 20px 16px 48px;
+    background: #ffffff;
+    border-radius: 12px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 12px;
+    align-items: start;
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.step-content ul li:hover {
+    background: rgba(0, 0, 0, 0.02);
+    border-color: rgba(0, 0, 0, 0.15);
+    transform: translateX(8px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+}
+
+.step-content ul li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 0;
+    height: 100%;
+    background: linear-gradient(90deg, rgba(0, 0, 0, 0.03) 0%, transparent 100%);
+    border-radius: 12px 0 0 12px;
+    transition: width 0.3s ease;
+    z-index: 1;
+}
+
+.step-content ul li:hover::before {
+    width: 100%;
+}
+
+/* Нумерация/маркер */
+.step-content ul li::after {
+    content: '';
+    position: absolute;
+    left: 20px;
+    top: 20px;
+    width: 12px;
+    height: 12px;
+    background: var(--faq-primary);
+    border-radius: 50%;
+    border: 3px solid #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    z-index: 2;
+    transition: all 0.3s ease;
+}
+
+.step-content ul li:hover::after {
+    transform: scale(1.2);
+    background: #000000;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+}
+
+/* Стилизация текста */
+.step-content ul li strong {
+    color: var(--faq-text-primary);
+    font-weight: 700;
+    font-size: 15px;
+    display: block;
+    margin-bottom: 4px;
+    position: relative;
+    z-index: 2;
+    letter-spacing: -0.2px;
+}
+
+.step-content ul li {
+    color: var(--faq-text-secondary);
+    font-size: 14px;
+    line-height: 1.6;
+    position: relative;
+    z-index: 2;
+    margin-top: 2px;
+}
+
+/* Анимация при наведении на конкретный пункт */
+.step-content ul li {
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.step-content ul li:hover strong {
+    color: #000000;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Активный/выбранный пункт */
+.step-content ul li.active {
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.05) 0%, rgba(255, 255, 255, 0.8) 100%);
+    border-color: var(--faq-primary);
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.1), 0 8px 30px rgba(0, 0, 0, 0.08);
+}
+
+.step-content ul li.active::after {
+    background: #ffffff;
+    border-color: var(--faq-primary);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .step-content ul {
+        gap: 8px;
+    }
+    
+    .step-content ul li {
+        padding: 14px 16px 14px 40px;
+        grid-template-columns: 1fr;
+        gap: 6px;
+    }
+    
+    .step-content ul::before {
+        left: 12px;
+    }
+    
+    .step-content ul li::after {
+        left: 16px;
+        top: 16px;
+        width: 10px;
+        height: 10px;
+    }
+    
+    .step-content ul li strong {
+        font-size: 14px;
+    }
+    
+    .step-content ul li {
+        font-size: 13px;
+    }
+}
+
+/* Анимация появления элементов списка */
+@keyframes listItemAppear {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.step-content ul li {
+    animation: listItemAppear 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    opacity: 0;
+}
+
+.step-content ul li:nth-child(1) { animation-delay: 0.1s; }
+.step-content ul li:nth-child(2) { animation-delay: 0.2s; }
+.step-content ul li:nth-child(3) { animation-delay: 0.3s; }
+.step-content ul li:nth-child(4) { animation-delay: 0.4s; }
+.step-content ul li:nth-child(5) { animation-delay: 0.5s; }
+
+/* Альтернативный стиль для вложенных списков */
+.step-content ul ul {
+    margin: 12px 0 0 0;
+    padding: 0;
+    gap: 8px;
+}
+
+.step-content ul ul::before {
+    display: none;
+}
+
+.step-content ul ul li {
+    padding: 12px 16px 12px 32px;
+    background: rgba(0, 0, 0, 0.02);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    border-radius: 8px;
+}
+
+.step-content ul ul li::after {
+    left: 16px;
+    top: 16px;
+    width: 6px;
+    height: 6px;
+    background: var(--faq-text-muted);
+    border-width: 2px;
+}
+
+.step-content ul ul li:hover::after {
+    transform: none;
+    background: var(--faq-primary);
+}
+
+
+
 /* Навигация между вопросами */
 .answer-navigation {
     display: flex;
@@ -4159,7 +4380,7 @@ video::-webkit-media-controls-timeline {
 
 @media (max-width: 768px) {
     .faq-content-wrapper {
-        padding: 100px 15px 40px;
+        padding: 40px 15px 40px;
     }
     
     .answer-header-modern {
@@ -4972,7 +5193,6 @@ button[disabled] {
   box-shadow: 0 8px 32px 0 rgba(0,0,0,0.1);
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
   z-index: 2; 
 }
 
