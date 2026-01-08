@@ -29,12 +29,14 @@
                     </div>
                 </div>
                 <div class="header-bside">
-                    <a class="clear-but" onclick="window.location.href='/#contacts-cont'">
-                        <img src="{{ url_for('static', filename='img/Phone.svg') }}" class="clear-icon">
-                    </a>
                     <a class="clear-but" onclick="window.location.href='/FAQ'">
                         <img src="{{ url_for('static', filename='img/FAQ.svg') }}" class="clear-icon">
                     </a>
+                    {% if current_user.is_authenticated == false %}
+                        <a class="clear-but" onclick="window.location.href='/#contacts-cont'">
+                            <img src="{{ url_for('static', filename='img/Phone.svg') }}" class="clear-icon">
+                        </a>
+                    {% endif %}
                     {% if current_user and current_user.is_authenticated %}
                         <a class="clear-but" id="notifBtn">
                             <img src="{{ url_for('static', filename='img/Notifications.svg') }}" class="clear-icon">
@@ -395,52 +397,57 @@
 
     {% if add_direction_modal %}
     <div id="AddDirectionModal" class="modal">
-      <div class="modal-content">
+        <div class="modal-content">
           <div class="modal-header">
-              <a id="modal-title">{{ _('Добавление направл') }}</a>
+              <a id="modal-title">{{ _('Добавление направления') }}</a>
               <img class="close" src="/static/img/Close.svg" alt="">  
           </div>
           <div class="progress-modal-bar-container">
               <div class="progress-modal-bar" id="modal-progress-bar" style="width: 50%"></div>
           </div>
-          <p class="support-text"><strong>Выберите</strong> направление, перейдите по кнопке <strong>Далее →</strong>и заполните необходимые</p>
+   
+        <div class="answer-highlight-second">
+            <div class="highlight-icon">💡</div>
+            <p>Сначала <strong>выберите</strong> направление, затем нажмите <strong>"Далее"</strong> и укажите требуемые параметры.</p>
+        </div>
+
             <div id="step1" class="modal-step">
                 <div class="app-group">
                     <label>{{ _('Поиск направления') }}</label>
                     <div class="input-with-icon">
                         <img src="/static/img/Search_gray.svg" alt="" class="input-icon">
                         <input type="text" data-action="search-directions" 
-                              placeholder="{{ _('Код или наименование') }}" 
-                              class="app-input" required>
+                                placeholder="{{ _('Код или наименование') }}" 
+                                class="app-input" required>
                     </div>
                 </div>
 
                 <div class="modal-table-conteiner">
-                  <table class="directions-table" data-action="directions-table">
-                      <thead class="directions-table-titles">
-                          <tr>
-                              <th style="display: none;">id</th>
-                              <th>{{ _('Код') }}</th>
-                              <th>{{ _('Наименование') }}</th>
-                              <th style="text-align: center;">{{ _('Ед. изм.') }}</th>
-                              <th style="text-align: center;">{{ _('Местные ТЭР') }}</th>
-                          </tr>
-                      </thead>
-                      <tbody>
-                          {% for row in directions %}
+                    <table class="directions-table" data-action="directions-table">
+                        <thead class="directions-table-titles">
                             <tr>
-                              <td style="display: none;">{{ row.id }}</td>
-                              <td>{{ row.code }}</td>
-                              <td>{{ row.name }}</td>
-                              <td>{{ row.unit.name }}</td>
-                              <td style="text-align: center;">
-                                  <input type="checkbox" {% if row.is_local %} checked {% endif %} onclick="return false;">
-                              </td>
+                                <th style="display: none;">id</th>
+                                <th>{{ _('Код') }}</th>
+                                <th>{{ _('Наименование') }}</th>
+                                <th style="text-align: center;">{{ _('Ед. изм.') }}</th>
+                                <th style="text-align: center;">{{ _('Местные ТЭР') }}</th>
                             </tr>
-                          {% endfor %}    
-   
-                      </tbody>
-                  </table>
+                        </thead>
+                        <tbody>
+                            {% for row in directions %}
+                            <tr>
+                                <td style="display: none;">{{ row.id }}</td>
+                                <td>{{ row.code }}</td>
+                                <td>{{ row.name }}</td>
+                                <td>{{ row.unit.name }}</td>
+                                <td style="text-align: center;">
+                                    <input type="checkbox" {% if row.is_local %} checked {% endif %} onclick="return false;">
+                                </td>
+                            </tr>
+                            {% endfor %}    
+
+                        </tbody>
+                    </table>
                 </div>
                 
 
@@ -454,46 +461,46 @@
             </div>
             <form action="{{ url_for('views.create_econmeasure', id=plan.id) }}" method="POST">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-              <div id="step2" class="modal-step" style="display: none;">
-                  <div class="app-group">
-                      <label>{{ _('Условно-годовой экономический эффект, т у. т.') }}</label>
-                      <div class="input-with-icon">
-                          <img src="/static/img/Half_gray.svg" alt="" class="input-icon">
-                          <input type="text" id="" maxlength="" value="0.000"  name = "year_econ"
-                              placeholder="{{ _('0.000') }}" class="app-numeric-input" required>
-                      </div>
-                  </div>
-                  <div class="app-group">
-                      <label>{{ _('Ожидаемая экономия ТЭР от внедрения мероприятий в') }} 2025 г., т у. т.</label>
-                      <div class="input-with-icon">
-                          <img src="/static/img/Eco_gray.svg" alt="" class="input-icon">
-                          <input type="text" id="" maxlength="" value="0.000" name = "estim_econ"
-                              placeholder="{{ _('0.000') }}" class="app-numeric-input" required>
-                      </div>  
-                  </div>
-                  <div class="app-group" style = "display:none;">
-                      <label>id</label>
-                      <div class="input-with-icon">
-                          <img src="/static/img/Eco_gray.svg" alt="" class="input-icon">
-                          <input class="app-input" name = "id_direction" data-action="selected-direction" readonly>
-                      </div>  
-                  </div>
+                <div id="step2" class="modal-step" style="display: none;">
+                    <div class="app-group">
+                        <label>{{ _('Условно-годовой экономический эффект, т у. т.') }}</label>
+                        <div class="input-with-icon">
+                            <img src="/static/img/Half_gray.svg" alt="" class="input-icon">
+                            <input type="text" id="" maxlength="" value="0.000"  name = "year_econ"
+                                placeholder="{{ _('0.000') }}" class="app-numeric-input" required>
+                        </div>
+                    </div>
+                    <div class="app-group">
+                        <label>{{ _('Ожидаемая экономия ТЭР от внедрения мероприятий в') }} 2025 г., т у. т.</label>
+                        <div class="input-with-icon">
+                            <img src="/static/img/Eco_gray.svg" alt="" class="input-icon">
+                            <input type="text" id="" maxlength="" value="0.000" name = "estim_econ"
+                                placeholder="{{ _('0.000') }}" class="app-numeric-input" required>
+                        </div>  
+                    </div>
+                    <div class="app-group" style = "display:none;">
+                        <label>id</label>
+                        <div class="input-with-icon">
+                            <img src="/static/img/Eco_gray.svg" alt="" class="input-icon">
+                            <input class="app-input" name = "id_direction" data-action="selected-direction" readonly>
+                        </div>  
+                    </div>
 
-                  
+                    
 
-                  <div class="button-auth-area" id="step2-buttons" style="display: flex; justify-content: space-between;">
-                      <button type="button" class="auth-next-button" id="step2-back-btn">
-                          <img src="/static/img/Back.svg" alt="" class="btn-icon">
-                          <span class="btn-text">{{ _('Назад') }}</span>
-                      </button>
+                    <div class="button-auth-area" id="step2-buttons" style="display: flex; justify-content: space-between;">
+                        <button type="button" class="auth-next-button" id="step2-back-btn">
+                            <img src="/static/img/Back.svg" alt="" class="btn-icon">
+                            <span class="btn-text">{{ _('Назад') }}</span>
+                        </button>
 
-                      <button type="submit" class="submit-button">
-                          <img src="/static/img/Add_wh.svg" alt="" class="btn-icon">
-                          <span class="btn-text">{{ _('Добавить направление ') }}</span>
-                      </button>
+                        <button type="submit" class="submit-button">
+                            <img src="/static/img/Add_wh.svg" alt="" class="btn-icon">
+                            <span class="btn-text">{{ _('Добавить направление ') }}</span>
+                        </button>
 
-                  </div>
-              </div>
+                    </div>
+                </div>
             </form>
         </div>
     </div>
@@ -548,7 +555,11 @@
             <div class="progress-modal-bar-container">
                 <div class="progress-modal-bar" id="modal-progress-bar" style="width: 33%"></div>
             </div>
-            
+               
+            <div class="answer-highlight-second">
+                <div class="highlight-icon">💡</div>
+                <p>Сначала <strong>выберите</strong> мероприятие, затем нажмите <strong>"Далее"</strong> и укажите требуемые параметры.</p>
+            </div>
                 <div id="step1" class="modal-step">
                     <div class="app-group">
                         <label>{{ _('Поиск мероприятия') }}</label>
@@ -962,15 +973,19 @@
     <div id="AddIndicatorModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <a id="modal-title">{{ _('Выберите показатель') }}</a>
+                <a id="modal-title">{{ _('Добавление показателя') }}</a>
                 <img class="close" src="/static/img/Close.svg" alt="">  
             </div>
             <div class="progress-modal-bar-container">
                 <div class="progress-modal-bar" id="modal-progress-bar" style="width: 50%"></div>
+            </div>               
+            <div class="answer-highlight-second">
+                <div class="highlight-icon">💡</div>
+                <p><strong>Выберите</strong> показатель (индикатор), нажмите <strong>"Далее"</strong> и укажите значения в исходных <strong>единицах измерения</strong> — они будут автоматически преобразованы в <strong>тонны</strong> условного топлива (т.у.т.).</p>
             </div>
             <div id="step1" class="modal-step">
                 <div class="app-group">
-                    <label>{{ _('Поиск индикатора') }}</label>
+                    <label>{{ _('Поиск показателя') }}</label>
                     <div class="input-with-icon">
                         <img src="/static/img/Search_gray.svg" alt="" class="input-icon">
                         <input type="text" data-action="search-directions" 
@@ -1012,27 +1027,30 @@
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <div id="step2" class="modal-step" style="display: none;">
                     <div class="app-group">
-                        <label><span class = "year-place">{{ plan.year - 1}} {{ _('г.') }}</span> {{ _('в ед. изм.') }}</label>
+                        <label>{{ plan.year - 1}} {{ _('г.') }} {{ _('в ед. изм.') }}</label>
                         <div class="input-with-icon prediction-container">
                             <img src="/static/img/Half_gray.svg" alt="" class="input-icon">
                             <input type="text" maxlength="" value="0.000" name="QYearPrev"
                                 placeholder="0.000" class="app-numeric-input" required>
+                                <span class="prediction-value" data-multiplier="">0.000</span>
                         </div>
                     </div>
                     <div class="app-group">
-                        <label><span class = "year-place">{{ plan.year}} {{ _('г.') }}</span> {{ _('в ед. изм.') }}</label>
+                        <label>{{ plan.year}} {{ _('г.') }} {{ _('в ед. изм.') }}</label>
                         <div class="input-with-icon">
                             <img src="/static/img/Half_gray.svg" alt="" class="input-icon">
                             <input type="text" id="" maxlength="" value="0.000"  name = "QYearCurr"
                                 placeholder="0.000" class="app-numeric-input" required>
+                                <span class="prediction-value" data-multiplier="">0.000</span>
                         </div>
                     </div>
                     <div class="app-group">
-                        <label><span class = "year-place">{{ plan.year + 1}} {{ _('г.') }}</span> {{ _('в ед. изм.') }}</label>
+                        <label>{{ plan.year + 1}} {{ _('г.') }} {{ _('в ед. изм.') }}</label>
                         <div class="input-with-icon">
                             <img src="/static/img/Half_gray.svg" alt="" class="input-icon">
                             <input type="text" id="" maxlength="" value="0.000"  name = "QYearNext"
                                 placeholder="0.000" class="app-numeric-input" required>
+                                <span class="prediction-value" data-multiplier="">0.000</span>
                         </div>
                     </div>
                     <div class="app-group" style = "display:none;">
@@ -1064,12 +1082,16 @@
             <div class="modal-header">
                 <a id="modal-title">{{ _('Редактирование показателя') }}</a>
                 <img class="close" src="/static/img/Close.svg" alt="">  
+            </div>               
+            <div class="answer-highlight-second">
+                <div class="highlight-icon">💡</div>
+                <p>Укажите значения в исходных <strong>единицах измерения</strong> — они будут автоматически преобразованы в <strong>тонны</strong> условного топлива (т.у.т.).</p>
             </div>
             <form  id="editIndicatorForm" action="" method="POST">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <div id="step1" class="modal-step">
                     <div class="app-group" id = "QYearPrev-edit-nodisplay">
-                        <label><span>{{ plan.year - 1}} {{ _('г.') }}</span> {{ _('в ед. изм.') }}</label>
+                        <label>{{ plan.year - 1}} {{ _('г.') }} {{ _('в ед. изм.') }}</label>
                         <div class="input-with-icon">
                             <img src="/static/img/Half_gray.svg" alt="" class="input-icon">
                             <input type="text" id="QYearPrev-edit" maxlength="" value="0.000"  name = "QYearPrev"
@@ -1078,7 +1100,7 @@
                         </div>
                     </div>
                     <div class="app-group" id = "QYearCurr-edit-nodisplay">
-                        <label><span>{{ plan.year}} {{ _('г.') }}</span> {{ _('в ед. изм.') }}</label>
+                        <label>{{ plan.year}} {{ _('г.') }} {{ _('в ед. изм.') }}</label>
                         <div class="input-with-icon">
                             <img src="/static/img/Half_gray.svg" alt="" class="input-icon">
                             <input type="text" id="QYearCurr-edit" maxlength="" value="0.000"  name = "QYearCurr"
@@ -1087,7 +1109,7 @@
                         </div>
                     </div>
                     <div class="app-group">
-                        <label><span>{{ plan.year + 1}} {{ _('г.') }}</span> {{ _('в ед. изм.') }}</label>
+                        <label>{{ plan.year + 1}} {{ _('г.') }} {{ _('в ед. изм.') }}</label>
                         <div class="input-with-icon">
                             <img src="/static/img/Half_gray.svg" alt="" class="input-icon">
                             <input type="text" id="QYearNext-edit" maxlength="" value="0.000"  name = "QYearNext"

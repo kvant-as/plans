@@ -18,3 +18,5 @@ openpyxl
 cryptography
 flask_talisman
 email_validator
+flasgger
+PyJWT

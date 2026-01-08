@@ -1,15 +1,18 @@
-from flask import Flask, flash, render_template, session, request, g, redirect, url_for
+from flask import Flask, flash, jsonify, render_template, session, request, g, redirect, url_for
 from flask_babel import Babel
 from flask_sqlalchemy import SQLAlchemy
 from flask_socketio import SocketIO
 from flask_bcrypt import Bcrypt
-from flask_login import LoginManager, current_user
+from flask_login import LoginManager, current_user, login_required
 from flask_migrate import Migrate
 from flask_babel import Babel, format_date
 from .completion_db import create_database
 from flask_wtf.csrf import CSRFProtect
 from flask_talisman import Talisman
 from flask_admin import Admin
+
+from flasgger import Swagger
+from .api_docs import register_models_for_api, api_bp
 
 import os
 from dotenv import load_dotenv
@@ -68,14 +71,66 @@ def create_app():
         SEND_FILE_MAX_AGE_DEFAULT=0,  # Отключить кэширование в разработке
     )
 
+    # Swagger(app, template={
+    #     "swagger": "2.0",
+    #     "info": {
+    #         "title": "ErespondentS API",
+    #         "description": "API для управления экономическими показателями и планами в ErespondentS\n\n**⚠️ Доступ только для администраторов ⚠️**\n\nДля использования API необходимо:\n1. Авторизоваться через /auth/login\n2. Иметь права администратора (is_admin = true)",
+    #         "version": "1.0.0",
+    #         "contact": {
+    #             "name": "Администрация",
+    #             "email": "info@kvantas-as.by"
+    #         }
+    #     },
+    #     "securityDefinitions": {
+    #         "Bearer": {
+    #             "type": "apiKey",
+    #             "name": "Authorization",
+    #             "in": "header",
+    #             "description": "Введите: Bearer <session_token>"
+    #         }
+    #     },
+    #     "security": [{"Bearer": []}],
+    #     "schemes": ["http", "https"],
+    #     "consumes": ["application/json"],
+    #     "produces": ["application/json"]
+    # })
+    
+    # @app.route('/apidocs/')
+    # @app.route('/apidocs/index.html')
+    # @login_required
+    # def swagger_ui():
+    #     """Доступ к Swagger UI только для администраторов"""
+    #     if not getattr(current_user, 'is_admin', False):
+    #         flash('Доступ к API документации разрешен только администраторам', 'error')
+    #         return redirect(url_for('views.begin_page'))
+    #     return redirect('/apispec_1.json')
+    
+    # @api_bp.before_request
+    # def restrict_api_to_admins():
+    #     """Ограничиваем доступ ко всем API endpoints только для администраторов"""
+    #     public_endpoints = ['api.health_check']
+        
+    #     if request.endpoint in public_endpoints:
+    #         return
+        
+    #     if not current_user.is_authenticated:
+    #         return jsonify({'error': 'Требуется авторизация'}), 401
+        
+    #     if not getattr(current_user, 'is_admin', False):
+    #         return jsonify({'error': 'Доступ запрещен. Требуются права администратора'}), 403
+  
+        
     db.init_app(app)
     socketio.init_app(app)
     babel.init_app(app)
     bcrypt.init_app(app)
     migrate.init_app(app, db, render_as_batch=True)
     csrf.init_app(app)
-    
 
+    # csrf.exempt(api_bp)
+    # register_models_for_api(app, db)
+    
     Talisman(app, 
              force_https=False,  # True для продакшена
              content_security_policy=None)  # Временно отключить CSP
@@ -85,7 +140,8 @@ def create_app():
 
     app.register_blueprint(views, url_prefix='/')
     app.register_blueprint(auth, url_prefix='/')
-
+    # app.register_blueprint(api_bp)
+    
     with app.app_context():
         db.create_all()
         create_database(app, db)
@@ -160,4 +216,5 @@ def create_app():
             if not is_admin:
                 flash('Недостаточно прав для доступа к админ-панели', 'error')
                 return redirect(url_for('views.begin_page'))
+            
     return app

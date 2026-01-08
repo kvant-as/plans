@@ -6,8 +6,10 @@
 <div class="pers-page">
     <div class="personal-acc-conteiner">
         <a class="name">Проверка плана</a>
-        <p class="support-text">Если в плане существуют ошибки, укажите их, в противном случае просто одобрите план</p>
-
+        <div class="answer-highlight-second">
+            <div class="highlight-icon">💡</div>
+            <p>Если в плане <strong>существуют</strong> ошибки, <strong>укажите</strong> их, в противном случае просто <strong>одобрите</strong> план.</p>
+        </div>
         <div class = "menu-conteiner" style = "margin: 0; margin-bottom: 10px;">
             <form id = "to_deletePlanForm" action="{{ url_for('views.api_change_plan_status', id=plan.id) }}" method="POST">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
@@ -43,19 +45,64 @@
                 {% for ticket in plan.tickets %}
                     <div class="tickets-message {% if ticket.is_owner %}tickets-message-left{% else %}tickets-message-right{% endif %}">
                         <div class="tickets-message-content">
-                            <a class="text-ticket">{{ ticket.note }}</a>
-                            <a class="time-ticket">{{ ticket.begin_time.strftime('%d-%m-%Y %H:%M') if ticket.begin_time else '-- -- --' }}</a>
+                            <div class="message-header">
+                                <span class="message-sender">
+                                    {% if ticket.is_owner %}
+                                        {{ _('Система') }}
+                                    {% else %}
+                                        {{ _('Аудитор') }}
+                                    {% endif %}
+                                </span>
+                                <span class="message-time">{{ ticket.begin_time.strftime('%H:%M') if ticket.begin_time else '--:--' }}</span>
+                                
+                                                                                                
+                                <button class="btn-sender-info" onclick="toggleTicketInfo({{ ticket.id }})">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" 
+                                            fill="currentColor"/>
+                                    </svg>
+                                </button>
+                            </div>
+                            
+                            <div class="message-bubble">
+                                <p class="text-ticket">{{ ticket.note }}</p>
+                                
+                                <div class="bubble-status">
+                                    {% if ticket.luck %}
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                                            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" fill="#34B7F1"/>
+                                        </svg>
+                                    {% else %}
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                                            <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" fill="#FF5252"/>
+                                        </svg>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <div class="message-date">
+                                {{ ticket.begin_time.strftime('%d %b %Y') if ticket.begin_time else '' }}
+                            </div>
                         </div>
-                        <img src="/static/img/{{ 'Checkmark' if ticket.luck else 'Error' }}.svg" alt="" class="btn-icon">
                     </div>
                 {% endfor %}
             {% else %}
                 <div class="no_info-conteiner">
-                    <a>{{ _('Нет сообщений') }}</a>
+                    <div class="telegram-empty-state">
+                        <svg width="64" height="64" viewBox="0 0 24 24" fill="none">
+                            <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z" 
+                                fill="#E6E6E6"/>
+                        </svg>
+                        <a>{{ _('Нет сообщений') }}</a>
+                        <p class="empty-subtitle">{{ _('Начните обсуждение плана') }}</p>
+                    </div>
                 </div>        
             {% endif %}
+        </div>
 
-            {% if plan.is_approved or plan.is_error %}
+
+        {% if plan.is_approved or plan.is_error %}
+                <hr>
             {% else %}
                 <form id = "sent_mesPlanForm" class="main-form" action="{{ url_for('views.create_ticket', id=plan.id) }}" method="POST">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
@@ -66,6 +113,7 @@
                             rows="1"
                             maxlength = "500"
                             name="note"
+                            required
                         ></textarea>
                         <button id = "sent_mesPlanButton" type = "submit" class="sent-message-btn blue">
                             <img src="/static/img/Send.svg" alt="{{ _('Отправить') }}" class="btn-icon">
@@ -74,10 +122,8 @@
                     </div>       
                 </form>   
             {% endif %}
-        </div>
-
-        <hr>  
-
+       
+     
         <a class="sername">{{ _('Прочая информация') }}</a>
         <div class="no-input"> 
             <img src="/static/img/Calendar_gray.svg" alt="" >
@@ -88,4 +134,13 @@
         </div>
     </div>
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        window.ticketInfoInstance = new window.TicketInfo();
+    });
+    
+    function toggleTicketInfo(ticketId) {
+        window.ticketInfoInstance.show(ticketId, event.currentTarget);
+    }
+</script>
 {% endblock %}

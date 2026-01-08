@@ -25,7 +25,14 @@
                 </a>
             </div>
         </div>
-        <hr>
+        {% if current_user.is_auditor %}
+        {% else %}                      
+        <div class="answer-highlight-second" style = "margin-bottom: 0;">
+            <div class="highlight-icon">💡</div>
+            <p><strong>Отредактировать</strong> персональные данные и отчитывающийся субъект - можно только в случае <strong>отсутствия</strong> каких-либо планов</p>
+        </div>
+        {% endif %}
+        <hr> 
         <a class="sername">{{ _('Данные пользователя') }}</a>
         <form id="editprofileForm" method="POST" action="{{ url_for('auth.edit_param') }}">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
@@ -145,12 +152,9 @@
 
         <hr>
         <a class="sername">{{ _('Прочая информация') }}</a>
-
         <div class = "support-txt-cont">
-            <p class="row">Отредактировать персональные данные и отчитывающийся субъект - можно только в случае <strong>отсутствия</strong> каких-либо планов</p>
-            <br>
             <p class="row"><strong>Наименование *</strong> — обязательные поля для заполнения/выбора</p>
-            <div class="row">
+            <div class="row" style = "display: flex;">
                 <div class="input-mes-test" title="Не изм.">
                     <img src="/static/img/Edit_off.svg">
                 </div> 

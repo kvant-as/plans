@@ -3608,8 +3608,7 @@ class CertificateUploadHandler {
         const files = e.dataTransfer.files;
         if (files.length > 0) {
             this.processFile(files[0]);
-            
-            // Создаем DataTransfer object и устанавливаем файл в input
+
             const dataTransfer = new DataTransfer();
             dataTransfer.items.add(files[0]);
             this.fileInput.files = dataTransfer.files;
@@ -3626,20 +3625,18 @@ class CertificateUploadHandler {
     processFile(file) {
         this.clearError();
 
-        // Проверка формата файла
+
         if (!this.isValidFile(file)) {
             this.showError('Неверный формат файла. Разрешены только файлы .cer');
             this.fileInput.value = '';
             return;
         }
 
-        // Показываем имя файла и активируем кнопку
         this.showFileName(file.name);
         this.updateSubmitButtonState(true);
     }
 
     isValidFile(file) {
-        // Проверяем, что файл имеет расширение .cer
         const fileName = file.name.toLowerCase();
         return fileName.endsWith('.cer');
     }
@@ -3680,6 +3677,268 @@ class CertificateUploadHandler {
     }
 }
 
+class TicketInfo {
+    constructor(options = {}) {
+        this.options = {
+            animationDuration: 300,
+            overlayClass: 'ticket-info-overlay',
+            panelClass: 'ticket-info-panel',
+            closeOnEscape: true,
+            closeOnOverlayClick: true,
+            ...options
+        };
+        
+        this.currentPanel = null;
+        this.init();
+    }
+    
+    init() {
+        this.injectStyles();
+        if (this.options.closeOnEscape) {
+            this.escapeHandler = this.handleEscapeKey.bind(this);
+        }
+    }
+    
+    async show(ticketId, element = null) {
+        if (this.currentPanel) {
+            this.close();
+            return;
+        }
+        
+        try {
+            const loadingOverlay = this.createLoadingOverlay();
+            document.body.appendChild(loadingOverlay);
+            
+            const response = await fetch(`/api/ticket/${ticketId}/details`);
+            if (!response.ok) throw new Error('Ошибка загрузки данных');
+            const data = await response.json();
+            
+            loadingOverlay.remove();
+            const context = element ? this.extractContextFromElement(element) : {};
+            this.currentPanel = this.createPanel({...data, ...context});
+            this.addEventListeners();
+            
+        } catch (error) {
+            console.error('Error loading ticket details:', error);
+            this.showError('Ошибка загрузки данных о сообщении');
+        }
+    }
+    
+    createPanel(data) {
+        const overlay = document.createElement('div');
+        overlay.className = this.options.overlayClass;
+        overlay.style.animation = 'fadeIn 0.3s ease';
+        
+        const panel = document.createElement('div');
+        panel.className = this.options.panelClass;
+        panel.innerHTML = this.generatePanelHTML(data);
+        
+        overlay.appendChild(panel);
+        document.body.appendChild(overlay);
+        
+        return overlay;
+    }
+    
+    generatePanelHTML(data) {
+        const time = data.time || this.extractTime(data);
+        const text = data.text || data.note || '';
+        const date = data.date || '';
+        
+        return `
+            <div class="ticket-info-content-wrapper">
+                <div class="ticket-info-header">
+                    <h3 class="ticket-info-title">Информация о сообщении</h3>
+                    <button class="ticket-info-close" onclick="window.ticketInfoInstance.close()">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" fill="currentColor"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="ticket-info-content">
+                    <div class="ticket-info-item">
+                        <span class="ticket-info-label">Роль</span>
+                        <span class="ticket-info-value">${data.is_owner ? 'Система' : 'Аудитор'}</span>
+                    </div>
+                    <div class="ticket-info-item">
+                        <span class="ticket-info-label">ФИО</span>
+                        <span class="ticket-info-value">${data.user_fio || 'Не указано'}</span>
+                    </div>
+                    <div class="ticket-info-item">
+                        <span class="ticket-info-label">Email</span>
+                        <span class="ticket-info-value">
+                            <a href="mailto:${data.user_email}" class="ticket-info-link">
+                                ${data.user_email || 'Не указано'}
+                            </a>
+                        </span>
+                    </div>
+                    <div class="ticket-info-item">
+                        <span class="ticket-info-label">Телефон</span>
+                        <span class="ticket-info-value">
+                            <a href="tel:${data.user_phone}" class="ticket-info-link">
+                                ${data.user_phone || 'Не указано'}
+                            </a>
+                        </span>
+                    </div>
+                    <div class="ticket-info-item">
+                        <span class="ticket-info-label">Статус сообщения</span>
+                        <span class="ticket-info-value ticket-info-status ${data.luck ? 'success' : 'error'}">
+                            ${data.luck ? '✓ Успешно' : '✗ Ошибка'}
+                        </span>
+                    </div>
+                    <div class="ticket-info-item">
+                        <span class="ticket-info-label">Время отправки</span>
+                        <span class="ticket-info-value">${time}</span>
+                    </div>
+                    <div class="ticket-info-item">
+                        <span class="ticket-info-label">Дата отправки</span>
+                        <span class="ticket-info-value">${date || 'Не указана'}</span>
+                    </div>
+                    <div class="ticket-info-item full-width">
+                        <span class="ticket-info-label">Текст сообщения</span>
+                        <div class="ticket-message-container">
+                            <span class="ticket-message-text">${text}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+    
+    extractContextFromElement(element) {
+        const context = {};
+        if (!element) return context;
+        
+        const messageElement = element.closest('.tickets-message');
+        if (messageElement) {
+            const timeEl = messageElement.querySelector('.message-time');
+            const textEl = messageElement.querySelector('.text-ticket');
+            const dateEl = messageElement.querySelector('.message-date');
+            
+            context.time = timeEl ? timeEl.textContent : '';
+            context.text = textEl ? textEl.textContent : '';
+            context.date = dateEl ? dateEl.textContent : '';
+        }
+        
+        return context;
+    }
+    
+    extractTime(data) {
+        return data.begin_time ? new Date(data.begin_time).toLocaleTimeString('ru-RU', {hour: '2-digit', minute:'2-digit'}) : '--:--';
+    }
+    
+    createLoadingOverlay() {
+        const overlay = document.createElement('div');
+        overlay.className = this.options.overlayClass + ' loading';
+        overlay.innerHTML = `
+            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; font-size: 16px;">
+                Загрузка...
+            </div>
+        `;
+        return overlay;
+    }
+    
+    addEventListeners() {
+        if (this.options.closeOnOverlayClick && this.currentPanel) {
+            this.currentPanel.addEventListener('click', (e) => {
+                if (e.target === this.currentPanel) this.close();
+            });
+        }
+        
+        if (this.options.closeOnEscape) {
+            document.addEventListener('keydown', this.escapeHandler);
+        }
+    }
+    
+    handleEscapeKey(event) {
+        if (event.key === 'Escape') this.close();
+    }
+    
+    showError(message) {
+        alert(message);
+    }
+    
+    close() {
+        if (!this.currentPanel) return;
+        
+        this.currentPanel.style.animation = 'fadeOut 0.3s ease';
+        const panelContent = this.currentPanel.querySelector(`.${this.options.panelClass}`);
+        if (panelContent) panelContent.style.animation = 'scaleOut 0.3s ease';
+        
+        setTimeout(() => {
+            this.currentPanel.remove();
+            this.currentPanel = null;
+            document.removeEventListener('keydown', this.escapeHandler);
+        }, this.options.animationDuration);
+    }
+    
+    injectStyles() {
+        const style = document.createElement('style');
+        style.textContent = this.getStyles();
+        document.head.appendChild(style);
+    }
+    
+    getStyles() {
+        return `
+            .ticket-info-item.full-width {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+            
+             .ticket-message-container {
+                background: #F5F5F5;
+                padding: 12px;
+                border-radius: 8px;
+                width: 100%;
+                box-sizing: border-box;
+            }
+            
+            .ticket-message-text {
+                text-align: left;
+                display: block;
+                color: #333;
+                font-size: 14px;
+                line-height: 1.5;
+                word-break: break-word;
+            }
+            
+            @keyframes fadeIn {
+                from { opacity: 0; }
+                to { opacity: 1; }
+            }
+            
+            @keyframes fadeOut {
+                from { opacity: 1; }
+                to { opacity: 0; }
+            }
+            
+            @keyframes scaleIn {
+                from {
+                    opacity: 0;
+                    transform: scale(0.95);
+                }
+                to {
+                    opacity: 1;
+                    transform: scale(1);
+                }
+            }
+            
+            @keyframes scaleOut {
+                from {
+                    opacity: 1;
+                    transform: scale(1);
+                }
+                to {
+                    opacity: 0;
+                    transform: scale(0.95);
+                }
+            }
+        `;
+    }
+}
+
+window.TicketInfo = TicketInfo;
+
 function initCertificateUpload() {
     document.addEventListener('DOMContentLoaded', function() {
         const sentModal = document.getElementById('sentmodalecp');
@@ -3718,6 +3977,7 @@ function initCertificateUpload() {
         }
     });
 }
+
 function initSections() {
     const sections = document.querySelectorAll('.user-info-section:not([data-initialized])');
     
@@ -3742,7 +4002,6 @@ function initSections() {
         section.setAttribute('data-initialized', 'true');
     });
 }
-
 
 document.addEventListener('DOMContentLoaded', initSections);
 window.reinitSections = initSections;
@@ -3987,7 +4246,7 @@ document.addEventListener('DOMContentLoaded', () => {
             yesId: 'confirmYes',
             noId: 'confirmNo',
             textId: 'modal-text',
-            modalText: 'Вы действительно хотите выйти из системы РеспондентаS?',
+            modalText: 'Вы действительно хотите выйти из системы ErespondentS?',
             textSecondId: 'modal-text-second',
             modalTextSecond: 'Все несохраненные изменения будут потеряны. Убедитесь, что вы сохранили свою работу.'
         });
@@ -4078,8 +4337,6 @@ document.addEventListener('DOMContentLoaded', () => {
             sentmodalecp.querySelector('.close')
         );
     }
-
-
 
 
     //cancel sent plan
@@ -4238,6 +4495,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     new DropNavigation();
+
+    if (document.querySelectorAll('.tickets-conteiner')) {
+        window.TicketInfo = TicketInfo;
+    }
+    
 });
  
 

@@ -4,7 +4,10 @@
 <div class="pers-page">
     <div class="personal-acc-conteiner">
         <a class="name">{{ _('Экспорт данных') }}</a>
-        <p class="support-text">Выберите формат файла и план/ы для экспорта</p>
+        <div class="answer-highlight-second">
+            <div class="highlight-icon">💡</div>
+            <p>Выберите <strong>формат</strong> файла и <strong>план/ы</strong> для экспорта. <br><strong>Часть 2</strong> и <strong>Часть 3</strong> могут <strong>отсутствовать</strong> в файле, все зависит от наличия заполненных мероприятий.</p>
+        </div>
 
         <div class="choose-conteiner-area">
             <div class="choose-conteiner" data-format="xlsx">
@@ -213,12 +216,6 @@
                 </button>
             </div>
         </form>
-
-<hr>
-        <a class="sername">{{ _('Дополнительная информация') }}</a>
-        <div class = "support-txt-cont">
-            <p class="row"><strong>Часть 2</strong> и <strong>Часть 3</strong> могут <strong>отсутствовать</strong> в файле, все зависит от наличия заполненных мероприятий</p>  
-        </div>
     </div>
 </div>
 {% endblock %}

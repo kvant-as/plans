@@ -1223,7 +1223,7 @@ def delete_indicator(id):
 def update_ChangeTimePlan(id):
     def owner_ticket(plan):
         new_ticket = Ticket(
-            note='Внесение изменений.',
+            note='Внесение изменений пользователем.',
             luck = True,
             is_owner = True,
             plan_id=plan.id,
@@ -1401,6 +1401,14 @@ def handle_error_status(plan):
     plan.is_error = True
     plan.is_draft = plan.is_control = plan.is_sent = plan.is_approved = False
 
+    new_ticket = Ticket(
+        note='В плане нашли ошибки, статус изменен',
+        luck=True,
+        is_owner = True,
+        plan_id=plan.id,
+    )
+    db.session.add(new_ticket)
+
     notification = Notification(
         user_id=plan.user_id,
         message=f"В плане на {plan.year} год нашли ошибки"
@@ -1417,6 +1425,7 @@ def handle_approved_status(plan):
     new_ticket = Ticket(
         note='План был одобрен и передан в следующую стадию проверки',
         luck=True,
+        is_owner = True,
         plan_id=plan.id,
     )
     db.session.add(new_ticket)
@@ -1509,8 +1518,18 @@ def api_change_plan_status(id):
         for other_status, attr_name in status_mapping.items():
             if other_status != status and attr_name != status_mapping[status]:
                 setattr(plan, attr_name, False)
+                
         
+        new_ticket = Ticket(
+            note='План возвращен в статус не просмотренный.',
+            luck=True,
+            is_owner = True,
+            plan_id=plan.id,
+        )
+        db.session.add(new_ticket)        
         db.session.commit()
+        
+        
         message = "План возвращен в изначальное состояние"
         flash(message, 'success')
         return redirect(url_for('views.plan_audit', id=id))
@@ -1532,18 +1551,67 @@ def create_ticket(id):
     plan = Plan.query.filter_by(
         id=id
     ).first()
+    
+    if not plan:
+        flash('План не найден', 'error')
+        return redirect(request.referrer or url_for('views.plan_review'))
+    
     plan.afch = True
-
+    
     note = request.form.get('note')
+    
     new_ticket = Ticket(
         note=note,
-        luck = False,
+        luck=False,
         plan_id=id,
+        user_id=current_user.id,
+        is_owner=current_user.id == plan.user_id
     )
 
     db.session.add(new_ticket)
+    
+    plan.audit_time = current_utc_time()
+    
     db.session.commit()
+    
+    flash('Сообщение отправлено', 'success')
     return redirect(request.referrer or url_for('views.plan_review'))
+
+@views.route('/api/ticket/<int:ticket_id>/details')
+@login_required
+def get_ticket_details(ticket_id):
+    ticket = Ticket.query.get_or_404(ticket_id)
+    
+    plan = ticket.plan
+    if not plan:
+        return jsonify({'error': 'План не найден'}), 404
+    
+    user_data = {}
+    if ticket.user:
+        user = ticket.user
+        fio_parts = [
+            part.strip() 
+            for part in [user.last_name, user.first_name, user.patronymic_name] 
+            if part and part.strip()
+        ]
+        
+        user_fio = ' '.join(fio_parts) if fio_parts else 'Не указано'
+        
+        user_data = {
+            'user_fio': user_fio,
+            'user_email': user.email.strip() if user.email and user.email.strip() else 'Не указано',
+            'user_phone': user.phone.strip() if user.phone and user.phone.strip() else 'Не указано'
+        }
+    
+    return jsonify({
+        'id': ticket.id,
+        'is_owner': ticket.is_owner,
+        'luck': ticket.luck,
+        'note': ticket.note or '',
+        'time': ticket.begin_time.strftime('%H:%M') if ticket.begin_time else '--:--',
+        'date': ticket.begin_time.strftime('%d %b %Y') if ticket.begin_time else '',
+        **user_data
+    })
 
 @views.route('/FAQ', methods=['GET'])
 def FAQ_page():    

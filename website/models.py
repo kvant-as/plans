@@ -49,6 +49,7 @@ class User(db.Model, UserMixin):
                             backref='users')
     
     plans = db.relationship('Plan', backref='user', lazy=True, cascade="all, delete-orphan")
+    tickets = db.relationship('Ticket', back_populates='user', lazy=True)
     notifications = db.relationship('Notification', backref='user', lazy=True, cascade="all, delete-orphan")
     
     def __repr__(self):
@@ -156,8 +157,12 @@ class Ticket(db.Model):
     is_owner = db.Column(db.Boolean, default=False)
     note = db.Column(db.String(500), nullable=False)
     plan_id = db.Column(db.Integer, db.ForeignKey('plans.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))  # Связь с пользователем
+    
     plan = db.relationship("Plan", back_populates="tickets")
-
+    user = db.relationship("User", back_populates="tickets")
+    
+    
 class Unit(db.Model):
     __tablename__ = 'units'
     id = db.Column(db.Integer, primary_key=True)
