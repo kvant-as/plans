@@ -1,30 +1,28 @@
-from flask import Flask, flash, jsonify, render_template, session, request, g, redirect, url_for
+from datetime import datetime
+from logging.handlers import RotatingFileHandler
+import os
+import sys
+from dotenv import load_dotenv
+
+import logging
+
+from flask import Flask, flash, render_template, session, request, g, redirect, url_for
 from flask_babel import Babel
 from flask_sqlalchemy import SQLAlchemy
 from flask_socketio import SocketIO
 from flask_bcrypt import Bcrypt
-from flask_login import LoginManager, current_user, login_required
+from flask_login import LoginManager, current_user
 from flask_migrate import Migrate
-from flask_babel import Babel, format_date
-from .completion_db import create_database
+from flask_babel import format_date
 from flask_wtf.csrf import CSRFProtect
 from flask_talisman import Talisman
-from flask_admin import Admin
 
-from flasgger import Swagger
-from .api_docs import register_models_for_api, api_bp
+from .completion_db import create_database
 
-import os
-from dotenv import load_dotenv
+# from flasgger import Swagger
+# from .api_docs import register_models_for_api, api_bp
 
 load_dotenv()
-
-db = SQLAlchemy()
-socketio = SocketIO()
-bcrypt = Bcrypt()
-login_manager = LoginManager()
-migrate = Migrate()
-csrf = CSRFProtect()
 
 LANGUAGES = {
     'en': 'English',
@@ -48,10 +46,65 @@ def get_timezone():
         return user.timezone
     return None
 
+"""Logging setup"""
+def setup_logging(app):
+    log_dir = "logs"
+    if not os.path.exists(log_dir):
+        os.makedirs(log_dir)
+
+    log_file = os.path.join(log_dir, "py-app.log")
+    log_level = os.getenv('LOG_LEVEL', 'INFO').upper()
+    
+    formatter = logging.Formatter(
+        '%(asctime)s | %(levelname)-8s | %(name)s | %(filename)s:%(lineno)d | %(message)s',
+        datefmt='%Y-%m-%d %H:%M:%S'
+    )
+    
+    file_handler = RotatingFileHandler(
+        log_file,
+        maxBytes=10*1024*1024,  # 10 mb
+        backupCount=5,
+        encoding='utf-8'
+    )
+    
+    file_handler.setLevel(getattr(logging, log_level))
+    file_handler.setFormatter(formatter)
+    file_handler.set_name('file_handler')
+    
+    console_handler = logging.StreamHandler(sys.stdout)
+    console_handler.setLevel(getattr(logging, log_level))
+    console_handler.setFormatter(formatter)
+    console_handler.set_name('console_handler')
+    
+    root_logger = logging.getLogger()
+    root_logger.setLevel(getattr(logging, log_level))
+    
+    root_logger.handlers.clear()
+    
+    root_logger.addHandler(file_handler)
+    root_logger.addHandler(console_handler)
+    
+    app.logger.handlers.clear()
+    app.logger.propagate = True
+    
+    app.logger.info("=" * 60)
+    app.logger.info(f"Launch time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    app.logger.info(f"Logging level: {log_level}")
+    app.logger.info(f"Logs are recorded in: {log_file}")
+    app.logger.info("=" * 60)
+    
+
 babel = Babel(
     locale_selector=get_locale,
     timezone_selector=get_timezone
 )
+
+db = SQLAlchemy()
+socketio = SocketIO()
+bcrypt = Bcrypt()
+login_manager = LoginManager()
+migrate = Migrate()
+csrf = CSRFProtect()
 
 def create_app():
     app = Flask(__name__, static_url_path='/static')
@@ -66,10 +119,26 @@ def create_app():
         SESSION_PERMANENT=True,
         SESSION_TYPE='sqlalchemy',
         FLASK_ADMIN_SWATCH='cosmo',
-        BABEL_DEFAULT_LOCALE = 'ru',
-
-        SEND_FILE_MAX_AGE_DEFAULT=0,  # Отключить кэширование в разработке
+        BABEL_DEFAULT_LOCALE='ru',
+        SEND_FILE_MAX_AGE_DEFAULT=0,
     )
+
+    db.init_app(app)
+    socketio.init_app(app)
+    babel.init_app(app)
+    bcrypt.init_app(app)
+    migrate.init_app(app, db, render_as_batch=True)
+    csrf.init_app(app)
+    
+    setup_logging(app)
+    
+    Talisman(app, 
+            force_https=False,
+            content_security_policy=None)
+
+    login_manager.init_app(app)
+    login_manager.login_message = "Пожалуйста, авторизуйтесь для доступа к этой странице"
+    login_manager.login_view = "auth.login"
 
     # Swagger(app, template={
     #     "swagger": "2.0",
@@ -119,66 +188,29 @@ def create_app():
         
     #     if not getattr(current_user, 'is_admin', False):
     #         return jsonify({'error': 'Доступ запрещен. Требуются права администратора'}), 403
-  
-        
-    db.init_app(app)
-    socketio.init_app(app)
-    babel.init_app(app)
-    bcrypt.init_app(app)
-    migrate.init_app(app, db, render_as_batch=True)
-    csrf.init_app(app)
-
+    
     # csrf.exempt(api_bp)
     # register_models_for_api(app, db)
-    
-    Talisman(app, 
-             force_https=False,  # True для продакшена
-             content_security_policy=None)  # Временно отключить CSP
-    
-    from .views import views
-    from .auth import auth
 
+    from .routes.views import views
+    from .routes.auth import auth
     app.register_blueprint(views, url_prefix='/')
     app.register_blueprint(auth, url_prefix='/')
     # app.register_blueprint(api_bp)
     
     with app.app_context():
+        from .routes.admin import AdminSetup
+        admin_setup = AdminSetup(app, db)
+        admin_setup.setup()
+        
+    with app.app_context():
         db.create_all()
         create_database(app, db)
-
-    from .admin_views import (
-        MyMainView, UserView, OrganizationView, PlanView, TicketView, 
-        UnitView, DirectionView, EconMeasureView, EconExecView, 
-        IndicatorView, IndicatorUsageView, NotificationView
-    )
-    from .models import (
-        User, Organization, Plan, Ticket, Unit, Direction, 
-        EconMeasure, EconExec, Indicator, IndicatorUsage, Notification
-    )
-
-    admin = Admin(app, 'Админ-панель', index_view=MyMainView(), template_mode='bootstrap4')
-    
-    admin.add_view(UserView(User, db.session, name='Пользователи', category='Основные'))
-    admin.add_view(OrganizationView(Organization, db.session, name='Организации', category='Основные'))
-    admin.add_view(PlanView(Plan, db.session, name='Планы', category='Основные'))
-    admin.add_view(TicketView(Ticket, db.session, name='Тикеты', category='Вспомогательные'))
-    admin.add_view(UnitView(Unit, db.session, name='Единицы измерения', category='Справочники'))
-    admin.add_view(DirectionView(Direction, db.session, name='Направления', category='Справочники'))
-    admin.add_view(EconMeasureView(EconMeasure, db.session, name='Экономические меры', category='Данные'))
-    admin.add_view(EconExecView(EconExec, db.session, name='Исполнения мер', category='Данные'))
-    admin.add_view(IndicatorView(Indicator, db.session, name='Показатели', category='Справочники'))
-    admin.add_view(IndicatorUsageView(IndicatorUsage, db.session, name='Использование показателей', category='Данные'))
-    admin.add_view(NotificationView(Notification, db.session, name='Уведомления', category='Вспомогательные'))
-    
-    login_manager.init_app(app)
-    login_manager.login_message = "Пожалуйста, авторизуйтесь для доступа к этой странице"
-    login_manager.login_view = "auth.login"
     
     app.jinja_env.globals['format_date'] = format_date
     
     @app.context_processor
     def inject_get_locale():
-        from . import get_locale
         return dict(get_locale=get_locale)
     
     @app.route('/static/<path:filename>')
@@ -196,6 +228,7 @@ def create_app():
     
     @login_manager.user_loader
     def load_user(user_id):
+        from .models import User
         return User.query.get(int(user_id))
     
     @app.errorhandler(404)
@@ -216,5 +249,4 @@ def create_app():
             if not is_admin:
                 flash('Недостаточно прав для доступа к админ-панели', 'error')
                 return redirect(url_for('views.begin_page'))
-            
     return app

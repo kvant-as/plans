@@ -1,23 +1,28 @@
-from typing import Self
 from flask_admin import AdminIndexView, expose
+from flask_admin.contrib.sqla import ModelView
+
+from flask import flash, redirect, url_for, current_app
 from flask_login import current_user
+
 from website.models import (
     User, Organization, current_utc_time, Plan, Ticket, Unit, 
     Direction, EconMeasure, EconExec, Indicator, IndicatorUsage, Notification
 )
+
 from sqlalchemy.exc import SQLAlchemyError
-from flask_admin.contrib.sqla import ModelView
-from flask import flash, redirect, url_for, current_app, request
+
 from functools import wraps
 from datetime import datetime, timedelta
-from website import db
+
 from wtforms.validators import DataRequired, Email, Length, Optional, NumberRange
-from wtforms import PasswordField, SelectField, FloatField, IntegerField
+from wtforms import PasswordField
+
 from werkzeug.security import generate_password_hash
-import decimal
+
+from website import db
+from flask_admin import Admin
 
 def admin_required(f):
-    """Декоратор для проверки прав администратора"""
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if not current_user.is_authenticated:
@@ -35,11 +40,48 @@ def admin_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
+
+class AdminSetup:
+    
+    def __init__(self, app, db):
+        self.app = app
+        self.db = db
+        self.admin = None
+        
+    def setup(self):  
+         
+        self.admin = Admin(
+            self.app, 
+            name='Админ-панель', 
+            index_view=MyMainView(), 
+            template_mode='bootstrap4'
+        )
+        
+        views_config = {
+            'user': (UserView, User, 'Пользователи', 'Основные'),
+            'organization': (OrganizationView, Organization, 'Организации', 'Основные'),
+            'plan': (PlanView, Plan, 'Планы', 'Основные'),
+            'ticket': (TicketView, Ticket, 'Тикеты', 'Вспомогательные'),
+            'unit': (UnitView, Unit, 'Единицы измерения', 'Справочники'),
+            'direction': (DirectionView, Direction, 'Направления', 'Справочники'),
+            'econ_measure': (EconMeasureView, EconMeasure, 'Экономические меры', 'Данные'),
+            'econ_exec': (EconExecView, EconExec, 'Исполнения мер', 'Данные'),
+            'indicator': (IndicatorView, Indicator, 'Показатели', 'Справочники'),
+            'indicator_usage': (IndicatorUsageView, IndicatorUsage, 'Использование показателей', 'Данные'),
+            'notification': (NotificationView, Notification, 'Уведомления', 'Вспомогательные'),
+        }
+        
+        for view_class, model, name, category in views_config.values():
+            self.admin.add_view(view_class(model, self.db.session, name=name, category=category))
+        return self.admin
+    
+    def get_admin(self):
+        return self.admin
+
 class MyMainView(AdminIndexView):
     @expose('/')
     @admin_required
     def index(self):
-        """Главная страница админ-панели со статистикой"""
         try:
             user_data = User.query.count()
             organization_data = Organization.query.count()
@@ -122,7 +164,6 @@ class MyMainView(AdminIndexView):
                         )
         
     def is_accessible(self):
-        """Проверка доступности всей админ-панели"""
         if not current_user.is_authenticated:
             return False
         
@@ -131,7 +172,6 @@ class MyMainView(AdminIndexView):
         return False
 
     def inaccessible_callback(self, name, **kwargs):
-        """Обработка случая, когда доступ запрещен"""
         if not current_user.is_authenticated:
             flash('Необходимо авторизоваться для доступа к админ-панели', 'error')
             return redirect(url_for('auth.login'))
@@ -140,10 +180,7 @@ class MyMainView(AdminIndexView):
         return redirect(url_for('views.begin_page'))
 
 class SecureModelView(ModelView):
-    """Базовый класс для всех защищенных админ-вьюх"""
-    
     def is_accessible(self):
-        """Проверка доступности"""
         if not current_user.is_authenticated:
             return False
         
@@ -152,7 +189,6 @@ class SecureModelView(ModelView):
         return False
 
     def inaccessible_callback(self, name, **kwargs):
-        """Обработка запрета доступа"""
         if not current_user.is_authenticated:
             flash('Необходимо авторизоваться для доступа к админ-панели', 'error')
             return redirect(url_for('auth.login'))
@@ -172,7 +208,6 @@ class SecureModelView(ModelView):
     details_modal = False
     
     def handle_view_exception(self, exc):
-        """Обработка исключений"""
         if isinstance(exc, SQLAlchemyError):
             current_app.logger.error(f"Database error in admin: {str(exc)}")
             flash(f'Ошибка базы данных: {str(exc)}', 'error')
@@ -180,8 +215,6 @@ class SecureModelView(ModelView):
         return super().handle_view_exception(exc)
 
 class UserView(SecureModelView):
-    """Админ-панель для управления пользователями"""
-    
     column_list = ['id', 'email', 'last_name', 'first_name', 'patronymic_name', 
                    'post', 'phone', 'organization', 'is_admin', 'is_auditor', 
                    'last_active', 'begin_time']
@@ -238,14 +271,11 @@ class UserView(SecureModelView):
         }
     }
     
-    # Делаем поле пароля необязательным при редактировании
     form_widget_args = {
         'password': {
             'placeholder': 'Оставьте пустым, чтобы не менять пароль'
         }
     }
-    
-    # Добавляем кастомный валидатор для пароля
     form_extra_fields = {
         'confirm_password': PasswordField(
             'Подтверждение пароля',
@@ -253,7 +283,7 @@ class UserView(SecureModelView):
             description='Повторите пароль для подтверждения'
         )
     }
-    
+
     column_exclude_list = ['password', 'reset_password_token', 'reset_password_expires']
     column_searchable_list = ['email', 'last_name', 'first_name', 'patronymic_name', 'phone']
     column_filters = ['id', 'email', 'is_admin', 'is_auditor', 'organization_id']
@@ -267,12 +297,8 @@ class UserView(SecureModelView):
     }
     
     def on_model_change(self, form, model, is_created):
-        """Обработка изменений модели"""
-        # Проверяем, был ли введен новый пароль
         password = form.password.data
         confirm_password = form.confirm_password.data if hasattr(form, 'confirm_password') else None
-        
-        # Если пароль введен при создании
         if is_created:
             if not password:
                 flash('При создании пользователя необходимо указать пароль!', 'error')
@@ -281,63 +307,39 @@ class UserView(SecureModelView):
                 flash('Пароли не совпадают!', 'error')
                 raise ValueError('Пароли не совпадают')
             model.password = generate_password_hash(password)
-        
-        # Если пароль введен при редактировании
         elif password:
-            # Проверяем подтверждение пароля
             if confirm_password and password != confirm_password:
                 flash('Пароли не совпадают!', 'error')
                 raise ValueError('Пароли не совпадают')
             model.password = generate_password_hash(password)
-        
-        # Если пароль не меняли (пустое поле), оставляем старый
-        # Не обновляем пароль, если поле пустое
         
         model.last_active = datetime.utcnow()
         if model.is_admin or model.is_auditor:
             model.organization_id = None
     
     def on_form_prefill(self, form, id):
-        """Предзаполнение формы при редактировании"""
-        # Получаем пользователя
         user = User.query.get(id)
-        
-        # Устанавливаем пустое значение для поля пароля
-        # Это безопасно, так как в on_model_change мы проверяем, было ли поле заполнено
         form.password.data = ''
-        
-        # Если у формы есть поле подтверждения пароля, тоже очищаем его
+    
         if hasattr(form, 'confirm_password'):
             form.confirm_password.data = ''
-        
-        # Сохраняем старый пароль в форме как скрытое значение
-        # (если нужно для дополнительной логики)
         form._old_password = user.password if user else ''
-    
-    # Альтернативный подход: скрыть поле пароля при редактировании
-    def get_edit_form(self):
-        """Получить форму для редактирования с дополнительными настройками"""
-        form = super().get_edit_form()
         
-        # Делаем поле пароля необязательным при редактировании
+    def get_edit_form(self):
+        form = super().get_edit_form()
         form.password.validators = [Length(min=6)]
         form.password.description = 'Введите новый пароль (оставьте пустым, чтобы не менять)'
         
         return form
     
     def get_create_form(self):
-        """Получить форму для создания с дополнительными настройками"""
         form = super().get_create_form()
-        
-        # Делаем поле пароля обязательным при создании
         form.password.validators = [DataRequired(), Length(min=6)]
         form.password.description = 'Введите пароль для нового пользователя'
         
         return form
     
 class OrganizationView(SecureModelView):
-    """Админ-панель для управления организациями"""
-    
     column_list = ['id', 'name', 'okpo', 'ynp', 'ministry_id', 'is_active', 'users']
     column_default_sort = ('id', True)
     column_sortable_list = ('id', 'name', 'okpo', 'is_active')
@@ -385,8 +387,6 @@ class OrganizationView(SecureModelView):
     }
 
 class PlanView(SecureModelView):
-    """Админ-панель для управления планами"""
-    
     column_list = ['id', 
                    'is_draft', 'is_control', 'is_sent', 'is_error', 'is_approved',
                    'begin_time', 'change_time', 'sent_time', 'audit_time', 'ministry_id', 'org_id', 'region_id']
@@ -431,8 +431,6 @@ class PlanView(SecureModelView):
     }
 
 class TicketView(SecureModelView):
-    """Админ-панель для управления тикетами"""
-    
     column_list = ['id', 'plan', 'begin_time', 'luck', 'is_owner', 'note']
     column_default_sort = ('begin_time', True)
     column_sortable_list = ('id', 'begin_time', 'luck', 'is_owner')
@@ -475,8 +473,6 @@ class TicketView(SecureModelView):
     }
 
 class UnitView(SecureModelView):
-    """Админ-панель для управления единицами измерения"""
-    
     column_list = ['id', 'code', 'name']
     column_default_sort = ('id', True)
     column_sortable_list = ('id', 'code', 'name')
@@ -505,8 +501,6 @@ class UnitView(SecureModelView):
     column_filters = ['id', 'code']
 
 class DirectionView(SecureModelView):
-    """Админ-панель для управления направлениями"""
-    
     column_list = ['id', 'code', 'name', 'unit', 'is_local', 'DateStart', 'DateEnd']
     column_default_sort = ('id', True)
     column_sortable_list = ('id', 'code', 'name', 'DateStart', 'DateEnd')
@@ -550,8 +544,6 @@ class DirectionView(SecureModelView):
     }
 
 class EconMeasureView(SecureModelView):
-    """Админ-панель для управления экономическими мерами"""
-    
     column_list = ['id', 'plan', 'direction', 'year_econ', 'estim_econ', 'order']
     column_default_sort = ('id', True)
     column_sortable_list = ('id', 'year_econ', 'estim_econ', 'order')
@@ -598,8 +590,6 @@ class EconMeasureView(SecureModelView):
     }
 
 class EconExecView(SecureModelView):
-    """Админ-панель для управления экономическими исполнениями"""
-    
     column_list = ['id', 'plan', 'econ_measures', 'name', 'Volume', 'EffTut', 'EffRub',
                    'ExpectedQuarter', 'EffCurrYear', 'Payback', 'is_local', 'is_corrected']
     column_default_sort = ('id', True)
@@ -646,8 +636,6 @@ class EconExecView(SecureModelView):
     }
 
 class IndicatorView(SecureModelView):
-    """Админ-панель для управления показателями"""
-    
     column_list = ['id', 'code', 'name', 'unit', 'CoeffToTut', 'IsMandatory', 'Group', 'RowN', 'DateStart', 'DateEnd']
     column_default_sort = ('id', True)
     
@@ -691,8 +679,6 @@ class IndicatorView(SecureModelView):
     }
 
 class IndicatorUsageView(SecureModelView):
-    """Админ-панель для управления использованием показателей"""
-    
     column_list = ['id', 'plan', 'indicator', 'QYearPrev', 'QYearCurr', 'QYearNext']
     column_default_sort = ('id', True)
     
@@ -723,8 +709,6 @@ class IndicatorUsageView(SecureModelView):
     }
 
 class NotificationView(SecureModelView):
-    """Админ-панель для управления уведомлениями"""
-    
     column_list = ['id', 'user', 'message', 'is_read', 'created_at']
     column_default_sort = ('created_at', True)
     column_sortable_list = ('id', 'created_at', 'is_read')

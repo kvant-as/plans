@@ -1,4 +1,4 @@
-# eRespondentS
+# 
 
 ![Python Version](https://img.shields.io/badge/python-3.12-blue)
 ![Framework](https://img.shields.io/badge/framework-Flask-blue)
@@ -7,9 +7,9 @@
 
 ## Overview
 
-eRespondentS is ...
+Formation of plans for energy-saving measures
 
-> **Note:** 
+> **Automated complex for creation, analysis and presentation for coordination of energy efficiency plans of organizations** 
 
 ## Tech Stack
 
@@ -18,15 +18,12 @@ eRespondentS is ...
 | **Language** | Python 3.12 |
 | **Web Framework** | Flask |
 | **Database** | PostgreSQL |
-| **Environment** | Virtual Environment (`.venv`) |
-| **Package Manager** | pip |
 
 ## Prerequisites
 
 Ensure you have the following installed on your system:
 - **Python 3.12**
 - **PostgreSQL 17**
-- `pip` (usually comes with Python)
 
 ## Quick Start
 

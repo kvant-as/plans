@@ -2,7 +2,7 @@ import io
 import xml.etree.ElementTree as ET
 from ..models import Plan, EconMeasure, EconExec
 from sqlalchemy.orm import joinedload
-from ..views import get_cumulative_econ_metrics
+from ..routes.views import get_cumulative_econ_metrics
         
 def export_xml_single(plan: Plan):
     """Экспорт одного плана в XML с тремя разделами и титульными данными."""

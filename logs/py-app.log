@@ -1,0 +1,113 @@
+2026-02-05 15:13:20 | INFO     | website | __init__.py:90 | ============================================================
+2026-02-05 15:13:20 | INFO     | website | __init__.py:91 | Launch time: 2026-02-05 15:13:20
+2026-02-05 15:13:20 | INFO     | website | __init__.py:92 | Logging level: INFO
+2026-02-05 15:13:20 | INFO     | website | __init__.py:93 | Logs are recorded in: logs\py-app.log
+2026-02-05 15:13:20 | INFO     | website | __init__.py:94 | ============================================================
+2026-02-05 15:13:21 | INFO     | werkzeug | _internal.py:97 | [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.0.194:5000
+2026-02-05 15:13:21 | INFO     | werkzeug | _internal.py:97 | [33mPress CTRL+C to quit[0m
+2026-02-05 15:13:21 | INFO     | werkzeug | _internal.py:97 |  * Restarting with stat
+2026-02-05 15:13:22 | INFO     | website | __init__.py:90 | ============================================================
+2026-02-05 15:13:22 | INFO     | website | __init__.py:91 | Launch time: 2026-02-05 15:13:22
+2026-02-05 15:13:22 | INFO     | website | __init__.py:92 | Logging level: INFO
+2026-02-05 15:13:22 | INFO     | website | __init__.py:93 | Logs are recorded in: logs\py-app.log
+2026-02-05 15:13:22 | INFO     | website | __init__.py:94 | ============================================================
+2026-02-05 15:13:22 | WARNING  | werkzeug | _internal.py:97 |  * Debugger is active!
+2026-02-05 15:13:22 | INFO     | werkzeug | _internal.py:97 |  * Debugger PIN: 126-562-122
+2026-02-05 15:13:47 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:47] "GET /admin/ HTTP/1.1" 200 -
+2026-02-05 15:13:47 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:47] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+2026-02-05 15:13:47 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:47] "[36mGET /admin/static/bootstrap/bootstrap4/css/font-awesome.min.css?v=4.7.0 HTTP/1.1[0m" 304 -
+2026-02-05 15:13:47 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:47] "[36mGET /admin/static/vendor/moment.min.js?v=2.9.0 HTTP/1.1[0m" 304 -
+2026-02-05 15:13:47 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:47] "[36mGET /admin/static/admin/css/bootstrap4/admin.css?v=1.1.1 HTTP/1.1[0m" 304 -
+2026-02-05 15:13:47 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:47] "[36mGET /admin/static/vendor/bootstrap4/util.js?v=4.3.1 HTTP/1.1[0m" 304 -
+2026-02-05 15:13:47 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:47] "[36mGET /admin/static/bootstrap/bootstrap4/js/bootstrap.min.js?v=4.2.1 HTTP/1.1[0m" 304 -
+2026-02-05 15:13:47 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:47] "[36mGET /admin/static/vendor/bootstrap4/dropdown.js?v=4.3.1 HTTP/1.1[0m" 304 -
+2026-02-05 15:13:47 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:47] "[36mGET /admin/static/vendor/select2/select2.min.js?v=4.2.1 HTTP/1.1[0m" 304 -
+2026-02-05 15:13:47 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:47] "[36mGET /admin/static/vendor/multi-level-dropdowns-bootstrap/bootstrap4-dropdown-ml-hack.js HTTP/1.1[0m" 304 -
+2026-02-05 15:13:47 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:47] "[36mGET /admin/static/admin/js/helpers.js?v=1.0.0 HTTP/1.1[0m" 304 -
+2026-02-05 15:13:47 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:47] "[36mGET /admin/static/bootstrap/bootstrap4/swatch/cosmo/bootstrap.min.css?v=4.2.1 HTTP/1.1[0m" 304 -
+2026-02-05 15:13:47 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:47] "[36mGET /admin/static/vendor/jquery.min.js?v=3.5.1 HTTP/1.1[0m" 304 -
+2026-02-05 15:13:47 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:47] "[36mGET /admin/static/bootstrap/bootstrap4/js/popper.min.js HTTP/1.1[0m" 304 -
+2026-02-05 15:13:47 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:47] "[36mGET /admin/static/bootstrap/bootstrap4/js/bootstrap.min.js.map HTTP/1.1[0m" 304 -
+2026-02-05 15:13:47 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:47] "[33mGET /admin/static/bootstrap/bootstrap4/js/popper.min.js.map HTTP/1.1[0m" 404 -
+2026-02-05 15:13:47 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:47] "[36mGET /admin/static/vendor/bootstrap4/util.js.map HTTP/1.1[0m" 304 -
+2026-02-05 15:13:47 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:47] "[36mGET /admin/static/vendor/bootstrap4/dropdown.js.map HTTP/1.1[0m" 304 -
+2026-02-05 15:13:48 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:48] "GET /profile HTTP/1.1" 200 -
+2026-02-05 15:13:48 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:48] "[36mGET /static/css/base.css HTTP/1.1[0m" 304 -
+2026-02-05 15:13:48 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:48] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+2026-02-05 15:13:48 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:48] "[36mGET /static/img/Notifications.svg HTTP/1.1[0m" 304 -
+2026-02-05 15:13:48 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:48] "[36mGET /static/img/Done_all.svg HTTP/1.1[0m" 304 -
+2026-02-05 15:13:48 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:48] "[36mGET /static/img/Logo-black.svg HTTP/1.1[0m" 304 -
+2026-02-05 15:13:48 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:48] "[36mGET /static/img/FAQ.svg HTTP/1.1[0m" 304 -
+2026-02-05 15:13:48 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:48] "[36mGET /static/img/Email.svg HTTP/1.1[0m" 304 -
+2026-02-05 15:13:48 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:48] "[36mGET /static/js/base.js HTTP/1.1[0m" 304 -
+2026-02-05 15:13:48 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:48] "[36mGET /static/img/Organization.svg HTTP/1.1[0m" 304 -
+2026-02-05 15:13:48 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:48] "[36mGET /static/img/Account.svg HTTP/1.1[0m" 304 -
+2026-02-05 15:13:48 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:48] "[36mGET /static/img/Phone.svg HTTP/1.1[0m" 304 -
+2026-02-05 15:13:48 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:48] "[36mGET /static/img/Logout_wh.svg HTTP/1.1[0m" 304 -
+2026-02-05 15:13:48 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:48] "[36mGET /static/img/Plan.svg HTTP/1.1[0m" 304 -
+2026-02-05 15:13:48 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:48] "[36mGET /static/img/Add.svg HTTP/1.1[0m" 304 -
+2026-02-05 15:13:48 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:48] "[36mGET /static/img/Stats.svg HTTP/1.1[0m" 304 -
+2026-02-05 15:13:48 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:48] "[36mGET /static/img/Export.svg HTTP/1.1[0m" 304 -
+2026-02-05 15:13:48 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:48] "[36mGET /static/img/Search_gray.svg HTTP/1.1[0m" 304 -
+2026-02-05 15:13:48 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:48] "[36mGET /static/img/Close.svg HTTP/1.1[0m" 304 -
+2026-02-05 15:13:48 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:48] "[36mGET /static/img/Edit_wh.svg HTTP/1.1[0m" 304 -
+2026-02-05 15:13:48 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:48] "[36mGET /static/img/Submit-Progress-wh.svg HTTP/1.1[0m" 304 -
+2026-02-05 15:13:48 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:48] "[36mGET /static/img/Submit-Progress.svg HTTP/1.1[0m" 304 -
+2026-02-05 15:13:48 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:48] "[36mGET /static/img/Edit_off.svg HTTP/1.1[0m" 304 -
+2026-02-05 15:13:48 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:48] "[36mGET /static/img/Add_wh.svg HTTP/1.1[0m" 304 -
+2026-02-05 15:13:48 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:48] "[36mGET /static/img/Calendar_gray.svg HTTP/1.1[0m" 304 -
+2026-02-05 15:13:48 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:48] "[36mGET /static/img/Account_grey.svg HTTP/1.1[0m" 304 -
+2026-02-05 15:13:48 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:48] "[36mGET /static/fonts/Montserrat-Medium.ttf HTTP/1.1[0m" 304 -
+2026-02-05 15:13:48 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:48] "[36mGET /static/fonts/Montserrat-Regular.ttf HTTP/1.1[0m" 304 -
+2026-02-05 15:13:48 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:48] "[36mGET /static/fonts/Montserrat-Bold.ttf HTTP/1.1[0m" 304 -
+2026-02-05 15:13:48 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:48] "[36mGET /static/fonts/Montserrat-SemiBold.ttf HTTP/1.1[0m" 304 -
+2026-02-05 15:13:48 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:48] "GET /api/notifications HTTP/1.1" 200 -
+2026-02-05 15:13:48 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:48] "GET /api/organizations?q=&page=1 HTTP/1.1" 200 -
+2026-02-05 15:13:48 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:48] "[36mGET /static/img/spinner.svg HTTP/1.1[0m" 304 -
+2026-02-05 15:13:51 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:51] "[32mPOST /logout HTTP/1.1[0m" 302 -
+2026-02-05 15:13:51 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:51] "GET /login HTTP/1.1" 200 -
+2026-02-05 15:13:51 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:51] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+2026-02-05 15:13:51 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:51] "[36mGET /static/css/base.css HTTP/1.1[0m" 304 -
+2026-02-05 15:13:51 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:51] "[36mGET /static/img/Logo-black.svg HTTP/1.1[0m" 304 -
+2026-02-05 15:13:51 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:51] "[36mGET /static/img/FAQ.svg HTTP/1.1[0m" 304 -
+2026-02-05 15:13:51 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:51] "[36mGET /static/img/Phone.svg HTTP/1.1[0m" 304 -
+2026-02-05 15:13:51 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:51] "[36mGET /static/img/Submit-Progress.svg HTTP/1.1[0m" 304 -
+2026-02-05 15:13:51 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:51] "[36mGET /static/img/Submit-Progress-wh.svg HTTP/1.1[0m" 304 -
+2026-02-05 15:13:51 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:51] "[36mGET /static/js/base.js HTTP/1.1[0m" 304 -
+2026-02-05 15:13:51 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:51] "[36mGET /static/img/Logo-black.png HTTP/1.1[0m" 304 -
+2026-02-05 15:13:51 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:51] "[36mGET /static/img/Show_pass.svg HTTP/1.1[0m" 304 -
+2026-02-05 15:13:51 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:51] "[36mGET /static/img/Login.svg HTTP/1.1[0m" 304 -
+2026-02-05 15:13:51 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:51] "[36mGET /static/img/UnShow_pass.svg HTTP/1.1[0m" 304 -
+2026-02-05 15:13:51 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:51] "[36mGET /static/img/Checkmark.svg HTTP/1.1[0m" 304 -
+2026-02-05 15:13:51 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:51] "GET /forgot-password HTTP/1.1" 200 -
+2026-02-05 15:13:51 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:51] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+2026-02-05 15:13:51 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:51] "[36mGET /static/css/base.css HTTP/1.1[0m" 304 -
+2026-02-05 15:13:51 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:51] "[36mGET /static/img/Logo-black.svg HTTP/1.1[0m" 304 -
+2026-02-05 15:13:51 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:51] "[36mGET /static/img/FAQ.svg HTTP/1.1[0m" 304 -
+2026-02-05 15:13:51 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:51] "[36mGET /static/img/Phone.svg HTTP/1.1[0m" 304 -
+2026-02-05 15:13:51 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:51] "[36mGET /static/img/Submit-Progress.svg HTTP/1.1[0m" 304 -
+2026-02-05 15:13:51 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:51] "[36mGET /static/img/Submit-Progress-wh.svg HTTP/1.1[0m" 304 -
+2026-02-05 15:13:51 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:51] "[36mGET /static/js/base.js HTTP/1.1[0m" 304 -
+2026-02-05 15:13:51 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:51] "[36mGET /static/img/Logo-black.png HTTP/1.1[0m" 304 -
+2026-02-05 15:13:51 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:51] "[36mGET /static/img/Check.svg HTTP/1.1[0m" 304 -
+2026-02-05 15:13:51 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:51] "[36mGET /static/img/Checkmark.svg HTTP/1.1[0m" 304 -
+2026-02-05 15:13:53 | INFO     | website | email.py:129 | Account #1 (admin@kvant-as.by) uploaded
+2026-02-05 15:13:53 | INFO     | website | email.py:135 | Count of email accounts: 1
+2026-02-05 15:13:53 | INFO     | website | email.py:147 | The task has been added to the queue: shlneowork@gmail.com, type: reset_link
+2026-02-05 15:13:53 | INFO     | website | email.py:241 | The message has been queued for shlneowork@gmail.com
+2026-02-05 15:13:53 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:53] "[32mPOST /forgot-password HTTP/1.1[0m" 302 -
+2026-02-05 15:13:53 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:53] "GET /forgot-password HTTP/1.1" 200 -
+2026-02-05 15:13:53 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:53] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+2026-02-05 15:13:53 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:53] "[36mGET /static/css/base.css HTTP/1.1[0m" 304 -
+2026-02-05 15:13:53 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:53] "[36mGET /static/img/Logo-black.svg HTTP/1.1[0m" 304 -
+2026-02-05 15:13:53 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:53] "[36mGET /static/img/FAQ.svg HTTP/1.1[0m" 304 -
+2026-02-05 15:13:53 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:53] "[36mGET /static/img/Phone.svg HTTP/1.1[0m" 304 -
+2026-02-05 15:13:53 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:53] "[36mGET /static/img/Submit-Progress.svg HTTP/1.1[0m" 304 -
+2026-02-05 15:13:53 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:53] "[36mGET /static/img/Submit-Progress-wh.svg HTTP/1.1[0m" 304 -
+2026-02-05 15:13:53 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:53] "[36mGET /static/js/base.js HTTP/1.1[0m" 304 -
+2026-02-05 15:13:53 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:53] "[36mGET /static/img/Logo-black.png HTTP/1.1[0m" 304 -
+2026-02-05 15:13:53 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:53] "[36mGET /static/img/Check.svg HTTP/1.1[0m" 304 -
+2026-02-05 15:13:53 | INFO     | werkzeug | _internal.py:97 | 127.0.0.1 - - [05/Feb/2026 15:13:53] "[36mGET /static/img/Checkmark.svg HTTP/1.1[0m" 304 -

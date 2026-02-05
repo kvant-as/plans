@@ -12,8 +12,8 @@ from sqlalchemy.orm import joinedload
 from sqlalchemy import func, asc, or_
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from .models import Ministry, Region, User, Organization, Plan, Ticket, Unit, Direction, Indicator, EconMeasure, EconExec, IndicatorUsage, Notification, current_utc_time
-from . import db
+from ..models import Ministry, Region, User, Organization, Plan, Ticket, Unit, Direction, Indicator, EconMeasure, EconExec, IndicatorUsage, Notification, current_utc_time
+from .. import db
 
 from functools import wraps
 
@@ -457,7 +457,7 @@ def export_to(format):
         flash("Не найдены выбранные планы.", "error")
         return redirect(request.url)
     
-    from .plans.export import (
+    from ..plans.export import (
         export_pdf_single, 
         export_xlsx_single,
         export_xml_single
@@ -1460,7 +1460,7 @@ def api_change_plan_status(id):
         status = request.form.get('status')
         if status == 'sent':
             uploaded_file = request.files.get('certificate')
-            from .plans.ecp import validate_certificate_for_sending
+            from ..plans.ecp import validate_certificate_for_sending
             is_valid, error_message = validate_certificate_for_sending(uploaded_file)
             if not is_valid:
                 flash(error_message, 'error')

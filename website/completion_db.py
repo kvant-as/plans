@@ -1,17 +1,17 @@
 import os
 from dbfread import DBF
+from flask import current_app
 import pandas as pd
 from werkzeug.security import generate_password_hash
 
 def create_database(app, db):
-    from .models import User, Organization, Plan, Ticket, Unit, Direction, Indicator, EconExec, EconMeasure
     with app.app_context():
         # db.drop_all()
         db.create_all()
         add_data_in_db(db)
         
 def is_db_empty():
-    from .models import User, Organization, Plan, Ticket, Ticket, Unit, Direction, Indicator, EconExec, EconMeasure
+    from .models import User, Organization, Plan, Ticket, Ticket, Unit, Indicator
     return all([
         User.query.count() == 0,
         Organization.query.count() == 0,
@@ -33,7 +33,7 @@ def add_data_in_db(db):
     if is_db_empty():
         from .models import User, Organization, Unit, Direction, Indicator, Ministry, Region
         from sqlalchemy.exc import IntegrityError
-        print('Filling is in progress...')
+        current_app.logger.info('Filling is in progress...')
         
         ### ORGANIZATION DATA ###
         website_path = os.path.dirname(os.path.abspath(__file__))
@@ -106,13 +106,13 @@ def add_data_in_db(db):
 
         try:
             db.session.commit()
-            print("The data has been successfully added to the database")
+            current_app.logger.debug("The data has been successfully added to the database")
         except IntegrityError as e:
             db.session.rollback()
-            print(f"Data integrity error: {e}")
+            current_app.logger.error(f"Data integrity error: {e}")
         except Exception as e:
             db.session.rollback()
-            print(f"An error has occurred: {e}")
+            current_app.logger.error(f"An error has occurred: {e}")
 
         dop_org_data = [
             ('Брестское областное управление', '100000001000'),
@@ -129,7 +129,6 @@ def add_data_in_db(db):
             dop_org = Organization(name=name, okpo=str(okpo)) 
             db.session.add(dop_org)
         db.session.commit()
-        
         ### ----------- ###
 
         ### REGION DATA ###     
@@ -152,7 +151,7 @@ def add_data_in_db(db):
 
         ### USER DATA ###
         users_data = [
-            ('Техник-программист', 'testuser@gmail.com', os.getenv('adminname1'), os.getenv('adminsecondname1'), os.getenv('adminpatr1'), '+375445533333', False, False, 53),
+            # ('Техник-программист', 'testuser@gmail.com', os.getenv('adminname1'), os.getenv('adminsecondname1'), os.getenv('adminpatr1'), '+375445533333', False, False, 53),
             ('', os.getenv('adminemail1'), os.getenv('adminname1'), os.getenv('adminsecondname1'), os.getenv('adminpatr1'), os.getenv('adminphone1'), True, False, 14),
             ('', os.getenv('adminemail2'), os.getenv('adminname2'), os.getenv('adminsecondname2'), os.getenv('adminpatr2'), os.getenv('adminphone2'), True, False, 6471),
             ('Аудитор', os.getenv('auditoremailBrest'), 'Иванов1', 'Иван', 'Иванович', '+375445544431', False, True, 7940),
@@ -331,11 +330,9 @@ def add_data_in_db(db):
         db.session.commit()  
         # ### ----------- ###      
         
-        
         ### Indicator DATA ###
         indicator_data = [
             (1, '1000', 'Котельно-печное топливо израсходовано всего, в том числе', 1.000, True, 1, 1),
-            
             (2, '1040', 'Топливо печное бытовое', 1.450, False, 1, 2),
             (2, '1050', 'Мазут топочный', 1.370, False, 1, 2),
             (2, '1060', 'Газы углеводородные нефтепереработки', 1.500, False, 1, 2),
@@ -367,30 +364,22 @@ def add_data_in_db(db):
             (1, '1793', 'адсорбированные отходы после очистных сооружений', 1.000, False, 1, 2),
             (1, '1794', 'использованные автопокрышки', 1.000, False, 1, 2),
             (1, '1795', 'прочие горючие отходы', 1.000, False, 1, 2),
-            
             (1, '1796', 'из него местные виды топлива и отходы', 1.000, True, 1.1, 3),       
             (1, '1797', 'из них возобновляемые', 1.000, True, 1.2, 4),
-            
             (6, '1105', 'Электроэнергия израсходовано всего', 0.123, True, 2, 5),
             (6, '1405', 'Электроэнергия, выработанная собственными энергоисточниками, в том числе', 0.123, True, 2, 6),
             (6, '1425', 'энергия воды, ветра, солнца, геотермальных источников', 0.123, True, 2, 7),
-            # (6, '1445', 'собственная выработка электроэнергии на АЭС', 0.123, True, 2, None),
-            
             (7, '1104', 'Теплоэнергия израсходовано всего', 0.143, True, 3, 8),
             (7, '1404', 'Теплоэнергия, произведенная собственными энергоисточниками,  в том числе', 0.143, True, 3, 9),
             (7, '1424', 'энергия воды, ветра, солнца, геотермальных источников', 0.143, True, 3, 10),
-            
             (1, '260', 'Суммарное потребление ТЭР', 1.000, True, 4, 11),
-            
             (1, '9999', 'Годовая экономия ТЭР от энергосберегающих мероприятий всего', 1.000, True, 5, 12),
             (1, '9900', 'Ожидаемая экономия ТЭР от внедрения мероприятий в текущем году', 1.000, True, 5, 13),
             (1, '9910', 'Экономия ТЭР от мероприятий предыдущего года внедрения, в том числе:', 1.000, True, 5, 14),
-            
             (1, '9911', 'январь-март', 1.000, True, 5, 15),
             (1, '9912', 'январь-июнь', 1.000, True, 5, 16),
             (1, '9913', 'январь-сентябрь', 1.000, True, 5, 17),
             (1, '9914', 'январь-декабрь', 1.000, True, 5, 18),
-
             (16, '9915', 'Целевой показатель энергосбережения', 1.000, True, 6, 19),
             (16, '9916', 'Целевой показатель по доле местных ТЭР в КПТ', 1.000, True, 7, 20),
             (16, '9917', 'Целевой показатель по доле возобновляемых источников энергии в КПТ', 1.000, True, 8, 21)
@@ -415,9 +404,7 @@ def add_data_in_db(db):
             )
             db.session.add(indicator)
         db.session.commit()
-        ### ----------- ###   
-    
-    
-        print('The filling is finished!')
+        
+        current_app.logger.debug('The filling is finished!')
     else:
-        print('The database already contains the data!')
+        current_app.logger.debug('The database already contains the data!')
