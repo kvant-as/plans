@@ -1,8 +1,9 @@
 from datetime import timedelta
+from datetime import datetime
 import io
 import zipfile
 from flask import (
-    Blueprint, abort, current_app, logging, render_template, redirect, send_file, url_for, flash, request, jsonify, session, g
+    Blueprint, current_app, logging, render_template, redirect, send_file, url_for, flash, request, jsonify, session, g
 )
 
 from flask_login import (
@@ -10,24 +11,17 @@ from flask_login import (
 )
 from sqlalchemy.orm import joinedload
 from sqlalchemy import func, asc, or_
-from werkzeug.security import check_password_hash, generate_password_hash
 
-from ..models import Ministry, Region, User, Organization, Plan, Ticket, Unit, Direction, Indicator, EconMeasure, EconExec, IndicatorUsage, Notification, current_utc_time
+from website.plans import get_cumulative_econ_metrics, get_filtered_plans, other_data_indicatorUpdate, to_decimal_3, status_handlers, update_ChangeTimePlan
+
+from ..models import Ministry, Region, User, Organization, Plan, Ticket, Unit, Direction, Indicator, EconMeasure, EconExec, IndicatorUsage, Notification, TimeByMinsk
 from .. import db
 
 from functools import wraps
 
-from decimal import Decimal, InvalidOperation
-
 from .auth import user_with_all_params
 
 views = Blueprint('views', __name__)
-
-def to_decimal_3(value):
-    try:
-        return Decimal(value).quantize(Decimal('0.001'))
-    except (InvalidOperation, TypeError, ValueError):
-        return Decimal('0.000')
 
 def owner_only(f):
     @wraps(f)
@@ -58,7 +52,6 @@ def owner_only(f):
         return f(*args, **kwargs)
     
     return decorated_function
-
 
 @views.route('/change_language/<lang_code>')
 def change_language(lang_code):
@@ -155,8 +148,6 @@ def edit_user_org():
         flash('Произошла ошибка при обновлении данных', 'error')
         return redirect(request.referrer)
     
-from datetime import datetime
-
 @views.route('/edit-plan-type', methods=['POST'])
 @login_required
 def edit_plan_type():
@@ -212,7 +203,7 @@ def edit_plan_type():
     except Exception as e:
         db.session.rollback()
         flash('Произошла ошибка при сохранении типа плана', 'error')
-        print(f"Error saving plan type: {e}")
+        current_app.logger.error(f"Error saving plan type: {e}")
         import traceback
         traceback.print_exc()
     
@@ -289,7 +280,7 @@ def get_ministries_api():
         
     except Exception as e:
         logging.error(f"Error fetching Ministries: {str(e)}")
-        print(f"ERROR: {str(e)}") 
+        current_app.logger.error(f"ERROR: {str(e)}") 
         return jsonify({"error": "Internal server error"}), 500
 
 @views.route('/api/regions')
@@ -327,69 +318,9 @@ def get_regions_api():
         logging.error(f"Error fetching regions: {str(e)}")
         return jsonify({"error": "Internal server error"}), 500
 
-def get_plans_by_okpo():
-    okpo_digit = str(current_user.organization.okpo)[-4]
-    """Фильтрация по 4-ой цифре с конца OKPO: {okpo_digit}"""
-    
-    status_filter = or_(
-        Plan.is_sent == True,
-        Plan.is_error == True, 
-        Plan.is_approved == True
-    )
-    
-    if current_user.is_admin or (current_user.is_auditor and str(current_user.organization.okpo)[-4] == "8"):
-        """Доступ для администраторов/аудиторов"""
-        return Plan.query.filter(
-            status_filter
-        ).order_by(Plan.year.asc())
-    else:
-        """Доступ для других аудиторов с фильтрацией по OKPO"""
-        return Plan.query.join(Organization).filter(
-            status_filter,
-            func.substr(Organization.okpo, func.length(Organization.okpo) - 3, 1) == okpo_digit
-        ).order_by(Plan.year.asc())
 
-def get_filtered_plans(user, status_filter="all", year_filter="all"):
-    """Возвращает планы и счетчики по фильтрам для конкретного пользователя"""
-    
-    if user.is_auditor:
-        base_query = get_plans_by_okpo()
-    else:
-        base_query = Plan.query.filter_by(user_id=user.id)
-    
-    display_query = base_query
 
-    status_filters = {
-        'draft': Plan.is_draft == True,
-        'control': Plan.is_control == True,
-        'sent': Plan.is_sent == True,
-        'error': Plan.is_error == True,
-        'approved': Plan.is_approved == True
-    }
 
-    if status_filter != 'all' and status_filter in status_filters:
-        display_query = display_query.filter(status_filters[status_filter])
-
-    if year_filter != 'all':
-        display_query = display_query.filter(Plan.year == int(year_filter))
-
-    plans = display_query.all()
-
-    count_query = base_query
-    if year_filter != 'all':
-        count_query = count_query.filter(Plan.year == int(year_filter))
-    if status_filter != 'all' and status_filter in status_filters:
-        count_query = count_query.filter(status_filters[status_filter])
-
-    status_counts = {
-        'all': count_query.count(),
-        'draft': count_query.filter(Plan.is_draft == True).count(),
-        'control': count_query.filter(Plan.is_control == True).count(),
-        'sent': count_query.filter(Plan.is_sent == True).count(),
-        'error': count_query.filter(Plan.is_error == True).count(),
-        'approved': count_query.filter(Plan.is_approved == True).count()
-    }
-    return plans, status_counts
 
 @views.route('/plans', methods=['GET'])
 @user_with_all_params()
@@ -457,7 +388,7 @@ def export_to(format):
         flash("Не найдены выбранные планы.", "error")
         return redirect(request.url)
     
-    from ..plans.export import (
+    from ..export import (
         export_pdf_single, 
         export_xlsx_single,
         export_xml_single
@@ -612,7 +543,7 @@ def edit_plan(id):
     current_plan.saving_fuel = saving_fuel
     current_plan.share_energy = share_energy
     
-    current_plan.change_time = current_utc_time()
+    current_plan.change_time = TimeByMinsk()
     
     db.session.commit()
     flash('Изменения приняты', 'success')
@@ -805,7 +736,6 @@ def delete_econmeasure(id):
 @user_with_all_params()
 @login_required
 def edit_econmeasure(id):
-
     year_econ = to_decimal_3(request.form.get('year_econ'))
     estim_econ = to_decimal_3(request.form.get('estim_econ'))
 
@@ -822,52 +752,6 @@ def edit_econmeasure(id):
     update_ChangeTimePlan(id)
     flash('Направление обновлено', 'success')
     return redirect(url_for('views.plan_directions', id=id))
-
-def get_cumulative_econ_metrics(plan_id, is_local): 
-    """ Возвращает нарастающие итоги экономических показателей по кварталам """
-    quarterly_results = (db.session.query(
-            EconExec.ExpectedQuarter,  
-            func.sum(EconExec.EffCurrYear).label('total_eff'), 
-            func.sum(EconExec.VolumeFin).label('total_vol')
-        )
-        .join(EconMeasure) 
-        .join(Plan)
-        .filter(Plan.id == plan_id, EconExec.is_local == is_local)
-        .group_by(EconExec.ExpectedQuarter)
-        .all())
-    
-    cumulative_totals = {
-        'jan_mar': {'eff_curr_year': 0, 'volume_fin': 0},  # Январь-Март
-        'jan_jun': {'eff_curr_year': 0, 'volume_fin': 0},  # Январь-Июнь
-        'jan_sep': {'eff_curr_year': 0, 'volume_fin': 0},  # Январь-Сентябрь
-        'jan_dec': {'eff_curr_year': 0, 'volume_fin': 0}   # Январь-Декабрь
-    }
-    
-
-    quarter_data = {1: {'eff': 0, 'vol': 0}, 2: {'eff': 0, 'vol': 0}, 
-                   3: {'eff': 0, 'vol': 0}, 4: {'eff': 0, 'vol': 0}}
-    
-    for quarter, eff_sum, vol_sum in quarterly_results:
-        if quarter in [1, 2, 3, 4]:
-            quarter_data[quarter]['eff'] = eff_sum or 0
-            quarter_data[quarter]['vol'] = vol_sum or 0
-    
-
-    cumulative_totals['jan_mar']['eff_curr_year'] = quarter_data[1]['eff']
-    cumulative_totals['jan_mar']['volume_fin'] = quarter_data[1]['vol']
-    
-    cumulative_totals['jan_jun']['eff_curr_year'] = quarter_data[1]['eff'] + quarter_data[2]['eff']
-    cumulative_totals['jan_jun']['volume_fin'] = quarter_data[1]['vol'] + quarter_data[2]['vol']
-    
-    cumulative_totals['jan_sep']['eff_curr_year'] = quarter_data[1]['eff'] + quarter_data[2]['eff'] + quarter_data[3]['eff']
-    cumulative_totals['jan_sep']['volume_fin'] = quarter_data[1]['vol'] + quarter_data[2]['vol'] + quarter_data[3]['vol']
-    
-    cumulative_totals['jan_dec']['eff_curr_year'] = (quarter_data[1]['eff'] + quarter_data[2]['eff'] + 
-                                                   quarter_data[3]['eff'] + quarter_data[4]['eff'])
-    cumulative_totals['jan_dec']['volume_fin'] = (quarter_data[1]['vol'] + quarter_data[2]['vol'] + 
-                                                quarter_data[3]['vol'] + quarter_data[4]['vol'])
-    
-    return cumulative_totals
 
 @views.route('/plans/plan-events/<int:id>', methods=['GET', 'POST'])
 @user_with_all_params()
@@ -1010,7 +894,6 @@ def create_econexeces(id):
 @login_required
 def delete_econexeces(id):
     econ_exec = EconExec.query.get_or_404(id)
-
     id_plan = econ_exec.econ_measures.id_plan
 
     db.session.delete(econ_exec)
@@ -1219,233 +1102,6 @@ def delete_indicator(id):
     flash('Показатель успешно удален', 'success')
     return redirect(url_for('views.plan_indicators', id=id_plan))
 
-
-def update_ChangeTimePlan(id):
-    def owner_ticket(plan):
-        new_ticket = Ticket(
-            note='Внесение изменений пользователем.',
-            luck = True,
-            is_owner = True,
-            plan_id=plan.id,
-        )
-
-        db.session.add(new_ticket)
-        plan.afch = False
-        db.session.commit()
-        
-     
-    plan = Plan.query.filter_by(id=id).first()
-    if not plan:
-        return 
-    
-    plan.change_time = current_utc_time()
-    plan.is_draft = True   
-    plan.is_control = False  
-    plan.is_sent = False      
-    plan.is_error = False    
-    plan.is_approved = False  
-
-    if plan.afch == True:
-        owner_ticket(plan)
-
-    db.session.commit()
-
-def other_data_indicatorUpdate(id):
-    plan = Plan.query.filter_by(id=id).first()
-    if not plan:
-        return
-
-    indicator_usages = IndicatorUsage.query.filter_by(id_plan=plan.id).all()
-
-    def econom_ter():
-        total_eff_curr_year = db.session.query(func.sum(EconExec.EffCurrYear))\
-            .filter(
-                EconExec.id_plan == plan.id,
-                EconExec.EffCurrYear.isnot(None)
-            )\
-            .scalar() or 0
-        
-        indicator_usages = IndicatorUsage.query.filter_by(id_plan=plan.id).all()
-        usage_with_code_9900 = None
-        for usage in indicator_usages:
-            if usage.indicator.code == '9900':
-                usage_with_code_9900 = usage
-                break
-        
-        usage_with_code_9900.QYearNext = to_decimal_3(total_eff_curr_year)
-        db.session.commit()
-
-    def first_title():
-        totals = db.session.query(
-                func.sum(IndicatorUsage.QYearPrev).label('total_prev'),
-                func.sum(IndicatorUsage.QYearCurr).label('total_curr'),
-                func.sum(IndicatorUsage.QYearNext).label('total_next')
-            )\
-            .join(IndicatorUsage.indicator)\
-            .filter(
-                IndicatorUsage.id_plan == plan.id,
-                Indicator.IsMandatory == False
-            )\
-            .first()
-
-        total_prev = totals.total_prev or 0
-        total_curr = totals.total_curr or 0
-        total_next = totals.total_next or 0
-
-        usage_with_code_1000 = None
-        for usage in indicator_usages:
-            if usage.indicator.code == '1000':
-                usage_with_code_1000 = usage
-                break
-        
-        if usage_with_code_1000:
-            usage_with_code_1000.QYearPrev = to_decimal_3(total_prev)
-            usage_with_code_1000.QYearCurr = to_decimal_3(total_curr)
-            usage_with_code_1000.QYearNext = to_decimal_3(total_next)
-            db.session.commit()
-    
-    def four_title():
-        indicators_by_code = {}
-        codes_to_find = ['260', '1000', '1105', '1405', '1104', '1404']
-        
-        for usage in indicator_usages:
-            if usage.indicator.code in codes_to_find:
-                indicators_by_code[usage.indicator.code] = usage
-                if len(indicators_by_code) == len(codes_to_find):
-                    break
-        
-        missing_codes = [code for code in codes_to_find if code not in indicators_by_code]
-        if missing_codes:
-            print(f"Не найдены индикаторы: {missing_codes}")
-            return
-        
-        indicator_260 = indicators_by_code['260']
-        indicator_1000 = indicators_by_code['1000']
-        indicator_1105 = indicators_by_code['1105']
-        indicator_1405 = indicators_by_code['1405']
-        indicator_1104 = indicators_by_code['1104']
-        indicator_1404 = indicators_by_code['1404']
-        
-        def get_value(indicator, field_name):
-            value = getattr(indicator, field_name)
-            return value if value is not None else Decimal('0')
-        
-        def calculate_period(period):
-            base = get_value(indicator_1000, period)
-            diff1 = get_value(indicator_1105, period) - get_value(indicator_1405, period)
-            diff2 = get_value(indicator_1104, period) - get_value(indicator_1404, period)
-            return to_decimal_3(base + (diff1 * Decimal('0.123')) + (diff2 * Decimal('0.143')))
-        
-        indicator_260.QYearPrev = calculate_period('QYearPrev')
-        indicator_260.QYearCurr = calculate_period('QYearCurr')
-        indicator_260.QYearNext = calculate_period('QYearNext')
-        db.session.commit()
-
-    def seven_title():
-        usage_with_code_9999 = None
-        for usage in indicator_usages:
-            if usage.indicator.code == '9999':
-                usage_with_code_9999 = usage
-                break
-
-        usage_with_code_9900 = None
-        for usage in indicator_usages:
-            if usage.indicator.code == '9900':
-                usage_with_code_9900 = usage
-                break
-        
-        usage_with_code_9910 = None
-        for usage in indicator_usages:
-            if usage.indicator.code == '9910':
-                usage_with_code_9910 = usage
-                break
-
-        usage_with_code_9999.QYearNext = usage_with_code_9900.QYearNext + usage_with_code_9910.QYearNext
-
-    first_title()
-    four_title()
-    econom_ter()
-    seven_title()
-
-def handle_draft_status(plan):
-    plan.is_draft = True
-    plan.is_control = plan.is_sent = plan.is_error = plan.is_approved = False
-    plan.afch = False
-    return "Статус переведен в редактирование"
-
-def handle_control_status(plan):
-    indicator_usage = next(
-        (iu for iu in plan.indicators_usage if iu.indicator.code == '9900'), 
-        None
-    ) # № п/п = 5
-    
-    if indicator_usage and indicator_usage.QYearNext != 0:
-        plan.is_control = True
-        plan.is_draft = plan.is_sent = plan.is_error = plan.is_approved = False
-        plan.afch = False
-        return "План прошел проверку на контроль"
-    else:
-        return {"error": "Ожидаемая экономия ТЭР от внедрения в текущем году не может быть равна 0"}
- 
-def handle_sent_status(plan):
-    if plan.audit_time and (current_utc_time() - plan.audit_time) > timedelta(hours=1):
-        return {"error": "Нельзя изменить статус: прошло больше допустимого времени"}
-    plan.sent_time = current_utc_time()
-    plan.is_sent = True
-    plan.is_draft = plan.is_control = plan.is_error = plan.is_approved = False
-    plan.afch = False
-    return "План отправлен."
-
-def handle_error_status(plan):
-    plan.audit_time = current_utc_time()
-    plan.is_error = True
-    plan.is_draft = plan.is_control = plan.is_sent = plan.is_approved = False
-
-    new_ticket = Ticket(
-        note='В плане нашли ошибки, статус изменен',
-        luck=True,
-        is_owner = True,
-        plan_id=plan.id,
-    )
-    db.session.add(new_ticket)
-
-    notification = Notification(
-        user_id=plan.user_id,
-        message=f"В плане на {plan.year} год нашли ошибки"
-    )
-    db.session.add(notification)
-    return "Статус ошибки установлен."
-
-def handle_approved_status(plan):
-    plan.audit_time = current_utc_time()
-    plan.is_approved = True
-    plan.is_draft = plan.is_control = plan.is_sent = plan.is_error = False
-    plan.afch = False 
-
-    new_ticket = Ticket(
-        note='План был одобрен и передан в следующую стадию проверки',
-        luck=True,
-        is_owner = True,
-        plan_id=plan.id,
-    )
-    db.session.add(new_ticket)
-
-    notification = Notification(
-        user_id=plan.user_id,
-        message=f"План на {plan.year} год был утверждён"
-    )
-    db.session.add(notification)
-    return "План утверждён"
-
-
-status_handlers = {
-    'draft': handle_draft_status,
-    'control': handle_control_status,
-    'sent': handle_sent_status,
-    'error': handle_error_status,
-    'approved': handle_approved_status
-}
-
 @views.route('/api/change-plan-status/<int:id>', methods=['POST'])
 @user_with_all_params()
 @login_required
@@ -1460,7 +1116,7 @@ def api_change_plan_status(id):
         status = request.form.get('status')
         if status == 'sent':
             uploaded_file = request.files.get('certificate')
-            from ..plans.ecp import validate_certificate_for_sending
+            from ..ecp import validate_certificate_for_sending
             is_valid, error_message = validate_certificate_for_sending(uploaded_file)
             if not is_valid:
                 flash(error_message, 'error')
@@ -1570,7 +1226,7 @@ def create_ticket(id):
 
     db.session.add(new_ticket)
     
-    plan.audit_time = current_utc_time()
+    plan.audit_time = TimeByMinsk()
     
     db.session.commit()
     
@@ -1615,10 +1271,7 @@ def get_ticket_details(ticket_id):
 
 @views.route('/FAQ', methods=['GET'])
 def FAQ_page():    
-    return render_template('FAQ.html',
-            # hide_header=True,
-            # show_circle_buttons=True,
-            active_tab = 'faq')
+    return render_template('FAQ.html', active_tab = 'faq')
 
 @views.route('/', methods=['GET'])
 def begin_page():    
@@ -1629,8 +1282,6 @@ def begin_page():
             user_data=user_data,
             organization_data=organization_data,
             plan_data=plan_data,
-            # hide_header=True,
-            # show_circle_buttons=True,
             active_tab = 'begin'
             )
 

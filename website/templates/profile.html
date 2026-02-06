@@ -86,7 +86,7 @@
                 </div>
             </div>
             <div class="button-area">
-                <button type="button" class="submit-button" id="editprofileButton"
+                <button type="button" class="main-btn main-btn-primary" id="editprofileButton"
                         style="{% if not can_change_modal or current_user.is_auditor %}display:none;{% endif %}">
                     <img src="/static/img/Add_wh.svg" alt="" class="btn-icon">
                     <span class="btn-text">{{ _('Применить изменения') }}</span>
@@ -142,7 +142,7 @@
             </div>
         {%endif%}
         <div class="button-area">
-            <button id="orgUserbutton" type="button" class="submit-button"
+            <button id="orgUserbutton" type="button" class="main-btn main-btn-primary"
                     style="{% if not can_change_modal or current_user.is_auditor %}display:none;{% endif %}">
                 <img src="/static/img/Edit_wh.svg" alt="" class="btn-icon">
                 <span class="btn-text">{{ _('Изменить субъект') }}</span>

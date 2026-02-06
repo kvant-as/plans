@@ -5,7 +5,7 @@ from flask import flash, redirect, url_for, current_app
 from flask_login import current_user
 
 from website.models import (
-    User, Organization, current_utc_time, Plan, Ticket, Unit, 
+    User, Organization, TimeByMinsk, Plan, Ticket, Unit, 
     Direction, EconMeasure, EconExec, Indicator, IndicatorUsage, Notification
 )
 
@@ -86,7 +86,7 @@ class MyMainView(AdminIndexView):
             user_data = User.query.count()
             organization_data = Organization.query.count()
             
-            now = current_utc_time()
+            now = TimeByMinsk()
             threshold = now - timedelta(minutes=3)
             active_users = User.query.filter(User.last_active >= threshold).count()
             

@@ -1,16 +1,9 @@
 from . import db
 from sqlalchemy import Numeric
 from flask_login import UserMixin
-from datetime import datetime, timedelta
-from decimal import Decimal, InvalidOperation
 
-def to_decimal_3(value):
-    try:
-        return Decimal(value).quantize(Decimal('0.001'))
-    except (InvalidOperation, TypeError, ValueError):
-        return Decimal('0.000')
-
-def current_utc_time():
+def TimeByMinsk():
+    from datetime import datetime, timedelta
     return datetime.utcnow() + timedelta(hours=3)
 
 class User(db.Model, UserMixin):
@@ -30,8 +23,8 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String())
     is_admin = db.Column(db.Boolean, default=False)
     is_auditor = db.Column(db.Boolean, default=False)
-    last_active = db.Column(db.DateTime, nullable=False, default=current_utc_time)
-    begin_time = db.Column(db.DateTime, nullable=False, default=current_utc_time)
+    last_active = db.Column(db.DateTime, nullable=False, default=TimeByMinsk)
+    begin_time = db.Column(db.DateTime, nullable=False, default=TimeByMinsk)
     
     reset_password_token = db.Column(db.String(255), nullable=True)
     reset_password_expires = db.Column(db.DateTime, nullable=True)
@@ -106,8 +99,8 @@ class Plan(db.Model):
     # fio = db.Column(db.String(), nullable=False)
     # phone = db.Column(db.String(), nullable=False)
     
-    begin_time = db.Column(db.DateTime, nullable=False, default=current_utc_time)
-    change_time = db.Column(db.DateTime, nullable=False, default=current_utc_time)
+    begin_time = db.Column(db.DateTime, nullable=False, default=TimeByMinsk)
+    change_time = db.Column(db.DateTime, nullable=False, default=TimeByMinsk)
     sent_time = db.Column(db.DateTime)
     audit_time = db.Column(db.DateTime)
     
@@ -152,7 +145,7 @@ class Plan(db.Model):
 class Ticket(db.Model):
     __tablename__ = 'tickets'
     id = db.Column(db.Integer, primary_key=True)
-    begin_time = db.Column(db.DateTime, default=current_utc_time)
+    begin_time = db.Column(db.DateTime, default=TimeByMinsk)
     luck = db.Column(db.Boolean, default=False)
     is_owner = db.Column(db.Boolean, default=False)
     note = db.Column(db.String(500), nullable=False)
@@ -310,4 +303,4 @@ class Notification(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), index=True, nullable=False)
     message = db.Column(db.String(140), nullable=False)
     is_read = db.Column(db.Boolean, default=False)
-    created_at = db.Column(db.DateTime, default=current_utc_time)
+    created_at = db.Column(db.DateTime, default=TimeByMinsk)

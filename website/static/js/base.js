@@ -1723,24 +1723,30 @@ class MultiTypeSearchManager {
             selectedOrgInputSelector: 'input[data-action="selected-org"]',
             selectedItemTypeInputSelector: 'input[data-action="selected-item-type"]',
             submitButtonSelector: 'button[data-action="submit"]',
-            loadMoreButtonSelector: 'button[data-action="load-more"]',
             typeButtonsSelector: '[data-action="select-type"]',
+            paginationAreaSelector: '#paginationArea',
+            prevPageBtnSelector: '#prevPageBtn',
+            nextPageBtnSelector: '#nextPageBtn',
+            currentPageSelector: '#currentPage',
+            totalPagesSelector: '#totalPages',
+            clearSearchSelector: 'button[data-action="clear-search"]',
             
-            // Разные API для разных типов
+            // API endpoints
             organizationsApiUrl: '/api/organizations',
             ministriesApiUrl: '/api/ministries',
             regionsApiUrl: '/api/regions',
             
+            itemsPerPage: 10,
             debounceTime: 300,
             ...config
         };
 
         this.currentPage = 1;
+        this.totalPages = 1;
+        this.totalItems = 0;
         this.currentQuery = '';
-        this.hasNextPage = false;
-        this.selectedItemType = 'organization'; // По умолчанию организация
+        this.selectedItemType = 'organization';
         this.selectedItemId = null;
-        this.allItems = []; // Для хранения всех загруженных данных
         this.init();
     }
 
@@ -1750,8 +1756,13 @@ class MultiTypeSearchManager {
         this.selectedOrgInput = document.querySelector(this.config.selectedOrgInputSelector);
         this.selectedItemTypeInput = document.querySelector(this.config.selectedItemTypeInputSelector);
         this.submitButton = document.querySelector(this.config.submitButtonSelector);
-        this.loadMoreButton = document.querySelector(this.config.loadMoreButtonSelector);
         this.typeButtons = document.querySelectorAll(this.config.typeButtonsSelector);
+        this.paginationArea = document.querySelector(this.config.paginationAreaSelector);
+        this.prevPageBtn = document.querySelector(this.config.prevPageBtnSelector);
+        this.nextPageBtn = document.querySelector(this.config.nextPageBtnSelector);
+        this.currentPageSpan = document.querySelector(this.config.currentPageSelector);
+        this.totalPagesSpan = document.querySelector(this.config.totalPagesSelector);
+        this.clearSearchButton = document.querySelector(this.config.clearSearchSelector);
 
         if (!this.searchInput || !this.tableBody || !this.selectedOrgInput) {
             console.error('MultiTypeSearchManager: Не найдены необходимые элементы');
@@ -1765,19 +1776,34 @@ class MultiTypeSearchManager {
 
     bindEvents() {
         let debounceTimer;
-        
 
+        // Обработка поиска
         this.searchInput.addEventListener('input', (e) => {
+            if (this.clearSearchButton) {
+                this.clearSearchButton.style.display = e.target.value ? 'block' : 'none';
+            }
+            
             clearTimeout(debounceTimer);
             const query = e.target.value.trim();
             debounceTimer = setTimeout(() => {
                 this.currentPage = 1;
                 this.currentQuery = query;
-                this.allItems = []; 
                 this.loadData();
             }, this.config.debounceTime);
         });
 
+        // Очистка поиска
+        if (this.clearSearchButton) {
+            this.clearSearchButton.addEventListener('click', () => {
+                this.searchInput.value = '';
+                this.clearSearchButton.style.display = 'none';
+                this.currentPage = 1;
+                this.currentQuery = '';
+                this.loadData();
+            });
+        }
+
+        // Выбор элемента в таблице
         this.tableBody.addEventListener('click', (e) => {
             const row = e.target.closest('tr');
             if (row && row.dataset.id) {
@@ -1785,15 +1811,7 @@ class MultiTypeSearchManager {
             }
         });
 
-        if (this.loadMoreButton) {
-            this.loadMoreButton.addEventListener('click', () => {
-                if (this.hasNextPage) {
-                    this.currentPage++;
-                    this.loadData(true);
-                }
-            });
-        }
-
+        // Переключение типа (организации/министерства/регионы)
         if (this.typeButtons.length > 0) {
             this.typeButtons.forEach(button => {
                 button.addEventListener('click', (e) => {
@@ -1805,44 +1823,55 @@ class MultiTypeSearchManager {
             });
         }
 
-
-        if (this.submitButton) {
-            this.submitButton.addEventListener('click', (e) => {
-                if (!this.selectedItemId) {
-                    e.preventDefault();
-                    this.showNotification('Пожалуйста, выберите элемент из списка');
-                    return;
-                }
-                
-
-                this.selectedOrgInput.value = this.selectedItemId;
-                if (this.selectedItemTypeInput) {
-                    this.selectedItemTypeInput.value = this.selectedItemType;
+        // Пагинация: предыдущая страница
+        if (this.prevPageBtn) {
+            this.prevPageBtn.addEventListener('click', () => {
+                if (this.currentPage > 1) {
+                    this.currentPage--;
+                    this.loadData();
                 }
             });
         }
 
+        // Пагинация: следующая страница
+        if (this.nextPageBtn) {
+            this.nextPageBtn.addEventListener('click', () => {
+                if (this.currentPage < this.totalPages) {
+                    this.currentPage++;
+                    this.loadData();
+                }
+            });
+        }
+
+        // Отправка формы
         const form = this.selectedOrgInput.closest('form');
         if (form) {
             form.addEventListener('submit', (e) => {
                 if (!this.selectedItemId) {
                     e.preventDefault();
-                    this.showNotification('Пожалуйста, выберите элемент из списка');
                     return;
                 }
+                
+                this.selectedOrgInput.value = this.selectedItemId;
+                if (this.selectedItemTypeInput) {
+                    this.selectedItemTypeInput.value = this.selectedItemType;
+                }
+                
+                console.log('Отправка формы:', {
+                    id_org: this.selectedItemId,
+                    item_type: this.selectedItemType
+                });
             });
         }
     }
 
-    async loadData(append = false) {
+    async loadData() {
         try {
-            if (!append) {
-                this.showLoading();
-            }
+            this.showLoading();
 
-            let apiUrl;
-            let dataKey;
+            let apiUrl, dataKey;
             
+            // Определяем API endpoint и ключ данных
             switch(this.selectedItemType) {
                 case 'organization':
                     apiUrl = this.config.organizationsApiUrl;
@@ -1850,7 +1879,7 @@ class MultiTypeSearchManager {
                     break;
                 case 'ministry':
                     apiUrl = this.config.ministriesApiUrl;
-                    dataKey = 'ministrys';
+                    dataKey = 'ministrys'; // Ваш API использует 'ministrys'
                     break;
                 case 'region':
                     apiUrl = this.config.regionsApiUrl;
@@ -1861,76 +1890,108 @@ class MultiTypeSearchManager {
                     dataKey = 'organizations';
             }
 
-            // console.log(`Загрузка данных: тип=${this.selectedItemType}, endpoint=${apiUrl}, ключ=${dataKey}`);
-
             const url = `${apiUrl}?q=${encodeURIComponent(this.currentQuery)}&page=${this.currentPage}`;
             const response = await fetch(url);
             
-            if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
-            
-            const data = await response.json();
-            console.log('Полученные данные:', data);
-            
-
-            const items = data[dataKey] || [];
-            console.log(`Загружено ${items.length} элементов`);
-            
-            if (append) {
-                this.allItems = [...this.allItems, ...items];
-            } else {
-                this.allItems = items;
+            if (!response.ok) {
+                throw new Error(`HTTP error: ${response.status}`);
             }
             
-            this.hasNextPage = data.has_next;
-            this.renderItems();
-            this.updateLoadMoreButton();
+            const data = await response.json();
+            
+            if (data.error) {
+                throw new Error(data.error);
+            }
+            
+            const items = data[dataKey] || [];
+            this.totalPages = data.total_pages || 1;
+            this.totalItems = data.total_items || 0;
+            
+            this.renderItems(items);
+            this.updatePagination();
             
         } catch (error) {
             console.error('MultiTypeSearchManager: Ошибка загрузки данных:', error);
-            this.showError('Ошибка загрузки данных');
+            this.showError(`Ошибка загрузки ${this.getTypeLabel(this.selectedItemType, true)}`);
         } finally {
             this.hideLoading();
         }
     }
 
-    renderItems() {
-        if (!this.allItems || this.allItems.length === 0) {
-            this.tableBody.innerHTML = `<tr><td colspan="2">Нет данных</td></tr>`;
+    renderItems(items) {
+        if (!items || items.length === 0) {
+            this.tableBody.innerHTML = `
+                <tr>
+                    <td colspan="3" style="text-align: center; padding: 40px; color: #6b7280;">
+                        <div style="font-size: 48px; margin-bottom: 16px;">📭</div>
+                        <div>${this.currentQuery ? 'По вашему запросу ничего не найдено' : 'Нет данных для отображения'}</div>
+                    </td>
+                </tr>
+            `;
+            this.paginationArea.style.display = 'none';
             return;
         }
 
-        if (this.currentPage === 1) {
-            this.tableBody.innerHTML = '';
-        }
+        this.tableBody.innerHTML = '';
 
-        this.updateTableHeaders();
-
-        this.allItems.forEach(item => {
+        items.forEach(item => {
             const row = document.createElement('tr');
             row.dataset.id = item.id;
             row.dataset.type = this.selectedItemType;
             
+            // Проверяем, выбран ли этот элемент
+            if (this.selectedItemId == item.id) {
+                row.classList.add('selected');
+            }
+            
             let html = `<td style="display: none;">${this.escapeHtml(item.id)}</td>`;
             
+            // Разный рендеринг для разных типов
             switch(this.selectedItemType) {
                 case 'organization':
                     html += `
                         <td>${this.escapeHtml(item.name)}</td>
-                        <td style="text-align: center;">${this.escapeHtml(item.okpo || '')}</td>
+                        <td style="text-align: center;">${this.escapeHtml(item.okpo || '-')}</td>
                     `;
                     break;
                 case 'ministry':
                 case 'region':
                     html += `
-                        <td>${this.escapeHtml(item.name)}</td>
-                        <td style="text-align: center;">${this.escapeHtml('')}</td>
+                        <td style = "width: 100%;">${this.escapeHtml(item.name)}</td>
+                        <td style="text-align: center;"></td>
                     `;
                     break;
+                default:
+                    html += `
+                        <td style = "width: 100%;">${this.escapeHtml(item.name)}</td>
+                        <td style="text-align: center;"></td>
+                    `;
             }
             
             row.innerHTML = html;
             this.tableBody.appendChild(row);
         });
+
+        this.updateTableHeaders();
+        this.paginationArea.style.display = this.totalPages > 1 ? 'block' : 'none';
+    }
+
+    updatePagination() {
+        if (this.currentPageSpan) {
+            this.currentPageSpan.textContent = this.currentPage;
+        }
+        
+        if (this.totalPagesSpan) {
+            this.totalPagesSpan.textContent = this.totalPages;
+        }
+        
+        if (this.prevPageBtn) {
+            this.prevPageBtn.disabled = this.currentPage === 1;
+        }
+        
+        if (this.nextPageBtn) {
+            this.nextPageBtn.disabled = this.currentPage === this.totalPages;
+        }
     }
 
     updateTableHeaders() {
@@ -1954,12 +2015,14 @@ class MultiTypeSearchManager {
                 break;
             case 'ministry':
                 headersHTML += `
-                    <th colspan="2">Наименование</th>
+                    <th>Наименование министерства</th>
+                    <th style="text-align: center;"></th>
                 `;
                 break;
             case 'region':
                 headersHTML += `
-                    <th colspan="2">Наименование</th>
+                    <th>Наименование региона</th>
+                    <th style="text-align: center;"></th>
                 `;
                 break;
         }
@@ -1968,35 +2031,11 @@ class MultiTypeSearchManager {
         thead.innerHTML = headersHTML;
     }
 
-    updateLoadMoreButton() {
-        if (!this.loadMoreButton) return;
-        
-        if (this.hasNextPage) {
-            this.loadMoreButton.style.display = 'block';
-            this.loadMoreButton.disabled = false;
-
-            this.loadMoreButton.innerHTML = `
-                <img src="/static/img/spinner.svg" alt="Загрузить еще" class="btn-icon">
-                <span class="btn-text">Загрузить еще</span>
-            `;
-        } else {
-            if (this.allItems.length > 0) {
-                this.loadMoreButton.style.display = 'block';
-                this.loadMoreButton.disabled = true;
-                this.loadMoreButton.textContent = `Все ${this.getTypeLabel(this.selectedItemType, true)} загружены`;
-            } else {
-                this.loadMoreButton.style.display = 'none';
-            }
-        }
-    }
-
     selectItemType(type) {
-        console.log(`Смена типа на: ${type}`);
         this.selectedItemType = type;
         this.selectedItemId = null;
         this.currentPage = 1;
         this.currentQuery = '';
-        this.allItems = [];
         
         this.typeButtons.forEach(btn => {
             if (btn.dataset.type === type) {
@@ -2007,18 +2046,16 @@ class MultiTypeSearchManager {
         });
         
         this.updateSearchPlaceholder(type);
-        
-
         this.updateSubmitButtonText();
         
-
         if (this.searchInput) {
             this.searchInput.value = '';
+            if (this.clearSearchButton) {
+                this.clearSearchButton.style.display = 'none';
+            }
         }
         
-
         this.updateSubmitButtonState(false);
-        
         this.loadData();
     }
 
@@ -2033,8 +2070,8 @@ class MultiTypeSearchManager {
         
         this.searchInput.placeholder = placeholders[type] || 'Поиск...';
         
-        const searchLabel = this.searchInput.previousElementSibling;
-        if (searchLabel && searchLabel.tagName === 'LABEL') {
+        const searchLabel = document.getElementById('search-label');
+        if (searchLabel) {
             const labels = {
                 'organization': 'Поиск организации',
                 'ministry': 'Поиск министерства',
@@ -2048,38 +2085,33 @@ class MultiTypeSearchManager {
         if (!this.submitButton) return;
         
         const buttonTexts = {
-            'organization': 'Изменить организацию',
-            'ministry': 'Изменить министерство',
-            'region': 'Изменить регион'
+            'organization': 'Сохранить организацию',
+            'ministry': 'Сохранить министерство',
+            'region': 'Сохранить регион'
         };
         
-        const text = buttonTexts[this.selectedItemType] || 'Изменить';
+        const text = buttonTexts[this.selectedItemType] || 'Сохранить изменения';
         
         const btnTextSpan = this.submitButton.querySelector('.btn-text');
         if (btnTextSpan) {
             btnTextSpan.textContent = text;
-        } else {
-            const icon = this.submitButton.querySelector('img');
-            if (icon) {
-                this.submitButton.innerHTML = icon.outerHTML + ' ' + text;
-            } else {
-                this.submitButton.textContent = text;
-            }
         }
     }
 
     selectItem(row) {
         this.selectedItemId = row.dataset.id;
         
+        // Обновляем скрытые поля формы
         this.selectedOrgInput.value = this.selectedItemId;
         if (this.selectedItemTypeInput) {
             this.selectedItemTypeInput.value = this.selectedItemType;
         }
         
+        // Подсвечиваем выбранную строку
         this.highlightSelectedRow(row);
-        this.updateSubmitButtonState(true);
         
-        console.log(`Выбран элемент: id=${this.selectedItemId}, type=${this.selectedItemType}`);
+        // Активируем кнопку отправки
+        this.updateSubmitButtonState(true);
     }
 
     highlightSelectedRow(selectedRow) {
@@ -2104,80 +2136,45 @@ class MultiTypeSearchManager {
 
     getTypeLabel(type, plural = false) {
         const labels = {
-            'organization': plural ? 'организации' : 'организацию',
-            'ministry': plural ? 'министерства' : 'министерство',
-            'region': plural ? 'регионы' : 'регион'
+            'organization': plural ? 'организаций' : 'организация',
+            'ministry': plural ? 'министерств' : 'министерство',
+            'region': plural ? 'регионов' : 'регион'
         };
-        return labels[type] || (plural ? 'элементы' : 'элемент');
+        return labels[type] || (plural ? 'данных' : 'данные');
     }
 
     showLoading() {
-        if (this.currentPage === 1) {
-            this.tableBody.innerHTML = `
-                <tr>
-                    <td colspan="3" style="text-align: center; padding: 40px;">
-                        <div class="loading-spinner" style="width: 40px; height: 40px; margin: 0 auto 20px;"></div>
-                        <div>Загрузка...</div>
-                    </td>
-                </tr>
-            `;
-        } else if (this.loadMoreButton) {
-            this.loadMoreButton.disabled = true;
-            this.loadMoreButton.innerHTML = `
-                <div class="loading-spinner small" style="display: inline-block; width: 16px; height: 16px; margin-right: 8px; vertical-align: middle;"></div>
-                <span>Загрузка...</span>
-            `;
-        }
+        this.tableBody.innerHTML = `
+            <tr>
+                <td colspan="3" style="text-align: center; padding: 60px;">
+                    <div class="loading-spinner"></div>
+                    <div style="margin-top: 16px;">Загрузка ${this.getTypeLabel(this.selectedItemType, true)}...</div>
+                </td>
+            </tr>
+        `;
+        
+        this.paginationArea.style.display = 'none';
     }
 
     hideLoading() {
-        if (this.loadMoreButton) {
-            this.updateLoadMoreButton();
-        }
+
     }
 
     showError(message) {
         this.tableBody.innerHTML = `
             <tr>
-                <td colspan="3" style="text-align: center; padding: 40px; color: #dc3545;">
-                    <div style="font-size: 18px; margin-bottom: 10px;">⚠️</div>
-                    <div>${message}</div>
+                <td colspan="3" style="text-align: center; padding: 40px; color: #dc2626;">
+                    <div style="font-size: 24px; margin-bottom: 12px;">⚠️</div>
+                    <div style="font-weight: 500; margin-bottom: 8px;">Ошибка</div>
+                    <div style="color: #6b7280; font-size: 14px;">${message}</div>
                 </td>
             </tr>
         `;
         
-        if (this.loadMoreButton) {
-            this.loadMoreButton.style.display = 'none';
-        }
+        this.paginationArea.style.display = 'none';
     }
 
-    showNotification(message) {
-        const existingNotifications = document.querySelectorAll('.search-notification');
-        existingNotifications.forEach(notification => notification.remove());
-        
-        const notification = document.createElement('div');
-        notification.className = 'search-notification';
-        notification.style.cssText = `
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: #ff4757;
-            color: white;
-            padding: 12px 20px;
-            border-radius: 6px;
-            z-index: 10000;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            font-size: 14px;
-            animation: slideIn 0.3s ease;
-        `;
-        
-        notification.textContent = message;
-        document.body.appendChild(notification);
-        
-        setTimeout(() => {
-            notification.remove();
-        }, 3000);
-    }
+
 
     escapeHtml(text) {
         if (!text) return '';
@@ -2187,42 +2184,7 @@ class MultiTypeSearchManager {
     }
 }
 
-const style = document.createElement('style');
-style.textContent = `
-    .loading-spinner {
-        display: inline-block;
-        border: 3px solid #f3f3f3;
-        border-top: 3px solid #3498db;
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-    }
-    
-    .loading-spinner.small {
-        width: 16px;
-        height: 16px;
-        border-width: 2px;
-    }
-    
-    @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-    }
-    
-    tr.selected {
-        background-color: #e3f2fd !important;
-        font-weight: bold;
-    }
-    
-    .disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-    }
-`;
-document.head.appendChild(style);
-
-
 document.addEventListener('DOMContentLoaded', function() {
-    // console.log('Инициализация MultiTypeSearchManager...');
     const searchManager = new MultiTypeSearchManager();
 });
 

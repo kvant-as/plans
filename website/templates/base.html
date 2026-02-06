@@ -243,7 +243,7 @@
                     {% if plan.is_draft %}В редакции
                     {% elif plan.is_error %}Есть ошибки
                     {% elif plan.is_control %}Контроль пройден
-                    {% elif plan.is_sent %}{% if current_user.is_auditor != true %}Отправлен{%else%}Не просмотрен{%endif%}
+                    {% elif plan.is_sent %}{% if current_user.is_auditor != true %}На рассмотрении{%else%}Не просмотрен{%endif%}
                     {% elif plan.is_approved %}Одобрен
                     {% endif %}
                 </a>
@@ -494,7 +494,7 @@
                             <span class="btn-text">{{ _('Назад') }}</span>
                         </button>
 
-                        <button type="submit" class="submit-button">
+                        <button type="submit" class="main-btn main-btn-primary">
                             <img src="/static/img/Add_wh.svg" alt="" class="btn-icon">
                             <span class="btn-text">{{ _('Добавить направление ') }}</span>
                         </button>
@@ -534,7 +534,7 @@
                 </div>
                 <div class="button-auth-area">
                     <div></div>
-                    <button type="submit" class="submit-button">
+                    <button type="submit" class="main-btn main-btn-primary">
                         <img src="/static/img/Add_wh.svg" alt="" class="btn-icon">
                         <span class="btn-text">{{ _('Добавить изменения') }}</span>
                     </button>
@@ -772,7 +772,7 @@
                             <img src="/static/img/Back.svg" alt="" class="btn-icon">
                             <span class="btn-text">{{ _('Назад') }}</span>
                         </button>
-                        <button type="submit" class="submit-button">
+                        <button type="submit" class="main-btn main-btn-primary">
                             <img src="/static/img/Add_wh.svg" alt="" class="btn-icon">
                             <span class="btn-text">{{ _('Добавить мероприятие ') }}</span>
                         </button>
@@ -957,7 +957,7 @@
                         <span class="btn-text">{{ _('Назад') }}</span>
                     </button>
 
-                    <button type="submit" class="submit-button">
+                    <button type="submit" class="main-btn main-btn-primary">
                         <img src="/static/img/Edit_wh.svg" alt="" class="btn-icon">
                         <span class="btn-text">{{ _('Добавить изменения ') }}</span>
                     </button>
@@ -1065,7 +1065,7 @@
                             <img src="/static/img/Back.svg" alt="" class="btn-icon">
                             <span class="btn-text">{{ _('Назад') }}</span>
                         </button>
-                        <button type="submit" class="submit-button">
+                        <button type="submit" class="main-btn main-btn-primary">
                             <img src="/static/img/Add_wh.svg" alt="" class="btn-icon">
                             <span class="btn-text">{{ _('Добавить показатель') }}</span>
                         </button>
@@ -1126,7 +1126,7 @@
                     </div>
                     <div class="button-auth-area">
                         <div></div>
-                        <button type="submit" class="submit-button">
+                        <button type="submit" class="main-btn main-btn-primary">
                             <img src="/static/img/Add_wh.svg" alt="" class="btn-icon">
                             <span class="btn-text">{{ _('Добавить изменения') }}</span>
                         </button>
@@ -1154,7 +1154,7 @@
         </div>  
     {% endif %}
 
-    {% if change_orgUser_modal %}
+{% if change_orgUser_modal %}
     <div id="orgUserModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -1163,27 +1163,26 @@
             </div>
 
             
-            <div class="type-selector" style="margin-bottom: 20px;">
-                <div class="type-buttons" style="display: flex; gap: 10px;">
-                    <button type="button" 
-                            class="type-button active" 
-                            data-action="select-type" 
-                            data-type="organization">
-                        {{ _('Организации') }}
-                    </button>
-                    <button type="button" 
-                            class="type-button" 
-                            data-action="select-type" 
-                            data-type="ministry">
-                        {{ _('Министерства') }}
-                    </button>
-                    <button type="button" 
-                            class="type-button" 
-                            data-action="select-type" 
-                            data-type="region">
-                        {{ _('Регионы') }}
-                    </button>
-                </div>
+   
+            <div class="telegram-type-selector">
+                <button type="button" 
+                        class="telegram-type-button active" 
+                        data-action="select-type" 
+                        data-type="organization">
+                    {{ _('Организации') }}
+                </button>
+                <button type="button" 
+                        class="telegram-type-button" 
+                        data-action="select-type" 
+                        data-type="ministry">
+                    {{ _('Министерства') }}
+                </button>
+                <button type="button" 
+                        class="telegram-type-button" 
+                        data-action="select-type" 
+                        data-type="region">
+                    {{ _('Регионы') }}
+                </button>
             </div>
 
             <div id="step1" class="modal-step">
@@ -1196,28 +1195,42 @@
                             class="app-input" required>
                     </div>
                 </div>
-                
-                <div class="modal-table-conteiner">
-                    <table class="directions-table" data-action="organization-table">
-                        <thead class="directions-table-titles">
-                            <tr>
-                                <th style="display: none;">id</th>           
-                                <th>{{ _('Наименование') }}</th>
-                                <th style="text-align: center;">{{ _('ОКПО') }}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                   
-                        </tbody>
-                    </table>
-                </div>             
-                
-                <div style="display: flex; justify-content: center;">
-                    <button class="auth-next-button" 
-                            data-action="load-more" 
-                            style="display: none;">
-                        <span class="btn-text">{{ _('Загрузить еще') }}</span>
-                    </button>
+                <div class = "spravochniki_area">
+                    <div class="organizations-table-container">
+                        <table class="organizations-table" data-action="organization-table">
+                            <thead>
+                                <tr>
+                                    <th style="display: none;">id</th>           
+                                    <th>{{ _('Наименование') }}</th>
+                                    <th style="text-align: center;">{{ _('ОКПО') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>             
+                </div> 
+                <!-- Пагинация -->
+                <div class="pagination-area" id="paginationArea" style="display: none;">
+                    <div class="pagination-container">
+                        <button id="prevPageBtn" class="pagination-btn prev-btn" aria-label="Предыдущая страница">
+                            <svg class="pagination-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                            </svg>
+                        </button>
+                        
+                        <div class="pagination-pages">
+                            <span id="currentPage" class="page-current">1</span>
+                            <span class="page-separator">/</span>
+                            <span id="totalPages" class="page-total">1</span>
+                        </div>
+                        
+                        <button id="nextPageBtn" class="pagination-btn next-btn" aria-label="Следующая страница">
+                            <svg class="pagination-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z"/>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
                 
                 <form method="POST" action="{{ url_for('views.edit_user_org') }}" id="selection-form">
@@ -1227,9 +1240,9 @@
                     
                     <div class="button-auth-area">
                         <div></div>
-                        <button type="submit" class="submit-button" data-action="submit">
+                        <button type="submit" class="main-btn main-btn-primary" data-action="submit">
                             <img src="/static/img/Edit_wh.svg" alt="" class="btn-icon">
-                            <span class="btn-text">{{ _('Выберите элемент') }}</span>
+                            <span class="btn-text">{{ _('Сохранить изменения') }}</span>
                         </button>
                     </div>
                 </form>
@@ -1237,6 +1250,8 @@
         </div>
     </div>
     {% endif %}
+
+
 
     <main> 
     <div id="flash-container"></div>

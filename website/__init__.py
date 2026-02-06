@@ -1,10 +1,5 @@
-from datetime import datetime
-from logging.handlers import RotatingFileHandler
 import os
-import sys
 from dotenv import load_dotenv
-
-import logging
 
 from flask import Flask, flash, render_template, session, request, g, redirect, url_for
 from flask_babel import Babel
@@ -17,10 +12,9 @@ from flask_babel import format_date
 from flask_wtf.csrf import CSRFProtect
 from flask_talisman import Talisman
 
-from .completion_db import create_database
+from website.logs import setup_logging
 
-# from flasgger import Swagger
-# from .api_docs import register_models_for_api, api_bp
+from .database import create_database
 
 load_dotenv()
 
@@ -33,7 +27,6 @@ LANGUAGES = {
 def get_locale():
     if 'language' in session and session['language'] in LANGUAGES:
         return session['language']
-
     user = getattr(g, 'user', None)
     if user and hasattr(user, 'locale') and user.locale in LANGUAGES:
         return user.locale
@@ -45,54 +38,6 @@ def get_timezone():
     if user is not None and hasattr(user, 'timezone'):
         return user.timezone
     return None
-
-"""Logging setup"""
-def setup_logging(app):
-    log_dir = "logs"
-    if not os.path.exists(log_dir):
-        os.makedirs(log_dir)
-
-    log_file = os.path.join(log_dir, "py-app.log")
-    log_level = os.getenv('LOG_LEVEL', 'INFO').upper()
-    
-    formatter = logging.Formatter(
-        '%(asctime)s | %(levelname)-8s | %(name)s | %(filename)s:%(lineno)d | %(message)s',
-        datefmt='%Y-%m-%d %H:%M:%S'
-    )
-    
-    file_handler = RotatingFileHandler(
-        log_file,
-        maxBytes=10*1024*1024,  # 10 mb
-        backupCount=5,
-        encoding='utf-8'
-    )
-    
-    file_handler.setLevel(getattr(logging, log_level))
-    file_handler.setFormatter(formatter)
-    file_handler.set_name('file_handler')
-    
-    console_handler = logging.StreamHandler(sys.stdout)
-    console_handler.setLevel(getattr(logging, log_level))
-    console_handler.setFormatter(formatter)
-    console_handler.set_name('console_handler')
-    
-    root_logger = logging.getLogger()
-    root_logger.setLevel(getattr(logging, log_level))
-    
-    root_logger.handlers.clear()
-    
-    root_logger.addHandler(file_handler)
-    root_logger.addHandler(console_handler)
-    
-    app.logger.handlers.clear()
-    app.logger.propagate = True
-    
-    app.logger.info("=" * 60)
-    app.logger.info(f"Launch time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-    app.logger.info(f"Logging level: {log_level}")
-    app.logger.info(f"Logs are recorded in: {log_file}")
-    app.logger.info("=" * 60)
-    
 
 babel = Babel(
     locale_selector=get_locale,
@@ -140,63 +85,10 @@ def create_app():
     login_manager.login_message = "Пожалуйста, авторизуйтесь для доступа к этой странице"
     login_manager.login_view = "auth.login"
 
-    # Swagger(app, template={
-    #     "swagger": "2.0",
-    #     "info": {
-    #         "title": "ErespondentS API",
-    #         "description": "API для управления экономическими показателями и планами в ErespondentS\n\n**⚠️ Доступ только для администраторов ⚠️**\n\nДля использования API необходимо:\n1. Авторизоваться через /auth/login\n2. Иметь права администратора (is_admin = true)",
-    #         "version": "1.0.0",
-    #         "contact": {
-    #             "name": "Администрация",
-    #             "email": "info@kvantas-as.by"
-    #         }
-    #     },
-    #     "securityDefinitions": {
-    #         "Bearer": {
-    #             "type": "apiKey",
-    #             "name": "Authorization",
-    #             "in": "header",
-    #             "description": "Введите: Bearer <session_token>"
-    #         }
-    #     },
-    #     "security": [{"Bearer": []}],
-    #     "schemes": ["http", "https"],
-    #     "consumes": ["application/json"],
-    #     "produces": ["application/json"]
-    # })
-    
-    # @app.route('/apidocs/')
-    # @app.route('/apidocs/index.html')
-    # @login_required
-    # def swagger_ui():
-    #     """Доступ к Swagger UI только для администраторов"""
-    #     if not getattr(current_user, 'is_admin', False):
-    #         flash('Доступ к API документации разрешен только администраторам', 'error')
-    #         return redirect(url_for('views.begin_page'))
-    #     return redirect('/apispec_1.json')
-    
-    # @api_bp.before_request
-    # def restrict_api_to_admins():
-    #     """Ограничиваем доступ ко всем API endpoints только для администраторов"""
-    #     public_endpoints = ['api.health_check']
-        
-    #     if request.endpoint in public_endpoints:
-    #         return
-        
-    #     if not current_user.is_authenticated:
-    #         return jsonify({'error': 'Требуется авторизация'}), 401
-        
-    #     if not getattr(current_user, 'is_admin', False):
-    #         return jsonify({'error': 'Доступ запрещен. Требуются права администратора'}), 403
-    
-    # csrf.exempt(api_bp)
-    # register_models_for_api(app, db)
-
     from .routes.views import views
     from .routes.auth import auth
     app.register_blueprint(views, url_prefix='/')
     app.register_blueprint(auth, url_prefix='/')
-    # app.register_blueprint(api_bp)
     
     with app.app_context():
         from .routes.admin import AdminSetup

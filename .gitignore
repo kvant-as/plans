@@ -8,6 +8,10 @@
 .venv/
 .env
 
+# Logs
+*.log
+logs/
+
 database_export.xlsx
 website/__pycache__
 

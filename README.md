@@ -4,6 +4,7 @@
 ![Framework](https://img.shields.io/badge/framework-Flask-blue)
 ![Database](https://img.shields.io/badge/database-PostgreSQL-blue)
 ![Status](https://img.shields.io/badge/status-active-success)
+[![Built by shlneo](https://img.shields.io/badge/Built%20by-Shlneo%20-blue)](https://github.com/shlneo)
 
 ## Overview
 

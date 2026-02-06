@@ -11,7 +11,7 @@ from flask_login import (
 
 from sqlalchemy import func
 from werkzeug.security import check_password_hash
-from website.account import send_email
+from website.user import send_email
 
 from itsdangerous import URLSafeTimedSerializer
 from datetime import datetime, timedelta
@@ -129,7 +129,7 @@ def sign():
         email = request.form.get('email')
         password1 = request.form.get('password1')
         password2 = request.form.get('password2')
-        from ..account import sign_def
+        from ..user import sign_def
         return sign_def(email, password1, password2)
 
 @auth.route('/code', methods=['POST', 'GET'])
@@ -137,12 +137,12 @@ def code():
     if request.method == 'GET':
         return render_template('code.html')
     elif request.method == 'POST':
-        from ..account import activate_account
+        from ..user import activate_account
     return activate_account()
 
 @auth.route('/resend-code', methods=['POST'])
 def resend_code():
-    from ..account import gener_password, send_activation_email
+    from ..user import gener_password, send_activation_email
     try:
         session.pop('activation_code', None)
         new_code = gener_password()
@@ -174,7 +174,7 @@ def param():
         organization_id = request.form.get('organization_id')
         ministry_id = request.form.get('ministry_id')
         region_id = request.form.get('region_id')
-        from ..account import add_param
+        from ..user import add_param
         return add_param(first_name, last_name, patronymic_name, phone, organization_id, ministry_id, region_id, post)
     
 @auth.route('/edit-param', methods=['POST'])

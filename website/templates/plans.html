@@ -10,7 +10,7 @@
             </div>
             <div class="header-content-right">
                 {% if current_user.is_auditor != true %}
-                <button type="button" class="submit-button" onclick="window.location.href='/create-plan'">
+                <button type="button" class="main-btn main-btn-primary" onclick="window.location.href='/create-plan'">
                     <img src="/static/img/Add_wh.svg" alt="" class="btn-icon">
                     <span class="btn-text">{{ _('Создать новый') }}</span>
                 </button>
@@ -44,7 +44,7 @@
                 <div class="stat-and-dot">
                     <div class="stat">
                         <a class="stat-number-sent">{{ status_counts.sent  }}</a>
-                        <a class="word-numb">{% if current_user.is_auditor != true %}{{ _('Отправленные') }}{%else%}{{ _('Не просмотренные') }}{%endif%}</a>
+                        <a class="word-numb">{% if current_user.is_auditor != true %}{{ _('На рассмотрении') }}{%else%}{{ _('Не просмотренные') }}{%endif%}</a>
                     </div>
                     <div class="status-dot"></div>
                 </div>
@@ -77,7 +77,7 @@
                         <span class="selected-option">
                             {% if request.args.get('status') == 'draft' %}{{ _('В редакции') }}
                             {% elif request.args.get('status') == 'control' %}{{ _('Контроль пройден') }}
-                            {% elif request.args.get('status') == 'sent' %}{% if current_user.is_auditor != true %}{{ _('Отправленные') }}{%else%}{{ _('Не просмотренные') }}{%endif%}
+                            {% elif request.args.get('status') == 'sent' %}{% if current_user.is_auditor != true %}{{ _('На рассмотрении') }}{%else%}{{ _('Не просмотренные') }}{%endif%}
                             {% elif request.args.get('status') == 'error' %}{{ _('С ошибками') }}
                             {% elif request.args.get('status') == 'approved' %}{{ _('Одобренные') }}
                             {% else %}{{ _('Статус') }}{% endif %}
@@ -90,7 +90,7 @@
                         <div class="dropdown-item" data-value="all">{{ _('Все') }}</div>
                         <div class="dropdown-item" data-value="draft">{{ _('В редакции') }}</div>
                         <div class="dropdown-item" data-value="control">{{ _('Контроль пройден') }}</div>
-                        <div class="dropdown-item" data-value="sent">{% if current_user.is_auditor != true %}{{ _('Отправленные') }}{%else%}{{ _('Не просмотренные') }}{%endif%}</div>
+                        <div class="dropdown-item" data-value="sent">{% if current_user.is_auditor != true %}{{ _('На рассмотрении') }}{%else%}{{ _('Не просмотренные') }}{%endif%}</div>
                         <div class="dropdown-item" data-value="error">{{ _('С ошибками') }}</div>
                         <div class="dropdown-item" data-value="approved">{{ _('Одобренные') }}</div>
                     </div>
@@ -170,7 +170,7 @@
                                 {% if plan.is_error %}{{ _('Есть ошибки') }}{% endif %}
                                 {% if plan.is_control %}{{ _('Контроль пройден') }}{% endif %}
                                 {% if plan.is_sent %}
-                                    {% if current_user.is_auditor != true %}{{ _('Отправлен') }}{% else %}{{ _('Не просмотрен') }}{% endif %}
+                                    {% if current_user.is_auditor != true %}{{ _('На рассмотрении') }}{% else %}{{ _('Не просмотрен') }}{% endif %}
                                 {% endif %}
                                 {% if plan.is_approved %}{{ _('Одобрен') }}{% endif %}
                             </a>

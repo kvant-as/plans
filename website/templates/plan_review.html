@@ -11,7 +11,7 @@
                     {% if plan.is_draft %}В редакции
                     {% elif plan.is_error %}Есть ошибки
                     {% elif plan.is_control %}Контроль пройден
-                    {% elif plan.is_sent %}{% if current_user.is_auditor != true %}Отправлен{%else%}Не просмотрен{%endif%}
+                    {% elif plan.is_sent %}{% if current_user.is_auditor != true %}На рассмотрении{%else%}Не просмотрен{%endif%}
                     {% elif plan.is_approved %}Одобрен
                     {% endif %}
                 </a>  
@@ -111,7 +111,7 @@
             </div>
             {% if current_user.is_auditor != true %}
             <div class="button-area">
-                <button id = "editPlanButton" type="submit" class="submit-button" {% if plan.is_sent or plan.is_approved %}disabled{% endif %} >
+                <button id = "editPlanButton" type="submit" class="main-btn main-btn-primary" {% if plan.is_sent or plan.is_approved %}disabled{% endif %} >
                     <img src="/static/img/Edit_wh.svg" alt="" class="btn-icon">
                     <span class="btn-text">{{ _('Применить изменения') }}</span>
                 </button>
