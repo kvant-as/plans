@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}{{ _('FAQ') }} - ErespondentS{% endblock %}
+{% block title %}{{ _('FAQ') }} - PlansEnergo{% endblock %}
 {% block content %}
 
 <div class="faq-modern">
@@ -18,7 +18,7 @@
                         <div class="questions-list-modern">
                             <a href="#what-is" class="question-link-modern">
                                 <span class="question-icon">📘</span>
-                                Что такое ErespondentS?
+                                Что такое PlansEnergo?
                             </a>
                             <a href="#getting-started" class="question-link-modern">
                                 <span class="question-icon">🚀</span>
@@ -46,6 +46,17 @@
                             </a>
                         </div>
                     </div>
+                    <div class="category-modern">
+                        <div class="category-header-modern">
+                            <h3>Безопасность и подписи</h3>
+                        </div>
+                        <div class="questions-list-modern">
+                            <a href="#ecp-certificate" class="question-link-modern">
+                                <span class="question-icon">🔐</span>
+                                Сертификат ЭЦП
+                            </a>
+                        </div>
+                    </div>
 
                     <div class="category-modern">
                         <div class="category-header-modern">
@@ -65,7 +76,7 @@
                 <div class="answer-placeholder" id="default-view">
                     <div class="placeholder-icon">❓</div>
                     <h2>Выберите вопрос</h2>
-                    <p>Выберите вопрос из списка слева, чтобы увидеть подробный ответ с инструкциями, скриншотами и примерами.</p>
+                    <p>Выберите вопрос из списка, чтобы увидеть подробный ответ с инструкциями, скриншотами и примерами.</p>
                     <div style="margin-top: 30px; font-size: 14px; opacity: 0.6;">
                         <em>Используйте поиск для быстрого доступа к нужной информации</em>
                     </div>
@@ -73,17 +84,17 @@
 
                 <article class="answer-active-modern" id="what-is">
                     <header class="answer-header-modern">
-                        <h1 class="answer-title-modern">Что такое ErespondentS?</h1>
+                        <h1 class="answer-title-modern">Что такое PlansEnergo?</h1>
                     </header>
 
                     <div class="answer-body-modern">
                         <div class="answer-text">
-                            <p><strong>ErespondentS</strong> — это автоматизированный комплекс для создания, анализа и представления для согласования планов энергоэффективности организаций.</p>
+                            <p><strong>PlansEnergo</strong> — это автоматизированный комплекс для создания, анализа и представления для согласования планов энергоэффективности организаций.</p>
                         </div>
 
                         <div class="answer-highlight">
                             <div class="highlight-icon">💡</div>
-                            <p><strong>Ключевая особенность:</strong> ErespondentS автоматизирует 95% рутинных расчетов, позволяя сосредоточиться на стратегических решениях.</p>
+                            <p><strong>Ключевая особенность:</strong> PlansEnergo автоматизирует 95% рутинных расчетов, позволяя сосредоточиться на стратегических решениях.</p>
                         </div>
                         <div class="features-grid">
                             <div class="feature-card">
@@ -105,7 +116,6 @@
 
                         <div class="answer-text">
                             <h3>Для кого предназначена система?</h3>
-                            <p>ErespondentS разработана для:</p>
                             <ul style="list-style: none; padding-left: 0;">
                                 <li style="padding: 10px 0; border-bottom: 1px solid #eee;">
                                     <strong>🏢 Респондентов</strong> — управление энергосберегающими планами
@@ -116,29 +126,7 @@
                             </ul>
                         </div>
 
-                        <div class="image-gallery">
-                            <div class="gallery-item">
-                                <img src="/static/img/faq/dashboard-preview.png" alt="">
-                                <div class="gallery-overlay">
-                                    <h5>Таблицы</h5>
-                                    <p>Заполнение таблиц</p>
-                                </div>
-                            </div>
-                            <div class="gallery-item">
-                                <img src="/static/img/faq/reports-preview.png" alt="">
-                                <div class="gallery-overlay">
-                                    <h5>Генерация планов</h5>
-                                    <p></p>
-                                </div>
-                            </div>
-                            <div class="gallery-item">
-                                <img src="/static/images/faq/analytics-preview.jpg" alt="">
-                                <div class="gallery-overlay">
-                                    <h5>Аналитика</h5>
-                                    <p>Визуализация данных и статистика</p>
-                                </div>
-                            </div>
-                        </div>
+          
 
                         <div class="answer-navigation">
                             <div></div>
@@ -157,7 +145,7 @@
 
                     <div class="answer-body-modern">
                         <div class="answer-text">
-                            <p>Начать работу с ErespondentS просто даже для новичков. Следуйте этому пошаговому руководству, и вы сможете создать свой первый план за 15 минут.</p>
+                            <p>Начать работу с PlansEnergo просто даже для новичков. Следуйте этому пошаговому руководству, и вы сможете создать свой первый план за 15 минут.</p>
                         </div>
 
                         <div class="steps-container">
@@ -197,41 +185,43 @@
                                 Ваш браузер не поддерживает видео.
                             </video>
                             <div class="video-caption">
-                                <h5>Быстрый старт с ErespondentS</h5>
-                                <p>Посмотрите как начать работу с ErespondentS</p>
+                                <h5>Быстрый старт с PlansEnergo</h5>
+                                <p>Посмотрите как начать работу с PlansEnergo</p>
                             </div>
                         </div>
 
                         <div class="answer-text">
                             <h3>Чеклист для начала работы:</h3>
-                            <div style="background: #f8fafc; padding: 24px; border-radius: 12px; margin-top: 20px;">
-                                <label style="display: flex; align-items: center; padding: 10px 0; cursor: pointer;">
-                                    <input type="checkbox" style="margin-right: 12px; transform: scale(1.2);">
+                            <div class="checklist-container">
+                                <h4 class="checklist-header">Проверьте готовность к работе</h4>
+                                <p class="checklist-subtitle">Выполните все пункты для полноценной работы в системе</p>
+                                
+                                <label class="checklist-item">
+                                    <input type="checkbox">
                                     <span>Электронная почта подтверждена</span>
                                 </label>
-                                <label style="display: flex; align-items: center; padding: 10px 0; cursor: pointer;">
-                                    <input type="checkbox" style="margin-right: 12px; transform: scale(1.2);">
+                                <label class="checklist-item">
+                                    <input type="checkbox">
                                     <span>Заполнены личные данные</span>
                                 </label>
-                                <label style="display: flex; align-items: center; padding: 10px 0; cursor: pointer;">
-                                    <input type="checkbox" style="margin-right: 12px; transform: scale(1.2);">
+                                <label class="checklist-item">
+                                    <input type="checkbox">
                                     <span>Выбрана организация</span>
                                 </label>
-                                <label style="display: flex; align-items: center; padding: 10px 0; cursor: pointer;">
-                                    <input type="checkbox" style="margin-right: 12px; transform: scale(1.2);">
+                                <label class="checklist-item">
+                                    <input type="checkbox">
                                     <span>Ознакомление с руководством пользователя или же с FAQ</span>
                                 </label>
                             </div>
-                        </div>
-                     
+                        </div>    
                     </div>  
-                        <div class="answer-navigation">
-                            <a href="#getting-started" class="nav-btn prev">
-                                <i>←</i>
-                                Предыдущий вопрос
-                            </a>
-                            <div></div>
-                        </div>
+                    <div class="answer-navigation">
+                        <a href="#what-is" class="nav-btn prev">
+                            <i>←</i>
+                            Предыдущий вопрос
+                        </a>
+                        <div></div>
+                    </div>
                 </article>
 
                 <article class="answer-active-modern" id="create-plan">
@@ -241,7 +231,7 @@
 
                     <div class="answer-body-modern">
                         <div class="answer-text">
-                            <p>Создание плана энергоэффективности в ErespondentS — это простой пошаговый процесс, который занимает всего несколько минут. Система проведет вас через все необходимые этапы.</p>
+                            <p>Создание плана энергоэффективности в PlansEnergo — это простой пошаговый процесс, который занимает всего несколько минут. Система проведет вас через все необходимые этапы.</p>
                         </div>
 
                         <div class="steps-container">
@@ -379,7 +369,7 @@
 
                     <div class="answer-body-modern">
                         <div class="answer-text">
-                            <p>Аудит планов в ErespondentS выполняется специально назначенными аудиторами — региональными управлениями по надзору за энергоэффективностью. Аудиторы проводят проверку всех таблиц и данных плана, после чего выносят официальный вердикт.</p>
+                            <p>Аудит планов в PlansEnergo выполняется специально назначенными аудиторами — региональными управлениями по надзору за энергоэффективностью. Аудиторы проводят проверку всех таблиц и данных плана, после чего выносят официальный вердикт.</p>
                         </div>
 
                         <div class="answer-highlight" >
@@ -480,7 +470,7 @@
 
                         <div class="video-container">
                             <video controls poster="/static/img/faq/audit-demo-preview.png">
-                                <source src="/static/video/audit-demo.mp4" type="video/mp4">
+                                <source src="/static/video/audit-report.mp4" type="video/mp4">
                                 Ваш браузер не поддерживает видео.
                             </video>
                             <div class="video-caption">
@@ -541,11 +531,11 @@
                         </div>
 
                         <div class="answer-navigation">
-                            <a href="#export" class="nav-btn prev">
+                            <a href="#create-plan" class="nav-btn prev">
                                 <i>←</i>
                                 Предыдущий вопрос
                             </a>
-                            <a href="#plans" class="nav-btn next">
+                            <a href="#export" class="nav-btn next">
                                 Следующий вопрос
                                 <i>→</i>
                             </a>
@@ -560,7 +550,7 @@
 
                     <div class="answer-body-modern">
                         <div class="answer-text">
-                            <p>ErespondentS предоставляет несколько форматов экспорта для различных целей: от аналитики в Excel до официальных отчетов для подачи. Все форматы создаются автоматически на основе ваших данных.</p>
+                            <p>PlansEnergo предоставляет несколько форматов экспорта для различных целей: от аналитики в Excel до официальных отчетов для подачи. Все форматы создаются автоматически на основе ваших данных.</p>
                         </div>
 
                         <div class="steps-container">
@@ -707,7 +697,7 @@
 
                     <div class="answer-body-modern">
                         <div class="answer-text">
-                            <p>В ErespondentS каждый план проходит несколько этапов жизненного цикла, отражаемых через систему статусов. Понимание этих статусов помогает отслеживать прогресс и управлять планами эффективно.</p>
+                            <p>В PlansEnergo каждый план проходит несколько этапов жизненного цикла, отражаемых через систему статусов. Понимание этих статусов помогает отслеживать прогресс и управлять планами эффективно.</p>
                         </div>
 
                         <div class="answer-highlight">
@@ -887,7 +877,152 @@
                         </div>
 
                         <div class="answer-navigation">
-                            <a href="#audit-data" class="nav-btn prev">
+                            <a href="" class="nav-btn prev">
+                                <i>←</i>
+                                Предыдущий вопрос
+                            </a>
+                            <div></div>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="answer-active-modern" id="ecp-certificate">
+                    <header class="answer-header-modern">
+                        <h1 class="answer-title-modern">Как пройти проверку сертификата ЭЦП</h1>
+                    </header>
+
+                    <div class="answer-body-modern">
+                        <div class="answer-text">
+                            <p>Для отправки отчетов в системе PlansEnergo требуется использование электронной цифровой подписи (ЭЦП). Этот раздел поможет вам правильно настроить и использовать сертификат ЭЦП.</p>
+                        </div>
+
+                        <div class="answer-highlight">
+                            <div class="highlight-icon">💡</div>
+                            <p><strong>Важное требование:</strong> Для осуществления функции <strong>"отправить отчет"</strong> должно быть установлено ПО <strong>"Менеджер сертификатов"</strong> от <i>Авест</i> с настроенным сертификатом электронной цифровой подписи (ЭЦП).</p>
+                        </div>
+
+                        <div class="features-grid">
+                            <div class="feature-card">
+                                <div class="feature-icon">✅</div>
+                                <h4>Действительный сертификат</h4>
+                                <p>Срок действия сертификата на текущий момент является удовлетворительным</p>
+                            </div>
+                            <div class="feature-card">
+                                <div class="feature-icon">❌</div>
+                                <h4>НЕдействительный сертификат</h4>
+                                <p>Срок действия сертификата уже закончился, требуется обновление</p>
+                            </div>
+                        </div>
+
+                        <div class="steps-container">
+                            <div class="step-item">
+                                <div class="step-number"></div>
+                                <div class="step-content">
+                                    <h4>Откройте ПО "Менеджер сертификатов"</h4>
+                                    <p>Запустите программу "Менеджер сертификатов" от Авест. Вы увидите интерфейс с доступными сертификатами.</p>
+                                    <div class="image-gallery">
+                                        <div class="gallery-item" style = "max-width: 400px;">
+                                            <img src="/static/img/faq/28.jpg" alt="ПО Менеджер сертификатов" >
+                                            <div class="gallery-overlay">
+                                                <h5>ПО Менеджер сертификатов</h5>
+                                                <p>Главное окно программы</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="step-item">
+                                <div class="step-number"></div>
+                                <div class="step-content">
+                                    <h4>Выберите действительный сертификат</h4>
+                                    <p>Выберите ваш <strong>"Действительный"</strong> сертификат из списка и нажмите кнопку "✓ Ок" для продолжения.</p>
+                                    <div class="image-gallery">
+                                        <div class="gallery-item">
+                                            <img src="/static/img/faq/29.jpg" alt="Выбор сертификата">
+                                            <div class="gallery-overlay">
+                                                <h5>Выбор сертификата</h5>
+                                                <p>Выберите действующий сертификат</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="step-item">
+                                <div class="step-number"></div>
+                                <div class="step-content">
+                                    <h4>Экспортируйте сертификат в файл</h4>
+                                    <p>В главном окне программы кликните правой кнопкой мыши по вашему сертификату и выберите <strong>"Экспорт сертификата в файл"</strong>.</p>
+                                    <div class="image-gallery">
+                                        <div class="gallery-item">
+                                            <img src="/static/img/faq/30.jpg" alt="Экспорт сертификата">
+                                            <div class="gallery-overlay">
+                                                <h5>Экспорт сертификата</h5>
+                                                <p>Контекстное меню экспорта</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="step-item">
+                                <div class="step-number"></div>
+                                <div class="step-content">
+                                    <h4>Сохраните файл сертификата</h4>
+                                    <p>Выберите удобное место на вашем компьютере для сохранения файла сертификата. Запомните путь к файлу.</p>
+                                </div>
+                            </div>
+
+                            <div class="step-item">
+                                <div class="step-number"></div>
+                                <div class="step-content">
+                                    <h4>Импортируйте сертификат в систему</h4>
+                                    <p>При отправке отчета в PlansEnergo используйте полученный файл сертификата. Вы можете:</p>
+                                    <ul style="margin-top: 8px;">
+                                        <li><strong>Перетащить файл</strong> в контейнер с пунктирной обводкой</li>
+                                        <li><strong>Или кликнуть</strong> "нажмите для выбора" и выбрать файл вручную</li>
+                                    </ul>
+                                    <div class="image-gallery" style="margin-top: 16px;">
+                                        <div class="gallery-item" style = "max-width: 400px;">
+                                            <img src="/static/img/faq/31.jpg" alt="Импорт сертификата">
+                                            <div class="gallery-overlay">
+                                                <h5>Импорт сертификата</h5>
+                                                <p>Загрузка сертификата в систему</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="answer-text">
+                            <div class="checklist-container">
+                                <h4 class="checklist-header">Чеклист для работы с ЭЦП</h4>
+                                <p class="checklist-subtitle">Выполните все пункты</p>
+                                
+                                <label class="checklist-item">
+                                    <input type="checkbox">
+                                    <span>Убедитесь, что срок действия сертификата не истек</span>
+                                </label>
+                                <label class="checklist-item">
+                                    <input type="checkbox">
+                                    <span>ПО "Менеджер сертификатов" должно быть корректно установлено</span>
+                                </label>
+                                <label class="checklist-item">
+                                    <input type="checkbox">
+                                    <span>Сохраните файл сертификата в надежном месте</span>
+                                </label>
+                                <label class="checklist-item">
+                                    <input type="checkbox">
+                                    <span>При возникновении ошибок проверьте правильность выбора сертификата</span>
+                                </label>
+                            </div>
+                        </div>   
+
+
+
+                        <div class="answer-navigation">
+                            <a href="" class="nav-btn prev">
                                 <i>←</i>
                                 Предыдущий вопрос
                             </a>

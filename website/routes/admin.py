@@ -303,9 +303,6 @@ class UserView(SecureModelView):
             if not password:
                 flash('При создании пользователя необходимо указать пароль!', 'error')
                 raise ValueError('Пароль обязателен при создании пользователя')
-            if password != confirm_password:
-                flash('Пароли не совпадают!', 'error')
-                raise ValueError('Пароли не совпадают')
             model.password = generate_password_hash(password)
         elif password:
             if confirm_password and password != confirm_password:

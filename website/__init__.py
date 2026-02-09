@@ -53,7 +53,10 @@ csrf = CSRFProtect()
 
 def create_app():
     app = Flask(__name__, static_url_path='/static')
-
+    
+    from itsdangerous import URLSafeSerializer, BadSignature
+    s = URLSafeSerializer(os.getenv('SECRET_KEY'))
+    
     app.config.update(
         SECRET_KEY=os.getenv('SECRET_KEY'),
         SQLALCHEMY_DATABASE_URI=f"postgresql://{os.getenv('postrgeuser')}:{os.getenv('postrgepass')}@localhost:5432/{os.getenv('postrgedbname')}",
@@ -104,6 +107,12 @@ def create_app():
     @app.context_processor
     def inject_get_locale():
         return dict(get_locale=get_locale)
+    
+    @app.context_processor
+    def utility_processor():
+        def generate_plan_token(plan_id):
+            return s.dumps(plan_id)
+        return dict(generate_plan_token=generate_plan_token)
     
     @app.route('/static/<path:filename>')
     def custom_static(filename):

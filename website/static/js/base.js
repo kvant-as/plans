@@ -4208,7 +4208,7 @@ document.addEventListener('DOMContentLoaded', () => {
             yesId: 'confirmYes',
             noId: 'confirmNo',
             textId: 'modal-text',
-            modalText: 'Вы действительно хотите выйти из системы ErespondentS?',
+            modalText: 'Вы действительно хотите выйти из системы PlansEnergo?',
             textSecondId: 'modal-text-second',
             modalTextSecond: 'Все несохраненные изменения будут потеряны. Убедитесь, что вы сохранили свою работу.'
         });
