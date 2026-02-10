@@ -2425,10 +2425,12 @@ function initConfirmModal(config) {
 }
 
 (function() {
-    function filterPlans(nameInput, okpoInput, plans) {
+    function filterPlans(nameInput, okpoInput, plans, noResultsContainer) {
         const nameFilter = nameInput ? nameInput.value.toLowerCase() : "";
         const okpoFilter = okpoInput ? okpoInput.value.toLowerCase() : "";
-
+        
+        let visibleCount = 0;
+        
         plans.forEach(plan => {
             const planName = plan.dataset.name || "";
             const planOkpo = plan.dataset.okpo || "";
@@ -2436,27 +2438,53 @@ function initConfirmModal(config) {
             const matchName = planName.includes(nameFilter);
             const matchOkpo = planOkpo.includes(okpoFilter);
 
-            plan.style.display = (matchName && matchOkpo) ? "" : "none";
+            const isVisible = (matchName && matchOkpo);
+            plan.style.display = isVisible ? "" : "none";
+            
+            if (isVisible) visibleCount++;
         });
+        
+        if (noResultsContainer) {
+            noResultsContainer.style.display = visibleCount === 0 ? "block" : "none";
+        }
     }
 
     function initPlansFilter(config = {}) {
         const {
             nameInputSelector = "#search-name",
             okpoInputSelector = "#search-okpo",
-            plansSelector = '[data-plan="choose"]' // <- теперь селектор по атрибуту
+            plansSelector = '[data-plan="choose"]',
+            noResultsSelector = "#no-results",
+            createIfNotExists = true
         } = config;
 
         const nameInput = document.querySelector(nameInputSelector);
         const okpoInput = document.querySelector(okpoInputSelector);
         const plans = document.querySelectorAll(plansSelector);
+        let noResultsContainer = document.querySelector(noResultsSelector);
 
         if (!plans.length) return;
+        
+        if (!noResultsContainer && createIfNotExists) {
+            const plansContainer = plans[0].parentNode;
+            noResultsContainer = document.createElement("div");
+            noResultsContainer.id = noResultsSelector.replace("#", "");
+            noResultsContainer.className = "no-results";
+            noResultsContainer.innerHTML = `
+                <div class="choose-plan no-data">
+                    <p>По вашему запросу ничего не найдено</p>
+                    <small>Попробуйте изменить параметры поиска</small>
+                </div>
+            `;
+            noResultsContainer.style.display = "none";
+            plansContainer.appendChild(noResultsContainer);
+        }
 
-        const handler = () => filterPlans(nameInput, okpoInput, plans);
+        const handler = () => filterPlans(nameInput, okpoInput, plans, noResultsContainer);
 
         if (nameInput) nameInput.addEventListener("input", handler);
         if (okpoInput) okpoInput.addEventListener("input", handler);
+        setTimeout(handler, 100);
     }
 
     window.initPlansFilter = initPlansFilter;
@@ -4195,7 +4223,7 @@ document.addEventListener('DOMContentLoaded', () => {
             textId: 'modal-text',
             modalText: 'Вы действительно хотите отредактировать данные профиля?',
             textSecondId: 'modal-text-second',
-            modalTextSecond: 'Все несохраненные изменения будут потеряны.'
+            modalTextSecond: 'Это действие нельзя будет отменить.'
         });
     }
 
@@ -4210,7 +4238,7 @@ document.addEventListener('DOMContentLoaded', () => {
             textId: 'modal-text',
             modalText: 'Вы действительно хотите выйти из системы PlansEnergo?',
             textSecondId: 'modal-text-second',
-            modalTextSecond: 'Все несохраненные изменения будут потеряны. Убедитесь, что вы сохранили свою работу.'
+            modalTextSecond: 'Это действие нельзя будет отменить. Убедитесь, что вы сохранили свою работу.'
         });
     }
 
@@ -4222,9 +4250,9 @@ document.addEventListener('DOMContentLoaded', () => {
             yesId: 'confirmYes',
             noId: 'confirmNo',
             textId: 'modal-text',
-            modalText: 'Вы действительно хотите удалить план #{id}?',
+            modalText: 'Вы действительно хотите удалить план?',
             textSecondId: 'modal-text-second',
-            modalTextSecond: 'Все несохраненные изменения будут потеряны.'
+            modalTextSecond: 'Это действие нельзя будет отменить.'
         });
     }
 
@@ -4239,7 +4267,7 @@ document.addEventListener('DOMContentLoaded', () => {
             textId: 'modal-text',
             modalText: 'Вы действительно хотите отредактировать данные плана?',
             textSecondId: 'modal-text-second',
-            modalTextSecond: 'Все несохраненные изменения будут потеряны.'
+            modalTextSecond: 'Это действие нельзя будет отменить.'
         });
     }
 
@@ -4253,13 +4281,13 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (planType === 'org_small') {
             modalText = 'Вами было указано что вы заполняете план <strong>до 25 тыс. т.</strong>';
-            modalTextSecond = 'Вы действительно хотите пройти контроль плана? Все несохраненные изменения будут потеряны. План сменит статус.';
+            modalTextSecond = 'Вы действительно хотите пройти контроль плана? План сменит статус.';
         } else if (planType === 'org_large') {
             modalText = 'Вами было указано что вы заполняете план <strong>более 25 тыс. т.</strong>';
-            modalTextSecond = 'Вы действительно хотите пройти контроль плана? Все несохраненные изменения будут потеряны. План сменит статус.';
+            modalTextSecond = 'Вы действительно хотите пройти контроль плана? План сменит статус.';
         } else {
             modalText = 'Вы действительно хотите пройти контроль?';
-            modalTextSecond = 'Все несохраненные изменения будут потеряны. План сменит статус.';
+            modalTextSecond = 'План сменит статус.';
         }
         
         initConfirmModal({

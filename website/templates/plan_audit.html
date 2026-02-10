@@ -11,7 +11,7 @@
             <p>Если в плане <strong>существуют</strong> ошибки, <strong>укажите</strong> их, в противном случае просто <strong>одобрите</strong> план.</p>
         </div>
         <div class = "menu-conteiner" style = "margin: 0; margin-bottom: 10px;">
-            <form id = "to_deletePlanForm" action="{{ url_for('views.api_change_plan_status', id=plan.id) }}" method="POST">
+            <form id = "to_deletePlanForm" action="{{ url_for('views.api_change_plan_status', token=plan.token) }}" method="POST">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <input type="hidden" name="status" value="error">
                 <button id = "to_deletePlanButton" type="submit" class="element {% if plan.is_approved or plan.is_error or plan.afch == false %}non{% else %}{% endif %}">
@@ -19,7 +19,7 @@
                     <span class="btn-text">{{ _('Есть ошибки') }}</span>
                 </button>
             </form>
-            <form id = "confirmPlanForm" action="{{ url_for('views.api_change_plan_status', id=plan.id) }}" method="POST">
+            <form id = "confirmPlanForm" action="{{ url_for('views.api_change_plan_status', token=plan.token) }}" method="POST">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <input type="hidden" name="status" value="approved">
                 <button id = "confirmPlanButton" type="submit" class="element {% if plan.is_approved or plan.is_error %}non{% endif %}">
@@ -29,7 +29,7 @@
             </form>
             
             {% if plan.is_approved or plan.is_error %}
-                <form id = "cancel_auditPlanForm" action="{{ url_for('views.api_change_plan_status', id=plan.id) }}" method="POST">
+                <form id = "cancel_auditPlanForm" action="{{ url_for('views.api_change_plan_status', token=plan.token) }}" method="POST">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <input type="hidden" name="status" value="sent_without_check">
                     <button id = "cancel_auditPlanButton" type="submit" class="element">
@@ -104,7 +104,7 @@
         {% if plan.is_approved or plan.is_error %}
                 <hr>
             {% else %}
-                <form id = "sent_mesPlanForm" class="main-form" action="{{ url_for('views.create_ticket', id=plan.id) }}" method="POST">
+                <form id = "sent_mesPlanForm" class="main-form" action="{{ url_for('views.create_ticket', token=plan.token) }}" method="POST">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <div class = "bottom_tickets_arrea">
                         <textarea 

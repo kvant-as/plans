@@ -277,7 +277,7 @@ def handle_draft_status(plan):
     plan.is_draft = True
     plan.is_control = plan.is_sent = plan.is_error = plan.is_approved = False
     plan.afch = False
-    return "Статус переведен в редактирование"
+    return "Статус переведен в редактирование."
 
 def handle_control_status(plan):
     indicator_usage = next(
@@ -289,9 +289,9 @@ def handle_control_status(plan):
         plan.is_control = True
         plan.is_draft = plan.is_sent = plan.is_error = plan.is_approved = False
         plan.afch = False
-        return "План прошел проверку на контроль"
+        return "План прошел проверку на контроль."
     else:
-        return {"error": "Ожидаемая экономия ТЭР от внедрения в текущем году не может быть равна 0"}
+        return {"error": "Ожидаемая экономия ТЭР от внедрения в текущем году не может быть равна 0."}
  
 def handle_sent_status(plan):
     if plan.audit_time and (TimeByMinsk() - plan.audit_time) > timedelta(hours=1):
@@ -308,7 +308,7 @@ def handle_error_status(plan):
     plan.is_draft = plan.is_control = plan.is_sent = plan.is_approved = False
 
     new_ticket = Ticket(
-        note='В плане нашли ошибки, статус изменен',
+        note="В плане нашли ошибки, статус изменен на 'Есть ошибки'",
         luck=True,
         is_owner = True,
         plan_id=plan.id,
@@ -317,7 +317,7 @@ def handle_error_status(plan):
 
     notification = Notification(
         user_id=plan.user_id,
-        message=f"В плане на {plan.year} год нашли ошибки"
+        message=f"В плане на {plan.year} год нашли ошибки."
     )
     db.session.add(notification)
     return "Статус ошибки установлен."
@@ -329,7 +329,7 @@ def handle_approved_status(plan):
     plan.afch = False 
 
     new_ticket = Ticket(
-        note='План был одобрен и передан в следующую стадию проверки',
+        note="План был одобрен, статус был изменен на 'Одобрен'.",
         luck=True,
         is_owner = True,
         plan_id=plan.id,
@@ -338,10 +338,10 @@ def handle_approved_status(plan):
 
     notification = Notification(
         user_id=plan.user_id,
-        message=f"План на {plan.year} год был утверждён"
+        message=f"План на {plan.year} год был одобрен."
     )
     db.session.add(notification)
-    return "План утверждён"
+    return "План одобрен."
 
 
 status_handlers = {

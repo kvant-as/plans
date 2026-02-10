@@ -26,13 +26,15 @@ views = Blueprint('views', __name__)
 def owner_only(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        plan_id = kwargs.get('id')
+        # Получаем token из kwargs (не token!)
+        token = kwargs.get('token')
         
-        if not plan_id:
-            flash('ID плана не указан', 'error')
+        if not token:
+            flash('Токен плана не указан', 'error')
             return redirect(url_for('views.plans', user=current_user.id))
         
-        plan = Plan.query.get(plan_id)
+        # Ищем план по token, а не по id
+        plan = Plan.query.filter_by(token=token).first()
         
         if plan is None:
             flash('План не найден', 'error')
@@ -75,139 +77,6 @@ def profile():
                         current_user=current_user,
                         change_orgUser_modal = True
                            )
-
-@views.route('/edit-user-org', methods=['POST'])
-@user_with_all_params()
-@login_required
-def edit_user_org():
-    try:
-        item_id = request.form.get('id_org')
-        item_type = request.form.get('item_type', 'organization')
-        
-        if not item_id:
-            flash('Элемент не выбран!', 'error')
-            return redirect(request.referrer)
-        
-        if Plan.query.filter(Plan.user_id == current_user.id).count() > 0:
-            flash('У вас существуют планы энергосбережения, редактирование запрещено', 'error')
-            return redirect(url_for('views.profile'))
-        
-        if item_type == 'organization':
-            current_user.plan_type = None
-            selected_item = Organization.query.filter_by(id=item_id).first()
-            
-            if not selected_item:
-                flash('Организация не найдена!', 'error')
-                return redirect(request.referrer)
-            
-            current_user.organization_id = selected_item.id
-            current_user.ministry_id = None 
-            current_user.region_id = None   
-            
-            flash(f'Организация изменена на: {selected_item.name}', 'success')
-            
-        elif item_type == 'ministry':
-            selected_item = Ministry.query.filter_by(id=item_id).first()
-            
-            if not selected_item:
-                flash('Министерство не найдено!', 'error')
-                return redirect(request.referrer)
-            
-            current_user.plan_type = 'ministry'
-            current_user.ministry_id = selected_item.id
-            current_user.organization_id = None 
-            current_user.region_id = None    
-            
-            flash(f'Министерство изменено на: {selected_item.name}', 'success')
-            
-        elif item_type == 'region':
-            selected_item = Region.query.filter_by(id=item_id).first()
-            
-            if not selected_item:
-                flash('Регион не найден!', 'error')
-                return redirect(request.referrer)
-
-            current_user.plan_type = 'region'
-            current_user.region_id = selected_item.id
-            current_user.organization_id = None 
-            current_user.ministry_id = None    
-            
-            flash(f'Регион изменен на: {selected_item.name}', 'success')
-            
-        else:
-            flash('Неизвестный тип элемента!', 'error')
-            return redirect(request.referrer)
-        
-        db.session.commit()
-        
-        return redirect(url_for('views.profile'))
-        
-    except Exception as e:
-        db.session.rollback()
-        logging.error(f"Error in edit_user_org: {str(e)}")
-        flash('Произошла ошибка при обновлении данных', 'error')
-        return redirect(request.referrer)
-    
-@views.route('/edit-plan-type', methods=['POST'])
-@login_required
-def edit_plan_type():
-    entity_type = request.form.get('entity_type')
-    plan_id = request.form.get('plan_id')
-    
-    if not entity_type:
-        flash('Пожалуйста, выберите тип плана', 'error')
-        return redirect(request.referrer or url_for('views.profile'))
-    
-    plan_type_mapping = {
-        'organization_org_small': 'org_small',  # До 25 тыс. т.
-        'organization_org_large': 'org_large'   # Более 25 тыс. т.
-    }
-    
-    plan_type_value = plan_type_mapping.get(entity_type)
-    
-    if not plan_type_value:
-        flash('Неверный тип плана', 'error')
-        return redirect(request.referrer or url_for('views.profile'))
-
-    try:
-        if not plan_id or plan_id == '':
-            flash('ID плана не указан', 'error')
-            return redirect(url_for('views.profile'))
-        
-        current_plan = Plan.query.filter_by(
-            id=plan_id,
-            user_id=current_user.id
-        ).first()
-        
-        if not current_plan:
-            flash('План не найден', 'error')
-            return redirect(url_for('views.profile'))
-            
-        if not current_plan.is_draft:
-            flash('Этот план нельзя редактировать', 'error')
-            return redirect(url_for('views.profile'))
-        
-        current_plan.plan_type = plan_type_value
-        current_plan.change_time = datetime.utcnow()
-        
-        if plan_type_value == 'org_small':
-            flash_message = 'Тип плана установлен: Организация с потреблением до 25 тыс. т.'
-        elif plan_type_value == 'org_large':
-            flash_message = 'Тип плана установлен: Организация с потреблением более 25 тыс. т.'
-        
-        db.session.commit()
-        flash(flash_message, 'success')
-
-        return redirect(url_for('views.plan_review', id=current_plan.id))
-        
-    except Exception as e:
-        db.session.rollback()
-        flash('Произошла ошибка при сохранении типа плана', 'error')
-        current_app.logger.error(f"Error saving plan type: {e}")
-        import traceback
-        traceback.print_exc()
-    
-    return redirect(url_for('views.profile'))
 
 @views.route('/api/organizations')
 @login_required
@@ -318,9 +187,123 @@ def get_regions_api():
         logging.error(f"Error fetching regions: {str(e)}")
         return jsonify({"error": "Internal server error"}), 500
 
+@views.route('/edit-user-org', methods=['POST'])
+@user_with_all_params()
+@login_required
+def edit_user_org():
+    try:
+        item_id = request.form.get('id_org')
+        item_type = request.form.get('item_type', 'organization')
+        
+        if not item_id:
+            flash('Элемент не выбран!', 'error')
+            return redirect(request.referrer)
+        
+        if Plan.query.filter(Plan.user_id == current_user.id).count() > 0:
+            flash('У вас существуют планы энергосбережения, редактирование запрещено', 'error')
+            return redirect(url_for('views.profile'))
+        
+        if item_type == 'organization':
+            current_user.plan_type = None
+            selected_item = Organization.query.filter_by(id=item_id).first()
+            
+            if not selected_item:
+                flash('Организация не найдена!', 'error')
+                return redirect(request.referrer)
+            
+            current_user.organization_id = selected_item.id
+            current_user.ministry_id = None 
+            current_user.region_id = None   
+            
+            flash(f'Организация изменена на: {selected_item.name}', 'success')
+            
+        elif item_type == 'ministry':
+            selected_item = Ministry.query.filter_by(id=item_id).first()
+            
+            if not selected_item:
+                flash('Министерство не найдено!', 'error')
+                return redirect(request.referrer)
+            
+            current_user.plan_type = 'ministry'
+            current_user.ministry_id = selected_item.id
+            current_user.organization_id = None 
+            current_user.region_id = None    
+            
+            flash(f'Министерство изменено на: {selected_item.name}', 'success')
+            
+        elif item_type == 'region':
+            selected_item = Region.query.filter_by(id=item_id).first()
+            
+            if not selected_item:
+                flash('Регион не найден!', 'error')
+                return redirect(request.referrer)
 
-
-
+            current_user.plan_type = 'region'
+            current_user.region_id = selected_item.id
+            current_user.organization_id = None 
+            current_user.ministry_id = None    
+            
+            flash(f'Регион изменен на: {selected_item.name}', 'success')
+            
+        else:
+            flash('Неизвестный тип элемента!', 'error')
+            return redirect(request.referrer)
+        
+        db.session.commit()
+        
+        return redirect(url_for('views.profile'))
+        
+    except Exception as e:
+        db.session.rollback()
+        logging.error(f"Error in edit_user_org: {str(e)}")
+        flash('Произошла ошибка при обновлении данных', 'error')
+        return redirect(request.referrer)
+    
+@views.route('/edit-plan-type/<token>', methods=['POST'])
+@login_required
+@owner_only
+def edit_plan_type(token):
+    try:
+        entity_type = request.form.get('entity_type')
+        current_plan = g.current_plan
+        
+        if not current_plan:
+            flash('План не найден', 'error')
+            return redirect(url_for('views.profile'))
+        
+        if not current_plan.is_draft:
+            flash('Этот план нельзя редактировать', 'error')
+            return redirect(url_for('views.profile'))
+        
+        if not entity_type:
+            flash('Пожалуйста, выберите тип плана', 'error')
+            return redirect(request.referrer or url_for('views.profile'))
+        
+        plan_type_mapping = {
+            'organization_org_small': 'org_small',  # До 25 тыс. т.
+            'organization_org_large': 'org_large'   # Более 25 тыс. т.
+        }
+        
+        plan_type_value = plan_type_mapping.get(entity_type)
+        if not plan_type_value:
+            flash('Неверный тип плана', 'error')
+            return redirect(request.referrer or url_for('views.profile'))
+        
+        current_plan.plan_type = plan_type_value
+        db.session.commit()
+        
+        if plan_type_value == 'org_small':
+            flash_message = 'ТИп плана установлен: Организация с потреблением до 25 тыс. т.'
+        elif plan_type_value == 'org_large':
+            flash_message = 'Тип плана установлен: Организация с потреблением более 25 тыс. т.'
+        else:
+            flash_message = 'Тип плана обновлен'
+        flash(flash_message, 'success')
+        
+        return redirect(url_for('views.plan_review', token=current_plan.token))
+    except Exception as e:
+        flash(f'Произошла непредвиденная ошибка: {str(e)}', 'error')
+        return redirect(request.referrer or url_for('views.profile'))
 
 @views.route('/plans', methods=['GET'])
 @user_with_all_params()
@@ -506,16 +489,13 @@ def create_plan():
                     second_header=True,
                     active_tab='create')
     
-@views.route('/edit-plan/<int:id>', methods=['POST'])
+@views.route('/edit-plan/<token>', methods=['POST'])
 @user_with_all_params()
 @owner_only
 @login_required
-def edit_plan(id):
-    current_plan = Plan.query.filter_by(
-        id=id,
-        user_id=current_user.id
-    ).first()
-    
+def edit_plan(token):
+    current_plan = g.current_plan
+
     if not current_plan:
         flash('План не найден или у вас нет прав для его редактирования', 'error')
         return redirect(url_for('views.plans'))
@@ -525,7 +505,7 @@ def edit_plan(id):
     existing_plan = Plan.query.filter(
         Plan.user_id == current_user.id,
         Plan.year == year,
-        Plan.id != id 
+        Plan.token != token 
     ).first()
     
     if existing_plan:
@@ -542,28 +522,21 @@ def edit_plan(id):
     current_plan.share_fuel = share_fuel
     current_plan.saving_fuel = saving_fuel
     current_plan.share_energy = share_energy
-    
-    current_plan.change_time = TimeByMinsk()
-    
     db.session.commit()
+    
     flash('Изменения приняты', 'success')
     update_ChangeTimePlan(current_plan.id)
-    return redirect(url_for('views.plan_review', id=current_plan.id))  
+    return redirect(url_for('views.plan_review', token=current_plan.token))  
     
-@views.route('/delete-plan/<int:id>', methods=['POST'])
+@views.route('/delete-plan/<token>', methods=['POST'])
 @user_with_all_params()
 @owner_only
 @login_required
-def delete_plan(id):
+def delete_plan(token):
     try:
-        current_plan = Plan.query.filter_by(
-            id=id,
-            user_id=current_user.id
-        ).first()
-
+        current_plan = g.current_plan
         db.session.delete(current_plan)
         db.session.commit()
-        
         flash('План успешно удален', 'success')
         
     except Exception as e:
@@ -603,11 +576,11 @@ def stats():
                         second_header = True,
                         active_tab='stats')
 
-@views.route('/plans/plan-review/<int:id>', methods=['GET', 'POST'])
+@views.route('/plans/plan-review/<token>', methods=['GET', 'POST'])
 @user_with_all_params()
 @login_required
 @owner_only
-def plan_review(id):    
+def plan_review(token):    
     current_plan = g.current_plan
 
     show_plan_type_modal = (
@@ -629,11 +602,24 @@ def plan_review(id):
                         sentmodalecp=True,
                         active_plan_tab='review')
     
-@views.route('/plans/plan-audit/<int:id>', methods=['GET', 'POST'])
+# @views.route('/plans/plan-review/<int:id>', methods=['GET'])
+# @login_required
+# def legacy_plan_review(id):
+#     """Редирект со старых URL на новые с токенами"""
+#     plan = Plan.query.get_or_404(id)
+    
+#     # Проверяем права
+#     if not (current_user.is_admin or current_user.is_auditor or plan.user_id == current_user.id):
+#         abort(403)
+    
+#     return redirect(url_for('views.plan_review', token=plan.token))
+    
+    
+@views.route('/plans/plan-audit/<token>', methods=['GET', 'POST'])
 @user_with_all_params()
 @login_required
 @owner_only
-def plan_audit(id):    
+def plan_audit(token):    
     current_plan = g.current_plan
     if request.method == 'POST':
         pass
@@ -645,11 +631,11 @@ def plan_audit(id):
                         plan_back_header=True,
                         active_plan_tab='audit')
 
-@views.route('/plans/plan-directions/<int:id>', methods=['GET', 'POST'])
+@views.route('/plans/plan-directions/<token>', methods=['GET', 'POST'])
 @user_with_all_params()
 @login_required
 @owner_only
-def plan_directions(id):    
+def plan_directions(token):    
     if request.method == 'POST':
         pass
     
@@ -692,18 +678,18 @@ def get_econmeasure(id):
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@views.route('/create-econmeasure/<int:id>', methods=['POST'])
+@views.route('/create-econmeasure/<token>', methods=['POST'])
 @user_with_all_params()
 @login_required
 @owner_only
-def create_econmeasure(id):
-    
+def create_econmeasure(token):
+    current_plan = g.current_plan
     id_direction = request.form.get('id_direction')
     year_econ = to_decimal_3(request.form.get('year_econ'))
     estim_econ = to_decimal_3(request.form.get('estim_econ'))
 
     new_econmeasure = EconMeasure(
-        id_plan=id,
+        id_plan=current_plan.id,
         id_direction=id_direction,
         year_econ=year_econ,
         estim_econ=estim_econ
@@ -712,25 +698,24 @@ def create_econmeasure(id):
     db.session.add(new_econmeasure)
     db.session.commit()    
     flash('Направление добавлено', 'success')
-    update_ChangeTimePlan(id)
-    return redirect(url_for('views.plan_directions', id=id))
+    update_ChangeTimePlan(current_plan.id)
+    return redirect(url_for('views.plan_directions', token=token))
 
 @views.route('/delete-econmeasure/<int:id>', methods=['POST'])
 @user_with_all_params()
 @login_required
 def delete_econmeasure(id):
     econ_measure = EconMeasure.query.get_or_404(id)
-
-    id_plan = econ_measure.id_plan
+    current_plan = Plan.query.get_or_404(econ_measure.id_plan)
 
     db.session.delete(econ_measure)
     db.session.commit()
     
-    other_data_indicatorUpdate(id)
-    update_ChangeTimePlan(id_plan)
+    other_data_indicatorUpdate(current_plan.id)
+    update_ChangeTimePlan(current_plan.id)
 
     flash('Направление успешно удалено', 'success')
-    return redirect(url_for('views.plan_directions', id=id_plan))
+    return redirect(url_for('views.plan_directions', token=current_plan.token))
 
 @views.route('/edit-econmeasure/<int:id>', methods=['POST'])
 @user_with_all_params()
@@ -739,25 +724,26 @@ def edit_econmeasure(id):
     year_econ = to_decimal_3(request.form.get('year_econ'))
     estim_econ = to_decimal_3(request.form.get('estim_econ'))
 
-    econmeasure = EconMeasure.query.filter_by(id=id).first()
+    econmeasure = EconMeasure.query.get_or_404(id)
     
     if not econmeasure:
         flash('Запись не найдена!', 'error')
         return redirect(url_for('views.plan_directions'))
 
-    id = econmeasure.id_plan
+    current_plan = Plan.query.get_or_404(econmeasure.id_plan)
     econmeasure.year_econ = year_econ
     econmeasure.estim_econ = estim_econ
     db.session.commit()
-    update_ChangeTimePlan(id)
+    update_ChangeTimePlan(current_plan.id)
     flash('Направление обновлено', 'success')
-    return redirect(url_for('views.plan_directions', id=id))
+    
+    return redirect(url_for('views.plan_directions', token=current_plan.token))
 
-@views.route('/plans/plan-events/<int:id>', methods=['GET', 'POST'])
+@views.route('/plans/plan-events/<token>', methods=['GET', 'POST'])
 @user_with_all_params()
 @login_required
 @owner_only
-def plan_events(id):    
+def plan_events(token):    
     if request.method == 'POST':
         pass
     
@@ -825,11 +811,13 @@ def plan_events(id):
                         context_menu=True
                          )
     
-@views.route('/create-econexeces/<int:id>', methods=['POST'])
+@views.route('/create-econexeces/<token>', methods=['POST'])
 @user_with_all_params()
 @login_required
 @owner_only
-def create_econexeces(id):
+def create_econexeces(token):
+    current_plan = g.current_plan
+    
     id_measure = request.form.get('id_measure')
     name = request.form.get('name') or None
 
@@ -857,13 +845,13 @@ def create_econexeces(id):
     measure = EconMeasure.query.get(id_measure)
     if not measure:
         flash('Направление не найдено', 'error')
-        return redirect(url_for('views.plan_events', id=id))
+        return redirect(url_for('views.plan_events', token=token))
     
     is_local = measure.direction.is_local if measure.direction else False
 
     new_econexec = EconExec(
         id_measure=id_measure,
-        id_plan=id,
+        id_plan=current_plan.id,
         name=name,
         Volume=Volume,
         EffTut=EffTut,
@@ -884,25 +872,25 @@ def create_econexeces(id):
     
     db.session.add(new_econexec)
     db.session.commit()
-    other_data_indicatorUpdate(id)
-    update_ChangeTimePlan(id)
+    other_data_indicatorUpdate(current_plan.id)
+    update_ChangeTimePlan(current_plan.id)
     flash('Мероприятие добавлено', 'success')
-    return redirect(url_for('views.plan_events', id=id))
+    return redirect(url_for('views.plan_events', token=token))
     
 @views.route('/delete-econexeces/<int:id>', methods=['POST'])
 @user_with_all_params()
 @login_required
 def delete_econexeces(id):
     econ_exec = EconExec.query.get_or_404(id)
-    id_plan = econ_exec.econ_measures.id_plan
+    current_plan = Plan.query.get_or_404(econ_exec.econ_measures.id_plan)
 
     db.session.delete(econ_exec)
     db.session.commit()
 
-    other_data_indicatorUpdate(id_plan)
-    update_ChangeTimePlan(id_plan)
+    other_data_indicatorUpdate(current_plan.id)
+    update_ChangeTimePlan(current_plan.id)
     flash('Мероприятие успешно удалено', 'success')
-    return redirect(url_for('views.plan_events', id=id_plan))
+    return redirect(url_for('views.plan_events', token=current_plan.token))
 
 @views.route('/edit-econexeces/<int:id>', methods=['POST'])
 @user_with_all_params()
@@ -930,11 +918,12 @@ def edit_econexeces(id):
     Volume = int(float(Volume_value)) if Volume_value else None
     ExpectedQuarter = int(float(ExpectedQuarter_value)) if ExpectedQuarter_value else None
     
-
     current_EconExec = EconExec.query.get(id)
+    current_plan = Plan.query.get_or_404(current_EconExec.id_plan)
+
     if not current_EconExec:
         flash('Мероприятие не найдено', 'error')
-        return redirect(url_for('views.plan_events', id=id))
+        return redirect(url_for('views.plan_events', token=current_plan.token))
     
     current_EconExec.name=name
     current_EconExec.Volume=Volume
@@ -955,10 +944,9 @@ def edit_econexeces(id):
     db.session.commit()
     flash('Мероприятие изменено', 'success')
 
-    id_plan = current_EconExec.econ_measures.id_plan
-    other_data_indicatorUpdate(id_plan)
-    update_ChangeTimePlan(id_plan)
-    return redirect(url_for('views.plan_events', id=id_plan))
+    other_data_indicatorUpdate(current_plan.id)
+    update_ChangeTimePlan(current_plan.id)
+    return redirect(url_for('views.plan_events', token=current_plan.token))
 
 @views.route('/get-econexece/<int:id>', methods=['GET'])
 @user_with_all_params()
@@ -974,11 +962,11 @@ def get_econexece(id):
     except Exception as e:
         return jsonify({'error': str(e)}), 500
     
-@views.route('/plans/plan-indicators/<int:id>', methods=['GET', 'POST'])
+@views.route('/plans/plan-indicators/<token>', methods=['GET', 'POST'])
 @user_with_all_params()
 @login_required
 @owner_only
-def plan_indicators(id):    
+def plan_indicators(token):    
     if request.method == 'POST':
         pass
     
@@ -1027,15 +1015,18 @@ def get_indicator(id):
     except Exception as e:
         return jsonify({'error': str(e)}), 500
     
-@views.route('/create-indicator/<int:id>', methods=['POST'])
+@views.route('/create-indicator/<token>', methods=['POST'])
 @user_with_all_params()
 @login_required
 @owner_only
-def create_indicator(id):
+def create_indicator(token):
+    current_plan = g.current_plan
+    
     QYearPrev_ed = to_decimal_3(request.form.get('QYearPrev'))
     QYearCurr_ed = to_decimal_3(request.form.get('QYearCurr'))
     QYearNext_ed = to_decimal_3(request.form.get('QYearNext'))
     id_indicator = request.form.get('id_indicator')
+
 
     if id_indicator == None:
         flash('Пустой показатель', 'error')
@@ -1048,7 +1039,7 @@ def create_indicator(id):
     QYearNext = to_decimal_3(QYearNext_ed * indicator.CoeffToTut)
 
     new_IndicatorUsage = IndicatorUsage(
-        id_plan=id,
+        id_plan=current_plan.id,
         id_indicator=id_indicator,
         QYearPrev=QYearPrev,
         QYearCurr=QYearCurr,
@@ -1057,10 +1048,10 @@ def create_indicator(id):
     
     db.session.add(new_IndicatorUsage)
     db.session.commit()
-    other_data_indicatorUpdate(id)
-    update_ChangeTimePlan(id)
+    other_data_indicatorUpdate(current_plan.id)
+    update_ChangeTimePlan(current_plan.id)
     flash('Показатель добавлен', 'success')
-    return redirect(url_for('views.plan_indicators', id=id))
+    return redirect(url_for('views.plan_indicators', token=token))
 
 @views.route('/edit-indicator/<int:id>', methods=['POST'])
 @user_with_all_params()
@@ -1075,39 +1066,38 @@ def edit_indicator(id):
         return redirect(request.url)
     
     indicator_usage = IndicatorUsage.query.filter_by(id=id).first()
-
     indicator_usage.QYearPrev = to_decimal_3(QYearPrev_ed * indicator_usage.indicator.CoeffToTut)
     indicator_usage.QYearCurr = to_decimal_3(QYearCurr_ed * indicator_usage.indicator.CoeffToTut)
     indicator_usage.QYearNext = to_decimal_3(QYearNext_ed * indicator_usage.indicator.CoeffToTut)
     db.session.commit()
 
-    id = indicator_usage.id_plan
-    other_data_indicatorUpdate(id)
-    update_ChangeTimePlan(id)
+    current_plan = Plan.query.get_or_404(indicator_usage.id_plan)
+    other_data_indicatorUpdate(current_plan.id)
+    update_ChangeTimePlan(current_plan.id)
     flash('Обновление данных', 'success')
-    return redirect(url_for('views.plan_indicators', id=id))
+    return redirect(url_for('views.plan_indicators', token=current_plan.token))
 
 @views.route('/delete-indicator/<int:id>', methods=['POST'])
 @user_with_all_params()
 @login_required
 def delete_indicator(id):
     indicator = IndicatorUsage.query.get_or_404(id)
-
-    id_plan = indicator.id_plan
+    current_plan = Plan.query.get_or_404(indicator.id_plan)
 
     db.session.delete(indicator)
     db.session.commit()
-    other_data_indicatorUpdate(id_plan)
-    update_ChangeTimePlan(id_plan)
+    other_data_indicatorUpdate(current_plan.id)
+    update_ChangeTimePlan(current_plan.id)
+    
     flash('Показатель успешно удален', 'success')
-    return redirect(url_for('views.plan_indicators', id=id_plan))
+    return redirect(url_for('views.plan_indicators', token=current_plan.token))
 
-@views.route('/api/change-plan-status/<int:id>', methods=['POST'])
+@views.route('/api/change-plan-status/<token>', methods=['POST'])
 @user_with_all_params()
 @login_required
 @owner_only
-def api_change_plan_status(id):
-    plan = Plan.query.get_or_404(id)
+def api_change_plan_status(token):
+    plan = Plan.query.filter_by(token=token).first()
     
     if request.is_json:
         data = request.get_json()
@@ -1120,9 +1110,10 @@ def api_change_plan_status(id):
             is_valid, error_message = validate_certificate_for_sending(uploaded_file)
             if not is_valid:
                 flash(error_message, 'error')
+                flash('План не был отправлен.', 'error')
                 return redirect(request.referrer)
             else:
-                flash('Сертификат успешно прошел проверку', 'success')
+                flash('Сертификат успешно прошел проверку.', 'success')
     
     if not status:
         if request.is_json:
@@ -1175,20 +1166,25 @@ def api_change_plan_status(id):
             if other_status != status and attr_name != status_mapping[status]:
                 setattr(plan, attr_name, False)
                 
-        
         new_ticket = Ticket(
-            note='План возвращен в статус не просмотренный.',
+            note="План возвращен в статус 'На рассмотрении'.",
             luck=True,
             is_owner = True,
             plan_id=plan.id,
         )
-        db.session.add(new_ticket)        
+        db.session.add(new_ticket) 
+        
+        
+        notification = Notification(
+            user_id=plan.user_id,
+            message=f"План {plan.year} возвращен в статус 'На рассмотрении'."
+        )
+        db.session.add(notification)       
         db.session.commit()
         
-        
-        message = "План возвращен в изначальное состояние"
+        message = "План возвращен в изначальное состояние."
         flash(message, 'success')
-        return redirect(url_for('views.plan_audit', id=id))
+        return redirect(url_for('views.plan_audit', token=plan.token))
     
     if request.is_json:
         return jsonify({'message': message, 'status': status})
@@ -1197,41 +1193,36 @@ def api_change_plan_status(id):
         if status in ['approved', 'error']:
             return redirect(request.referrer or url_for('views.plans'))
         else:
-            return redirect(url_for('views.plan_review', id=id))
+            return redirect(url_for('views.plan_review', token=plan.token))
         
-@views.route('/create-ticket/<int:id>', methods=['POST'])
+@views.route('/create-ticket/<token>', methods=['POST'])
 @user_with_all_params()
 @login_required
 @owner_only
-def create_ticket(id):
-    plan = Plan.query.filter_by(
-        id=id
-    ).first()
+def create_ticket(token):
+    current_plan = g.current_plan
+    if not current_plan:
+        flash('План не найден.', 'error')
+        return redirect(request.referrer)
     
-    if not plan:
-        flash('План не найден', 'error')
-        return redirect(request.referrer or url_for('views.plan_review'))
-    
-    plan.afch = True
-    
+    current_plan.afch = True
     note = request.form.get('note')
     
     new_ticket = Ticket(
         note=note,
         luck=False,
-        plan_id=id,
+        plan_id=current_plan.id,
         user_id=current_user.id,
-        is_owner=current_user.id == plan.user_id
+        is_owner=current_user.id == current_plan.user_id
     )
 
     db.session.add(new_ticket)
     
-    plan.audit_time = TimeByMinsk()
-    
+    current_plan.audit_time = TimeByMinsk()
     db.session.commit()
     
-    flash('Сообщение отправлено', 'success')
-    return redirect(request.referrer or url_for('views.plan_review'))
+    flash('Сообщение отправлено.', 'success')
+    return redirect(request.referrer)
 
 @views.route('/api/ticket/<int:ticket_id>/details')
 @login_required

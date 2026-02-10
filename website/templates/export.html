@@ -199,8 +199,9 @@
                     </label>
                     {% endfor %}
                 {% else %}
-                    <div class="choose-plan">
-                        <p class="choose-plan-text">{{ _('Нет доступных планов для экспорта') }}</p>
+                    <div class="choose-plan no-data">
+                        <p>По вашему запросу ничего не найдено</p>
+                        <small>Попробуйте изменить параметры поиска</small>
                     </div>
                 {% endif %}
             </div>

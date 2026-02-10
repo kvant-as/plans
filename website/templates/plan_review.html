@@ -19,7 +19,7 @@
             <div class="header-content-right"> 
                 {% if current_user.is_auditor != true %}
                     {% if plan.is_sent == true %}
-                        <form id = "cancelsentPlanForm" action="{{ url_for('views.api_change_plan_status', id=plan.id) }}" method="POST" class="button-area" style="text-align: left;">
+                        <form id = "cancelsentPlanForm" action="{{ url_for('views.api_change_plan_status', token=plan.token) }}" method="POST" class="button-area" style="text-align: left;">
                             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                             <input type="hidden" name="status" value="draft">
                             <button id = "cancelsentPlanButton" type="submit" class="submit-button delete">
@@ -33,7 +33,7 @@
                         <img src="/static/img/Send.svg" alt="" class="btn-icon">
                         <span class="btn-text">{{ _('Отправить') }}</span>
                     </button>
-                    <form data-modal-form="deletePlan" action="{{ url_for('views.delete_plan', id=plan.id) }}" method="POST" class="button-area" style="text-align: left;">
+                    <form data-modal-form="deletePlan" action="{{ url_for('views.delete_plan', token=plan.token) }}" method="POST" class="button-area" style="text-align: left;">
                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                         <button type="submit" data-modal-trigger="deletePlan" class="submit-button delete" 
                                 {% if plan.is_sent or plan.is_approved %}disabled{% endif %}>
@@ -46,7 +46,7 @@
             </div>
         </div>
         
-        <form id = "editPlanForm" class="main-form" action="{{ url_for('views.edit_plan', id=plan.id) }}" method="POST">
+        <form id = "editPlanForm" class="main-form" action="{{ url_for('views.edit_plan', token=plan.token) }}" method="POST">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">    
             <div class="row-app-group"> 
                 <div class="app-group">
@@ -380,10 +380,11 @@
         <div class="modal-header">
             <a id="modal-title">{{ _('Какой у вас тип плана?') }}</a>
         </div>
-        
-        <p class="support-text non">Экспорт плана, зависит от данного парамметра</p>
-        <form action="{{ url_for('views.edit_plan_type') }}" method="POST">
-            <input type="hidden" name="plan_id" value="{{ plan.id if plan else '' }}">
+        <div class = "answer-highlight-second">
+            <div class="highlight-icon">💡</div>
+            <p>Экспорт плана, <strong>зависит от данного парамметра</strong></p>
+        </div> 
+        <form action="{{ url_for('views.edit_plan_type', token=plan.token) }}" method="POST">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <div class="radio-org-container">
                 <label>

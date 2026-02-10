@@ -19,7 +19,7 @@
                 <img src="/static/img/Edit-main.svg" alt="">  
                 <a class="element-text">Редакт.</a>  
             </div>
-            <form id="controlPlanForm" data-plan-type="{{ plan.plan_type }}" action="/api/change-plan-status/{{ plan.id }}" method="POST">
+            <form id="controlPlanForm" data-plan-type="{{ plan.plan_type }}" action="/api/change-plan-status/{{ plan.token }}" method="POST">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <input type="hidden" name="status" value="control">
                 <button id="controlPlanButton" 

@@ -222,13 +222,13 @@
                     <div class="plan-cont-column">
                         <div class="buttons-row">
                             <button type="button" class="auth-next-button mobile-button" 
-                                onclick="window.location.href='/plans/plan-review/{{ plan.id }}'">
+                                    onclick="window.location.href='{{ url_for('views.plan_review', token=plan.token) }}'">
                                 <img src="/static/img/Eye.svg" alt="" class="btn-icon">
                                 <span class="btn-text">{{ _('Просмотр') }}</span>
                             </button>
                             {% if not (plan.is_sent or plan.is_approved or current_user.is_auditor) %}
                                 <form data-modal-form="deletePlan" 
-                                    action="{{ url_for('views.delete_plan', id=plan.id) }}" 
+                                    action="{{ url_for('views.delete_plan', token=plan.token) }}" 
                                     method="POST">
                                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                     <button data-modal-trigger="deletePlan" 
@@ -245,12 +245,9 @@
                 </div>
             {% endfor %}
         {% else %}
-            <div class="plan-cont">       
-                <div class="plan-cont-column">
-                    <div class="plan-cont-column-header">
-                        <a class="plan-info">{{ _('Нет планов') }}</a> 
-                    </div>
-                </div>
+            <div class="choose-plan no-data">
+                <p>По вашему запросу ничего не найдено</p>
+                <small>Попробуйте изменить параметры поиска</small>
             </div>
         {% endif %}
 

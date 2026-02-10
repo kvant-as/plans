@@ -84,10 +84,25 @@ class Organization(db.Model):
     plans = db.relationship("Plan", 
                            foreign_keys="Plan.org_id",
                            back_populates="organization")
+    
+import secrets
+import string
+
+def generate_static_token(length=20):
+    alphabet = string.ascii_letters + string.digits
+    return ''.join(secrets.choice(alphabet) for _ in range(length))
 
 class Plan(db.Model):
     __tablename__ = 'plans'
     id = db.Column(db.Integer, primary_key=True)
+    
+    token = db.Column(
+        db.String(32), 
+        unique=True, 
+        nullable=False,
+        default=lambda: generate_static_token(),
+        index=True
+    )
     
     # okpo = db.Column(db.String, default=None)
     # name_org = db.Column(db.String, default=None)
@@ -141,7 +156,7 @@ class Plan(db.Model):
     region = db.relationship("Region", 
                             foreign_keys=[region_id],
                             back_populates="plans")
-
+    
 class Ticket(db.Model):
     __tablename__ = 'tickets'
     id = db.Column(db.Integer, primary_key=True)

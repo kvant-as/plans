@@ -334,21 +334,24 @@
                             </div>
                         </div>
 
-                        <div class="answer-text">
+                        <div class="plan-after-creation">
                             <h3>Что происходит после создания плана?</h3>
                             <p>После заполнения всех данных вам доступно:</p>
-                            <div style="background: #f8fafc; padding: 24px; border-radius: 12px; margin-top: 20px;">
-                                <div style="display: flex; align-items: center; padding: 10px 0;">
-                                    <span style="background: #4361ee; color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 12px; font-size: 12px;">✓</span>
-                                    <span>Контроль плана с последующей отправкой на проверку</span>
+                            
+                            <div class="plan-features">
+                                <div class="plan-feature-item">
+                                    <span class="plan-feature-check">✓</span>
+                                    <span class="plan-feature-text">Контроль плана с последующей отправкой на проверку</span>
                                 </div>
-                                <div style="display: flex; align-items: center; padding: 10px 0;">
-                                    <span style="background: #4361ee; color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 12px; font-size: 12px;">✓</span>
-                                    <span>Просмотр статистики</span>
+                                
+                                <div class="plan-feature-item">
+                                    <span class="plan-feature-check">✓</span>
+                                    <span class="plan-feature-text">Просмотр статистики</span>
                                 </div>
-                                <div style="display: flex; align-items: center; padding: 10px 0;">
-                                    <span style="background: #4361ee; color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 12px; font-size: 12px;">✓</span>
-                                    <span>Экспорт плана</span>
+                                
+                                <div class="plan-feature-item">
+                                    <span class="plan-feature-check">✓</span>
+                                    <span class="plan-feature-text">Экспорт плана</span>
                                 </div>
                             </div>
                         </div>
@@ -499,32 +502,42 @@
                             </div>
                         </div>
 
-                        <div class="answer-text">
+                        <div class="after-inspection">
                             <h3>Что происходит после проверки?</h3>
-                            <div style="background: #f8fafc; padding: 24px; border-radius: 12px; margin-top: 20px; border: 1px solid rgba(0,0,0,0.08);">
-                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
-                                    <div>
-                                        <div style="width: 40px; height: 40px; background: rgba(220, 53, 69, 0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 12px;">
-                                            <span style="color: #dc3545; font-size: 20px;">✗</span>
+                            
+                            <div class="inspection-outcomes">
+                                <div class="outcomes-grid">
+                                    <!-- Если есть ошибки -->
+                                    <div class="outcome-item outcome-error">
+                                        <div class="outcome-icon">
+                                            <span>✗</span>
                                         </div>
-                                        <h4 style="margin: 0 0 8px 0; font-size: 15px; color: #000;">Если есть ошибки</h4>
-                                        <p style="margin: 0; font-size: 14px; color: #666;">План возвращается респонденту с комментариями. Статус меняется на "Требует доработки"</p>
+                                        <h4 class="outcome-title">Если есть ошибки</h4>
+                                        <p class="outcome-description">
+                                            План возвращается респонденту с комментариями. Статус меняется на "Требует доработки"
+                                        </p>
                                     </div>
                                     
-                                    <div>
-                                        <div style="width: 40px; height: 40px; background: rgba(40, 167, 69, 0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 12px;">
-                                            <span style="color: #28a745; font-size: 20px;">✓</span>
+                                    <!-- Если одобрено -->
+                                    <div class="outcome-item outcome-approved">
+                                        <div class="outcome-icon">
+                                            <span>✓</span>
                                         </div>
-                                        <h4 style="margin: 0 0 8px 0; font-size: 15px; color: #000;">Если одобрено</h4>
-                                        <p style="margin: 0; font-size: 14px; color: #666;">План переводится в статус "Одобрен" и считается официально принятым</p>
+                                        <h4 class="outcome-title">Если одобрено</h4>
+                                        <p class="outcome-description">
+                                            План переводится в статус "Одобрен" и считается официально принятым
+                                        </p>
                                     </div>
                                     
-                                    <div>
-                                        <div style="width: 40px; height: 40px; background: rgba(108, 117, 125, 0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 12px;">
-                                            <span style="color: #6c757d; font-size: 20px;">↩️</span>
+                                    <!-- Если отменено -->
+                                    <div class="outcome-item outcome-canceled">
+                                        <div class="outcome-icon">
+                                            <span>↩️</span>
                                         </div>
-                                        <h4 style="margin: 0 0 8px 0; font-size: 15px; color: #000;">Если отменено</h4>
-                                        <p style="margin: 0; font-size: 14px; color: #666;">Статус плана возвращается к изначальному для аудитора</p>
+                                        <h4 class="outcome-title">Если отменено</h4>
+                                        <p class="outcome-description">
+                                            Статус плана возвращается к изначальному для аудитора
+                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -719,113 +732,114 @@
                             </div>
                         </div>
 
-                        <div style="margin: 40px 0;">
-                            <h3 style="margin: 0 0 24px 0; color: #000; font-size: 20px; font-weight: 700;">Все статусы планов</h3>
+                        <div class="status-grid">
+                            <h3>Все статусы планов</h3>
                             
-                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+                            <div class="status-grid-container">
                                 <!-- Статус 1 -->
-                                <div style="background: #ffffff; border-radius: 12px; padding: 24px; border: 1px solid rgba(0,0,0,0.08); box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);">
-                                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
-                                        <div style="width: 40px; height: 40px; background: rgba(108, 117, 125, 0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
-                                            <span style="color: #6c757d; font-size: 20px;">📝</span>
+                                <div class="status-card status-editing">
+                                    <div class="status-header">
+                                        <div class="status-icon">
+                                            <span>📝</span>
                                         </div>
-                                        <span style="font-size: 12px; font-weight: 600; color: #6c757d; background: rgba(108, 117, 125, 0.1); padding: 4px 12px; border-radius: 20px;">
+                                        <span class="status-badge">
                                             В редакции
                                         </span>
                                     </div>
-                                    <h4 style="margin: 0 0 12px 0; color: #000; font-size: 16px; font-weight: 600;">В процессе редактирования</h4>
-                                    <p style="margin: 0; color: #2d3436; font-size: 14px; line-height: 1.6;">
+                                    <h4 class="status-title">В процессе редактирования</h4>
+                                    <p class="status-description">
                                         План создан, но еще не отправлен на проверку. Респондент может вносить изменения и дополнять данные.
                                     </p>
                                 </div>
                                 
                                 <!-- Статус 2 -->
-                                <div style="background: #ffffff; border-radius: 12px; padding: 24px; border: 1px solid rgba(0,0,0,0.08); box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);">
-                                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
-                                        <div style="width: 40px; height: 40px; background: rgba(13, 110, 253, 0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
-                                            <span style="color: #0d6efd; font-size: 20px;">📤</span>
+                                <div class="status-card status-control">
+                                    <div class="status-header">
+                                        <div class="status-icon">
+                                            <span>⏳</span>
                                         </div>
-                                        <span style="font-size: 12px; font-weight: 600; color: #0d6efd; background: rgba(13, 110, 253, 0.1); padding: 4px 12px; border-radius: 20px;">
-                                            На рассмотрении
+                                        <span class="status-badge">
+                                            Контроль пройден
                                         </span>
                                     </div>
-                                    <h4 style="margin: 0 0 12px 0; color: #000; font-size: 16px; font-weight: 600;">На проверке у аудитора</h4>
-                                    <p style="margin: 0; color: #2d3436; font-size: 14px; line-height: 1.6;">
-                                        План отправлен на официальную проверку. Аудитор изучает данные и выносит решение.
+                                    <h4 class="status-title">Проверка программой</h4>
+                                    <p class="status-description">
+                                        Редактируемый план проходит проверку на правильность заполненных данных.
                                     </p>
                                 </div>
                                 
                                 <!-- Статус 3 -->
-                                <div style="background: #ffffff; border-radius: 12px; padding: 24px; border: 1px solid rgba(0,0,0,0.08); box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);">
-                                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
-                                        <div style="width: 40px; height: 40px; background: rgba(220, 53, 69, 0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
-                                            <span style="color: #dc3545; font-size: 20px;">⚠️</span>
+                                <div class="status-card status-review">
+                                    <div class="status-header">
+                                        <div class="status-icon">
+                                            <span>📤</span>
                                         </div>
-                                        <span style="font-size: 12px; font-weight: 600; color: #dc3545; background: rgba(220, 53, 69, 0.1); padding: 4px 12px; border-radius: 20px;">
-                                            С ошибками
+                                        <span class="status-badge">
+                                            На рассмотрении
                                         </span>
                                     </div>
-                                    <h4 style="margin: 0 0 12px 0; color: #000; font-size: 16px; font-weight: 600;">Требует доработки</h4>
-                                    <p style="margin: 0; color: #2d3436; font-size: 14px; line-height: 1.6;">
-                                        Аудитор обнаружил ошибки. План возвращен респонденту для исправления замечаний.
+                                    <h4 class="status-title">На проверке у аудитора</h4>
+                                    <p class="status-description">
+                                        План отправлен на официальную проверку. Аудитор изучает данные и выносит решение.
                                     </p>
                                 </div>
                                 
                                 <!-- Статус 4 -->
-                                <div style="background: #ffffff; border-radius: 12px; padding: 24px; border: 1px solid rgba(0,0,0,0.08); box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);">
-                                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
-                                        <div style="width: 40px; height: 40px; background: rgba(25, 135, 84, 0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
-                                            <span style="color: #198754; font-size: 20px;">✅</span>
+                                <div class="status-card status-error">
+                                    <div class="status-header">
+                                        <div class="status-icon">
+                                            <span>⚠️</span>
                                         </div>
-                                        <span style="font-size: 12px; font-weight: 600; color: #198754; background: rgba(25, 135, 84, 0.1); padding: 4px 12px; border-radius: 20px;">
-                                            Одобренные
+                                        <span class="status-badge">
+                                            С ошибками
                                         </span>
                                     </div>
-                                    <h4 style="margin: 0 0 12px 0; color: #000; font-size: 16px; font-weight: 600;">Проверка пройдена</h4>
-                                    <p style="margin: 0; color: #2d3436; font-size: 14px; line-height: 1.6;">
-                                        План успешно прошел аудит и официально одобрен. Может быть использован для отчетности.
+                                    <h4 class="status-title">Требует доработки</h4>
+                                    <p class="status-description">
+                                        Аудитор обнаружил ошибки. План возвращен респонденту для исправления замечаний.
                                     </p>
                                 </div>
                                 
                                 <!-- Статус 5 -->
-                                <div style="background: #ffffff; border-radius: 12px; padding: 24px; border: 1px solid rgba(0,0,0,0.08); box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);">
-                                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
-                                        <div style="width: 40px; height: 40px; background: rgba(255, 193, 7, 0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
-                                            <span style="color: #ffc107; font-size: 20px;">⏳</span>
+                                <div class="status-card status-approved">
+                                    <div class="status-header">
+                                        <div class="status-icon">
+                                            <span>✅</span>
                                         </div>
-                                        <span style="font-size: 12px; font-weight: 600; color: #ffc107; background: rgba(255, 193, 7, 0.1); padding: 4px 12px; border-radius: 20px;">
-                                            На контроле
+                                        <span class="status-badge">
+                                            Одобренные
                                         </span>
                                     </div>
-                                    <h4 style="margin: 0 0 12px 0; color: #000; font-size: 16px; font-weight: 600;">В процессе мониторинга</h4>
-                                    <p style="margin: 0; color: #2d3436; font-size: 14px; line-height: 1.6;">
-                                        Одобренный план находится под контролем выполнения мероприятий и достижения показателей.
+                                    <h4 class="status-title">Проверка пройдена</h4>
+                                    <p class="status-description">
+                                        План успешно прошел аудит и официально одобрен. Может быть использован для отчетности.
                                     </p>
                                 </div>
                             </div>
                         </div>
 
-                        <div style="background: #f8f9fa; padding: 30px; border-radius: 16px; margin: 40px 0; border: 1px solid rgba(0,0,0,0.08);">
-                            <h3 style="margin: 0 0 20px 0; color: #000; font-size: 18px; font-weight: 700;">Типы планов по объему потребления</h3>
+
+                        <div class="plan-types">
+                            <h3>Типы планов по объему потребления</h3>
                             
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
-                                <div>
-                                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
-                                        <div style="width: 8px; height: 8px; background: #4361ee; border-radius: 50%;"></div>
-                                        <h4 style="margin: 0; color: #000; font-size: 16px; font-weight: 600;">Для малых организаций</h4>
+                            <div class="plan-types-grid">
+                                <div class="plan-type-item">
+                                    <div class="plan-type-header">
+                                        <div class="plan-type-dot small"></div>
+                                        <h4 class="plan-type-title">Для малых организаций</h4>
                                     </div>
-                                    <p style="margin: 0 0 0 20px; color: #2d3436; font-size: 14px; line-height: 1.6;">
+                                    <p class="plan-type-description">
                                         <strong>До 25 тыс. тонн условного топлива</strong><br>
                                         Упрощенная форма отчетности с базовыми показателями и минимальным набором требований.
                                     </p>
                                 </div>
                                 
-                                <div>
-                                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
-                                        <div style="width: 8px; height: 8px; background: #3a0ca3; border-radius: 50%;"></div>
-                                        <h4 style="margin: 0; color: #000; font-size: 16px; font-weight: 600;">Для крупных организаций</h4>
+                                <div class="plan-type-item">
+                                    <div class="plan-type-header">
+                                        <div class="plan-type-dot large"></div>
+                                        <h4 class="plan-type-title">Для крупных организаций</h4>
                                     </div>
-                                    <p style="margin: 0 0 0 20px; color: #2d3436; font-size: 14px; line-height: 1.6;">
+                                    <p class="plan-type-description">
                                         <strong>Более 25 тыс. тонн условного топлива</strong><br>
                                         Расширенная форма с детальными расчетами, полным набором мероприятий и углубленной отчетностью.
                                     </p>
@@ -833,49 +847,49 @@
                             </div>
                         </div>
 
-                        <div class="answer-text">
+           
+                        <div class="tracking-status">
                             <h3>Как отслеживать статусы планов?</h3>
                             <p>В системе предусмотрено несколько способов мониторинга:</p>
                             
-                            <div style="display: flex; flex-direction: column; gap: 16px; margin-top: 20px;">
-                                <div style="display: flex; gap: 16px; align-items: flex-start;">
-                                    <div style="width: 32px; height: 32px; background: rgba(0, 0, 0, 0.05); border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                                        <span style="color: #000; font-size: 16px;">📊</span>
+                            <div class="tracking-methods">
+                                <div class="tracking-method">
+                                    <div class="tracking-icon">
+                                        <span>📊</span>
                                     </div>
-                                    <div>
-                                        <h4 style="margin: 0 0 8px 0; color: #000; font-size: 15px; font-weight: 600;">Панель управления</h4>
-                                        <p style="margin: 0; color: #2d3436; font-size: 14px; line-height: 1.6;">
+                                    <div class="tracking-content">
+                                        <h4>Панель управления</h4>
+                                        <p>
                                             Обзор всех планов с цветовой индикацией статусов и быстрыми фильтрами
                                         </p>
                                     </div>
                                 </div>
                                 
-                                <div style="display: flex; gap: 16px; align-items: flex-start;">
-                                    <div style="width: 32px; height: 32px; background: rgba(0, 0, 0, 0.05); border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                                        <span style="color: #000; font-size: 16px;">🔔</span>
+                                <div class="tracking-method">
+                                    <div class="tracking-icon">
+                                        <span>🔔</span>
                                     </div>
-                                    <div>
-                                        <h4 style="margin: 0 0 8px 0; color: #000; font-size: 15px; font-weight: 600;">Уведомления</h4>
-                                        <p style="margin: 0; color: #2d3436; font-size: 14px; line-height: 1.6;">
+                                    <div class="tracking-content">
+                                        <h4>Уведомления</h4>
+                                        <p>
                                             Автоматические оповещения при изменении статуса плана
                                         </p>
                                     </div>
                                 </div>
                                 
-                                <div style="display: flex; gap: 16px; align-items: flex-start;">
-                                    <div style="width: 32px; height: 32px; background: rgba(0, 0, 0, 0.05); border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                                        <span style="color: #000; font-size: 16px;">📋</span>
+                                <div class="tracking-method">
+                                    <div class="tracking-icon">
+                                        <span>📋</span>
                                     </div>
-                                    <div>
-                                        <h4 style="margin: 0 0 8px 0; color: #000; font-size: 15px; font-weight: 600;">История изменений</h4>
-                                        <p style="margin: 0; color: #2d3436; font-size: 14px; line-height: 1.6;">
+                                    <div class="tracking-content">
+                                        <h4>История изменений</h4>
+                                        <p>
                                             Подробный лог всех переходов между статусами с указанием даты и ответственного
                                         </p>
                                     </div>
                                 </div>
                             </div>
                         </div>
-
                         <div class="answer-navigation">
                             <a href="" class="nav-btn prev">
                                 <i>←</i>

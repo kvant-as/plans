@@ -215,7 +215,7 @@
   --glass: rgba(255, 255, 255, 0.05);
   --glass-border: rgba(255, 255, 255, 0.1);
   --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-  --glow: 0 0 40px rgba(0, 0, 0, 0.15);
+  --glow: 0 0 10px rgba(0, 0, 0, 0.15);
 }
 
 * {
@@ -978,7 +978,9 @@ header nav{
 .error {
     padding: 15px;
     text-align: center;
+    font-size: 16px;
     color: #666;
+    font-weight: 500;
 }
 
 .entity-block {
@@ -1214,7 +1216,7 @@ footer {
 
 .main-btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
 }
 
 .main-btn-outline {
@@ -2712,6 +2714,28 @@ input[type="checkbox"]:focus {
   transition: all 0.3s ease;
   box-sizing: border-box;
   text-align: center;
+}
+
+.choose-plan.no-data {
+  width: calc(100%);
+  min-height: 70px;
+  border-radius: 8px;
+  padding: 17px;
+  display: flex;
+  border: none;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.choose-plan.no-data p{
+  color: black; 
+  font-weight:500;
+  font-style: normal;
 }
 
 .choose-plan-text{
@@ -4298,6 +4322,510 @@ input[type="checkbox"]:focus {
   animation: checkmark 0.3s ease;
 }
 
+.status-grid {
+  margin: 40px 0;
+}
+
+.status-grid h3 {
+  margin: 0 0 24px 0;
+  color: #000;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.status-grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.status-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 24px;
+  border: 1px solid rgba(0,0,0,0.08);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.status-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.08);
+}
+
+.status-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.status-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.status-icon span {
+  font-size: 20px;
+}
+
+.status-badge {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 20px;
+}
+
+.status-title {
+  margin: 0 0 12px 0;
+  color: #000;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.status-description {
+  margin: 0;
+  color: #2d3436;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* Цветовые статусы */
+.status-editing .status-icon {
+  background: rgba(108, 117, 125, 0.1);
+}
+.status-editing .status-icon span {
+  color: #6c757d;
+}
+.status-editing .status-badge {
+  color: #6c757d;
+  background: rgba(108, 117, 125, 0.1);
+}
+
+.status-control .status-icon {
+  background: rgba(255, 193, 7, 0.1);
+}
+.status-control .status-icon span {
+  color: #ffc107;
+}
+.status-control .status-badge {
+  color: #ffc107;
+  background: rgba(255, 193, 7, 0.1);
+}
+
+.status-review .status-icon {
+  background: rgba(13, 110, 253, 0.1);
+}
+.status-review .status-icon span {
+  color: #0d6efd;
+}
+.status-review .status-badge {
+  color: #0d6efd;
+  background: rgba(13, 110, 253, 0.1);
+}
+
+.status-error .status-icon {
+  background: rgba(220, 53, 69, 0.1);
+}
+.status-error .status-icon span {
+  color: #dc3545;
+}
+.status-error .status-badge {
+  color: #dc3545;
+  background: rgba(220, 53, 69, 0.1);
+}
+
+.status-approved .status-icon {
+  background: rgba(25, 135, 84, 0.1);
+}
+.status-approved .status-icon span {
+  color: #198754;
+}
+.status-approved .status-badge {
+  color: #198754;
+  background: rgba(25, 135, 84, 0.1);
+}
+
+/* Стили для блока типов планов */
+.plan-types {
+  background: #f8f9fa;
+  padding: 30px;
+  border-radius: 16px;
+  margin: 40px 0;
+  border: 1px solid rgba(0,0,0,0.08);
+}
+
+.plan-types h3 {
+  margin: 0 0 20px 0;
+  color: #000;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.plan-types-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+@media (max-width: 768px) {
+  .plan-types-grid {
+      grid-template-columns: 1fr;
+      gap: 20px;
+  }
+}
+
+.plan-type-item {
+  margin-bottom: 16px;
+}
+
+.plan-type-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.plan-type-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.plan-type-dot.small {
+  background: #4361ee;
+}
+
+.plan-type-dot.large {
+  background: #3a0ca3;
+}
+
+.plan-type-title {
+  margin: 0;
+  color: #000;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.plan-type-description {
+  margin: 0 0 0 20px;
+  color: #2d3436;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.plan-type-description strong {
+  color: #000;
+  font-weight: 600;
+}
+
+/* Стили для блока отслеживания статусов */
+.tracking-status {
+  margin-top: 40px;
+}
+
+.tracking-status h3 {
+  margin: 0 0 16px 0;
+  color: #000;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.tracking-status > p {
+  margin: 0 0 20px 0;
+  color: #2d3436;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.tracking-methods {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.tracking-method {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.tracking-icon {
+  width: 32px;
+  height: 32px;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.tracking-icon span {
+  color: #000;
+  font-size: 16px;
+}
+
+.tracking-content {
+  flex: 1;
+}
+
+.tracking-content h4 {
+  margin: 0 0 8px 0;
+  color: #000;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.tracking-content p {
+  margin: 0;
+  color: #2d3436;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* Стили для блока "Что происходит после создания плана" */
+.plan-after-creation {
+    margin: 30px 0;
+}
+
+.plan-after-creation h3 {
+    margin: 0 0 12px 0;
+    color: #000;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.plan-after-creation > p {
+    margin: 0 0 20px 0;
+    color: #2d3436;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.plan-features {
+    background: #f8fafc;
+    padding: 24px;
+    border-radius: 12px;
+    margin-top: 20px;
+    border: 1px solid rgba(67, 97, 238, 0.1);
+}
+
+.plan-feature-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.plan-feature-item:last-child {
+    border-bottom: none;
+}
+
+.plan-feature-check {
+    background: #4361ee;
+    color: white;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 12px;
+    font-size: 12px;
+    flex-shrink: 0;
+    font-weight: bold;
+}
+
+.plan-feature-text {
+    color: #2d3436;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+/* Вариант с иконками вместо галочек */
+.plan-feature-check.icon-check {
+    font-size: 10px;
+}
+
+.plan-feature-check.icon-check::before {
+    content: "✓";
+}
+
+/* Дополнительные стили для улучшения */
+.plan-feature-item {
+    transition: transform 0.2s ease, background-color 0.2s ease;
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin: 4px 0;
+}
+
+.plan-feature-item:hover {
+    background-color: rgba(67, 97, 238, 0.05);
+    transform: translateX(5px);
+}
+
+.plan-feature-check {
+    transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.plan-feature-item:hover .plan-feature-check {
+    transform: scale(1.1);
+    background-color: #3a56d4;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .plan-features {
+        padding: 20px;
+    }
+    
+    .plan-feature-item {
+        padding: 10px 12px;
+    }
+    
+    .plan-feature-text {
+        font-size: 13px;
+    }
+}
+
+/* Стили для блока "Что происходит после проверки" */
+.after-inspection {
+    margin: 30px 0;
+}
+
+.after-inspection h3 {
+    margin: 0 0 16px 0;
+    color: #000;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.inspection-outcomes {
+    background: #f8fafc;
+    padding: 24px;
+    border-radius: 12px;
+    margin-top: 20px;
+    border: 1px solid rgba(0,0,0,0.08);
+}
+
+.outcomes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+@media (max-width: 768px) {
+    .outcomes-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+}
+
+.outcome-item {
+    padding: 16px;
+    border-radius: 8px;
+    background: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.outcome-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.outcome-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+}
+
+.outcome-icon span {
+    font-size: 20px;
+}
+
+.outcome-title {
+    margin: 0 0 8px 0;
+    font-size: 15px;
+    color: #000;
+    font-weight: 600;
+    line-height: 1.4;
+}
+
+.outcome-description {
+    margin: 0;
+    font-size: 14px;
+    color: #666;
+    line-height: 1.5;
+}
+
+/* Цветовые варианты для разных статусов */
+.outcome-error .outcome-icon {
+    background: rgba(220, 53, 69, 0.1);
+}
+
+.outcome-error .outcome-icon span {
+    color: #dc3545;
+}
+
+.outcome-error:hover {
+    border: 3px solid #dc3545;
+}
+
+.outcome-approved .outcome-icon {
+    background: rgba(40, 167, 69, 0.1);
+}
+
+.outcome-approved .outcome-icon span {
+    color: #28a745;
+}
+
+.outcome-approved:hover {
+    border: 3px solid #28a745;
+}
+
+.outcome-canceled .outcome-icon {
+    background: rgba(108, 117, 125, 0.1);
+}
+
+.outcome-canceled .outcome-icon span {
+    color: #6c757d;
+}
+
+.outcome-canceled:hover {
+    border: 3px solid #6c757d;
+}
+
+/* Адаптивность */
+@media (max-width: 576px) {
+    .inspection-outcomes {
+        padding: 20px;
+    }
+    
+    .outcome-item {
+        padding: 20px;
+    }
+    
+    .outcome-title {
+        font-size: 16px;
+    }
+    
+    .outcome-description {
+        font-size: 13px;
+    }
+}
+
 .answer-highlight {
   background: linear-gradient(120deg, rgba(67, 97, 238, 0.1) 0%, rgba(76, 201, 240, 0.1) 100%);
   border-left: 4px solid var(--faq-primary);
@@ -4319,7 +4847,7 @@ input[type="checkbox"]:focus {
 }
 
 .answer-highlight-second p{
-font-size: 13.5px;
+font-size: 15px;
 }
 
 .highlight-icon {
@@ -5627,7 +6155,7 @@ tr.selected {
 }
 
 .modal-subtext{
-  font-size: 13.3px;
+  font-size: 14px;
   color: var(--text-subtitle2);
 }
 
