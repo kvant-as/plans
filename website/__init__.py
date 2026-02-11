@@ -90,8 +90,11 @@ def create_app():
 
     from .routes.views import views
     from .routes.auth import auth
+    from .routes.chat_bp import chat_bp
+    
     app.register_blueprint(views, url_prefix='/')
     app.register_blueprint(auth, url_prefix='/')
+    app.register_blueprint(chat_bp, url_prefix='/api/chat')
     
     with app.app_context():
         from .routes.admin import AdminSetup

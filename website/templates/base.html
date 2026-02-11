@@ -29,6 +29,20 @@
                     </div>
                 </div>
                 <div class="header-bside">
+                    <button type="button" class="auth-next-button" style="margin: 0;" onclick="ChatModule.toggleChat()">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="btn-icon black">
+                            <path d="M20 2H4C2.9 2 2 2.9 2 4V22L6 18H20C21.1 18 22 17.1 22 16V4C22 2.9 21.1 2 20 2Z" 
+                                fill="currentColor" 
+                                stroke="currentColor" 
+                                stroke-width="1.5"
+                                stroke-linejoin="round"/>
+                            <circle cx="8" cy="10" r="1.5" fill="white"/>
+                            <circle cx="12" cy="10" r="1.5" fill="white"/>
+                            <circle cx="16" cy="10" r="1.5" fill="white"/>
+                        </svg>
+                        <span class="btn-text">{{ _('Онлайн консультант') }}</span>
+                    </button>
+
                     <a class="clear-but" onclick="window.location.href='/FAQ'">
                         <img src="{{ url_for('static', filename='img/FAQ.svg') }}" class="clear-icon">
                     </a>
@@ -333,7 +347,6 @@
     </div>    
     {% endif %}
 
-
     {% if sentmodalecp %}
     <div id="sentmodalecp" class="modal">
         <div class="modal-content" style="max-width: 450px;">
@@ -375,8 +388,6 @@
         </div>
     </div>
     {% endif %}
-
-
 
     <div id="confirmModal2" class="modal">
       <div class="modal-content" style = "max-width: 450px;">
@@ -1296,8 +1307,70 @@
     </div>
     {% endif %}
 
+    {% if not chat_widget %}
+        <div class="chat-container" id="chatContainer">
+                <div class="chat-header">
+                    <div class="chat-header-info">
+                        <span class="chat-subtitle">Виртуальный помощник</span>
+                        <span class="chat-subtitle-online">Техподдержка</span>
+                    </div>
+                    <img class="close-btn white" onclick="ChatModule.toggleChat()" src="/static/img/Close.svg" alt="">
+                </div>
 
-
+                <div class="chat-messages" id="chatMessages">
+                    <div class="chat-date" id="chatDate"></div>
+                    <div class="welcome-message">
+                        <div class="message bot">
+                            <div class="avatar">👩‍💻</div>
+                            <div class="message-content welcome-content">
+                                <div class="message-text">
+                                    Добрый день! <br>
+                                    Выберите, пожалуйста, отделение, соответствующее вашему вопросу:<br>
+                                    • <strong>Нет организации</strong> — если у вас нет организации или вопросы по регистрации<br>
+                                    • <strong>Другое</strong> — все остальные вопросы
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="chatTypeSelection">
+                        <div class="chat-type-selection">
+                            <div class="chat-option" onclick="ChatModule.selectChatType('technical')">
+                                <div class="chat-option-info">
+                                    <div class="chat-option-title">Нет организации</div>
+                                </div>
+                            </div>
+                            <div class="chat-option" onclick="ChatModule.selectChatType('sales')">
+                                <div class="chat-option-info">
+                                    <div class="chat-option-title">Другое</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="messagesContainer" style="display: none;">
+                        <div id="messagesList"></div>
+                        <div class="typing-indicator" id="typingIndicator">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="chat-input-area" id="chatInputArea" style="display: none;">
+                    <textarea 
+                        id="messageInput" 
+                        placeholder="Введите сообщение..." 
+                        rows="1"
+                        onkeydown="ChatModule.handleKeyDown(event)"
+                    ></textarea>
+                    <button class="send-btn" onclick="ChatModule.sendMessage()">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    {% endif %}
     <main> 
     <div id="flash-container"></div>
 

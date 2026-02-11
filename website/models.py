@@ -1,6 +1,8 @@
 from . import db
 from sqlalchemy import Numeric
 from flask_login import UserMixin
+import secrets
+import string
 
 def TimeByMinsk():
     from datetime import datetime, timedelta
@@ -85,9 +87,6 @@ class Organization(db.Model):
                            foreign_keys="Plan.org_id",
                            back_populates="organization")
     
-import secrets
-import string
-
 def generate_static_token(length=20):
     alphabet = string.ascii_letters + string.digits
     return ''.join(secrets.choice(alphabet) for _ in range(length))
@@ -104,16 +103,7 @@ class Plan(db.Model):
         index=True
     )
     
-    # okpo = db.Column(db.String, default=None)
-    # name_org = db.Column(db.String, default=None)
-    # name_min = db.Column(db.String, default=None)
-    # name_reg = db.Column(db.String, default=None)
-    
     year = db.Column(db.Integer, nullable=False)
-    # email = db.Column(db.String(), nullable=False)
-    # fio = db.Column(db.String(), nullable=False)
-    # phone = db.Column(db.String(), nullable=False)
-    
     begin_time = db.Column(db.DateTime, nullable=False, default=TimeByMinsk)
     change_time = db.Column(db.DateTime, nullable=False, default=TimeByMinsk)
     sent_time = db.Column(db.DateTime)
@@ -165,11 +155,10 @@ class Ticket(db.Model):
     is_owner = db.Column(db.Boolean, default=False)
     note = db.Column(db.String(500), nullable=False)
     plan_id = db.Column(db.Integer, db.ForeignKey('plans.id'))
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))  # Связь с пользователем
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     
     plan = db.relationship("Plan", back_populates="tickets")
     user = db.relationship("User", back_populates="tickets")
-    
     
 class Unit(db.Model):
     __tablename__ = 'units'
@@ -281,7 +270,6 @@ class Indicator(db.Model):
     # IsRenewable = db.Column(db.Boolean)
     # id_indicator_parent = db.Column(db.Integer)
 
-
     DateStart = db.Column(db.DateTime, default=None)
     DateEnd = db.Column(db.DateTime, default=None)
     
@@ -319,3 +307,63 @@ class Notification(db.Model):
     message = db.Column(db.String(140), nullable=False)
     is_read = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, default=TimeByMinsk)
+    
+    
+class ChatAttachment(db.Model):
+    __tablename__ = 'chat_attachments'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    message_id = db.Column(db.Integer, db.ForeignKey('chat_messages.id', ondelete='CASCADE'), nullable=False)
+    
+
+    filename = db.Column(db.String(255), nullable=False)
+    file_path = db.Column(db.String(500), nullable=False)
+    file_size = db.Column(db.Integer)
+    mime_type = db.Column(db.String(100))
+    file_type = db.Column(db.String(20), nullable=False, default='file')
+    
+    uploaded_by_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
+    uploaded_at = db.Column(db.DateTime, nullable=False, default=TimeByMinsk)
+    
+    message = db.relationship('ChatMessage', foreign_keys=[message_id], backref='attachments_list')
+    uploaded_by = db.relationship('User', foreign_keys=[uploaded_by_id])
+    
+    def __repr__(self):
+        return f'<Attachment {self.filename}>'
+    
+class ChatMessage(db.Model):
+    __tablename__ = 'chat_messages'
+    id = db.Column(db.Integer, primary_key=True)
+    
+    chat_id = db.Column(db.Integer, db.ForeignKey('chats.id', ondelete='CASCADE'), nullable=False)
+    sender_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
+    reply_to_id = db.Column(db.Integer, db.ForeignKey('chat_messages.id'), nullable=True)
+    
+    content = db.Column(db.Text, nullable=False)
+
+    created_at = db.Column(db.DateTime, nullable=False, default=TimeByMinsk)
+    updated_at = db.Column(db.DateTime, nullable=False, default=TimeByMinsk, onupdate=TimeByMinsk)
+
+    chat = db.relationship('Chat', foreign_keys=[chat_id], backref='messages_list')
+    sender = db.relationship('User', foreign_keys=[sender_id], backref='sent_messages_list')
+    reply_to = db.relationship('ChatMessage', remote_side=[id], backref='replies_list')
+
+    def __repr__(self):
+        return f'<Message {self.id} in chat {self.chat_id}>'
+
+
+
+class Chat(db.Model):
+    __tablename__ = 'chats'
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(200), nullable=True)
+    
+    created_by_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    created_by = db.relationship('User', foreign_keys=[created_by_id], backref='created_chats')
+    
+    created_at = db.Column(db.DateTime, nullable=False, default=TimeByMinsk)
+    updated_at = db.Column(db.DateTime, nullable=False, default=TimeByMinsk, onupdate=TimeByMinsk)
+    
+    def __repr__(self):
+        return f'<Chat {self.id}: {self.title or "Чат"}>'
+    

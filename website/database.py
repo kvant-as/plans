@@ -11,15 +11,9 @@ def create_database(app, db):
         filling_database(db)
         
 def is_db_empty():
-    from .models import User, Organization, Plan, Ticket, Ticket, Unit, Indicator
+    from .models import Organization
     return all([
-        User.query.count() == 0,
         Organization.query.count() == 0,
-        Plan.query.count() == 0,
-        Ticket.query.count() == 0,
-        Unit.query.count() == 0,
-        Indicator.query.count() == 0,
-        Unit.query.count() == 0,
     ])
         
 def read_dbf(file_path, columns):
