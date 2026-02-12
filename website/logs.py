@@ -40,7 +40,7 @@ def setup_logging(app):
 
     log_file = os.path.join(log_dir, "py-app.log")
     
-    log_level = app.config.get('LOG_LEVEL', 'INFO').upper()
+    log_level = app.config.get('LOG_LEVEL', 'DEBUG').upper()
     
     json_formatter = logs()
 

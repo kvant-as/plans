@@ -47,6 +47,10 @@ class User(db.Model, UserMixin):
     tickets = db.relationship('Ticket', back_populates='user', lazy=True)
     notifications = db.relationship('Notification', backref='user', lazy=True, cascade="all, delete-orphan")
     
+    created_chats = db.relationship('Chat',
+                                   back_populates='created_by',
+                                   cascade='all, delete-orphan')
+    
     def __repr__(self):
         return f'<User {self.email}>'
 
@@ -309,48 +313,25 @@ class Notification(db.Model):
     created_at = db.Column(db.DateTime, default=TimeByMinsk)
     
     
-class ChatAttachment(db.Model):
-    __tablename__ = 'chat_attachments'
     
-    id = db.Column(db.Integer, primary_key=True)
-    message_id = db.Column(db.Integer, db.ForeignKey('chat_messages.id', ondelete='CASCADE'), nullable=False)
     
-
-    filename = db.Column(db.String(255), nullable=False)
-    file_path = db.Column(db.String(500), nullable=False)
-    file_size = db.Column(db.Integer)
-    mime_type = db.Column(db.String(100))
-    file_type = db.Column(db.String(20), nullable=False, default='file')
     
-    uploaded_by_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
-    uploaded_at = db.Column(db.DateTime, nullable=False, default=TimeByMinsk)
     
-    message = db.relationship('ChatMessage', foreign_keys=[message_id], backref='attachments_list')
-    uploaded_by = db.relationship('User', foreign_keys=[uploaded_by_id])
     
-    def __repr__(self):
-        return f'<Attachment {self.filename}>'
     
 class ChatMessage(db.Model):
     __tablename__ = 'chat_messages'
     id = db.Column(db.Integer, primary_key=True)
     
     chat_id = db.Column(db.Integer, db.ForeignKey('chats.id', ondelete='CASCADE'), nullable=False)
-    sender_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
-    reply_to_id = db.Column(db.Integer, db.ForeignKey('chat_messages.id'), nullable=True)
+    is_user = db.Column(db.Boolean, nullable=False, default=True)
     
     content = db.Column(db.Text, nullable=False)
-
     created_at = db.Column(db.DateTime, nullable=False, default=TimeByMinsk)
-    updated_at = db.Column(db.DateTime, nullable=False, default=TimeByMinsk, onupdate=TimeByMinsk)
-
-    chat = db.relationship('Chat', foreign_keys=[chat_id], backref='messages_list')
-    sender = db.relationship('User', foreign_keys=[sender_id], backref='sent_messages_list')
-    reply_to = db.relationship('ChatMessage', remote_side=[id], backref='replies_list')
-
+    
+    chat = db.relationship('Chat', foreign_keys=[chat_id], back_populates='messages')
     def __repr__(self):
         return f'<Message {self.id} in chat {self.chat_id}>'
-
 
 
 class Chat(db.Model):
@@ -359,11 +340,13 @@ class Chat(db.Model):
     title = db.Column(db.String(200), nullable=True)
     
     created_by_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    created_by = db.relationship('User', foreign_keys=[created_by_id], backref='created_chats')
+    created_by = db.relationship('User', foreign_keys=[created_by_id], back_populates='created_chats')
+
+    messages = db.relationship('ChatMessage', 
+                              back_populates='chat',
+                              cascade='all, delete-orphan',
+                              passive_deletes=True,
+                              lazy='dynamic')
     
     created_at = db.Column(db.DateTime, nullable=False, default=TimeByMinsk)
     updated_at = db.Column(db.DateTime, nullable=False, default=TimeByMinsk, onupdate=TimeByMinsk)
-    
-    def __repr__(self):
-        return f'<Chat {self.id}: {self.title or "Чат"}>'
-    

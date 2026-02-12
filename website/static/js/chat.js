@@ -3,30 +3,108 @@ const ChatModule = (function() {
         currentChatId: null,
         currentChatType: null,
         currentUserId: 1,
-        messageCheckInterval: null
+        messageCheckInterval: null,
+        selectedTypeText: null,
+        lastMessageCount: 0
     };
 
-    async function _loadOrCreateChat(chatType) {
+    function _showPage(pageId) {
+        document.querySelectorAll('.chat-page').forEach(page => {
+            page.classList.remove('active');
+        });
+        
+        const page = document.getElementById(pageId);
+        if (page) page.classList.add('active');
+        
+        const chatInputArea = document.getElementById('chatInputArea');
+        if (pageId === 'pageActiveChat') {
+            chatInputArea.style.display = 'flex';
+            document.getElementById('messageInput').focus();
+            // _addEndChatButton();
+        } else {
+            chatInputArea.style.display = 'none';
+            _removeEndChatButton();
+        }
+    }
+
+    async function _checkExistingChatAndOpen() {
         try {
-            const response = await fetch('/api/chat/load-or-create', {
+            const response = await fetch('/api/chat/check-existing-chat');
+            const data = await response.json();
+            
+            if (data.has_active_chat) {
+                _state.currentChatId = data.chat_id;
+                _state.currentChatType = data.chat_type;
+                await _loadMessages();
+                _showPage('pageActiveChat');
+                _startMessageCheck();
+                _scrollToBottom();
+            } else {
+                _showPage('pageChatType');
+            }
+        } catch (error) {
+            console.error('Error checking existing chat:', error);
+            _showPage('pageChatType');
+        }
+    }
+
+    async function _handleChatTypeSelection(type) {
+        _state.currentChatType = type;
+        
+        const typeTexts = {
+            'no-org': 'Нет организации',
+            'compl-plan': 'Заполнение плана',
+            'dif': 'Другое'
+        };
+
+        _state.selectedTypeText = typeTexts[type];
+        
+        const welcomeMessage = document.querySelector('#pageActiveChat .welcome-message .message-text');
+        if (welcomeMessage) {
+            welcomeMessage.innerHTML = `Добрый день! <br>Вы выбрали <strong>${_state.selectedTypeText}</strong>, какой вопрос у вас возник? <br> 
+            <br>Для смены темы нажмите <strong>Назад к выбору тем</strong>, для продолжения напишите ваш вопрос
+                                    `
+            
+            ;
+        }
+        
+        _showPage('pageActiveChat');
+        _addBackButton();
+    }
+
+    async function _sendMessage() {
+        const input = document.getElementById('messageInput');
+        const content = input.value.trim();
+        
+        if (!content) return;
+        
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
+
+        try {
+            const response = await fetch('/api/chat/send-message', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 
+                    'Content-Type': 'application/json',
+                    ...(csrfToken && { 'X-CSRFToken': csrfToken })
+                },
                 body: JSON.stringify({
-                    type: chatType,
-                    user_id: _state.currentUserId
+                    content: content,
+                    sender_id: _state.currentUserId
                 })
             });
             
-            const data = await response.json();
-            
-            if (data.success) {
-                _state.currentChatId = data.chat_id;
-                await _loadMessages();
-                _startMessageCheck();
+            if (response.ok) {
+                const data = await response.json();
+                
+                if (data.success) {
+                    _state.currentChatId = data.chat_id;
+                    await _loadMessages();
+                    input.value = '';
+                }
             }
         } catch (error) {
-            console.error('Error:', error);
-            _addSystemMessage('Ошибка подключения к чату');
+            console.error('Error sending message:', error);
+            alert('Ошибка при отправке сообщения');
         }
     }
 
@@ -50,172 +128,84 @@ const ChatModule = (function() {
         }
     }
 
-    async function _sendMessage() {
-        const input = document.getElementById('messageInput');
-        const content = input.value.trim();
-        
-        if (!content) return;
-        
-        const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
-
-        try {
-            const response = await fetch('/api/chat/send-message', {
-                method: 'POST',
-                headers: { 
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': csrfToken
-                },
-                body: JSON.stringify({
-                    ...(_state.currentChatId && { chat_id: _state.currentChatId }),
-                    content: content,
-                    sender_id: _state.currentUserId,
-                    chat_type: _state.currentChatType
-                })
-            });
-            
-            if (response.ok) {
-                const message = await response.json();
-                
-                if (message.is_new_chat) {
-                    _state.currentChatId = message.chat_id;
-                    _startMessageCheck();
-                    
-                    // Разные приветствия для разных типов чата
-                    const welcomeMessages = {
-                        'technical': 'Здравствуйте! Опишите вашу проблему с организацией.',
-                        'sales': 'Здравствуйте! Что вас интересует?',
-                        'default': 'Здравствуйте! Чем могу помочь?'
-                    };
-                    
-                    const welcomeText = welcomeMessages[_state.currentChatType] || welcomeMessages.default;
-                    
-                    const welcomeMessage = {
-                        id: Date.now(),
-                        content: welcomeText,
-                        sender_id: 1,
-                        created_at: new Date().toISOString()
-                    };
-                    _addMessageToUI(welcomeMessage, false);
-                    
-                    // Добавляем небольшую паузу перед сообщением пользователя
-                    await new Promise(resolve => setTimeout(resolve, 300));
-                    _addMessageToUI(message, true);
-                } else {
-                    _addMessageToUI(message, true);
-                }
-                
-                input.value = '';
-                _scrollToBottom();
-                _addEndChatButton();
-            }
-        } catch (error) {
-            console.error('Error sending message:', error);
-            alert('Ошибка при отправке сообщения');
-        }
-    }
-
     async function _endChat() {
         if (!_state.currentChatId) return;
-        
+            
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
+
         try {
             const response = await fetch(`/api/chat/${_state.currentChatId}/end`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' }
+                headers: { 
+                    'Content-Type': 'application/json',
+                    ...(csrfToken && { 'X-CSRFToken': csrfToken })
+                }
             });
             
             if (response.ok) {
-                // Показываем сообщение о завершении
+                const messagesList = document.getElementById('messagesList');
+                const endedMessagesList = document.getElementById('endedMessagesList');
+                endedMessagesList.innerHTML = messagesList.innerHTML;
+
                 const endMessage = {
                     id: Date.now(),
                     content: '✅ Чат завершен. Спасибо за обращение!',
-                    sender_id: 1,
+                    sender_id: _state.currentUserId, 
                     created_at: new Date().toISOString()
                 };
-                _addMessageToUI(endMessage, false);
+                _addMessageToUI(endMessage, false, 'endedMessagesList');
                 
-                // Блокируем поле ввода
-                document.getElementById('messageInput').disabled = true;
-                document.querySelector('.send-btn').disabled = true;
-                
-                // Добавляем кнопку "Новый чат"
-                _addNewChatButton();
-                
+                _showPage('pageChatEnded');
                 _stopMessageCheck();
+                
+                _state.currentChatId = null;
+                _state.currentChatType = null;
             }
         } catch (error) {
             console.error('Error ending chat:', error);
         }
     }
 
-    function _addEndChatButton() {
-        if (document.querySelector('.end-chat-btn')) return;
-        
-        const chatInputArea = document.querySelector('.chat-input-area');
-        const endChatBtn = document.createElement('button');
-        endChatBtn.className = 'end-chat-btn';
-        endChatBtn.innerHTML = `
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                <path d="M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            </svg>
-            Завершить чат
-        `;
-        endChatBtn.onclick = _endChat;
-        chatInputArea.appendChild(endChatBtn);
+    function _startMessageCheck() {
+        _stopMessageCheck();
+        _state.messageCheckInterval = setInterval(_checkNewMessages, 10000);
     }
 
-    function _addNewChatButton() {
-        const chatInputArea = document.querySelector('.chat-input-area');
-        chatInputArea.style.display = 'none';
-        
-        const newChatBtn = document.createElement('button');
-        newChatBtn.className = 'new-chat-btn';
-        newChatBtn.innerHTML = `
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 5V19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                <path d="M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            </svg>
-            Новое обращение
-        `;
-        newChatBtn.onclick = () => {
-            _resetChat();
-            _removeBackButton();
-            document.querySelector('.chat-toggle').style.display = 'flex';
-            document.getElementById('chatContainer').classList.remove('active');
-        };
-        
-        const chatMessages = document.getElementById('chatMessages');
-        chatMessages.appendChild(newChatBtn);
+    function _stopMessageCheck() {
+        if (_state.messageCheckInterval) {
+            clearInterval(_state.messageCheckInterval);
+            _state.messageCheckInterval = null;
+        }
     }
 
     async function _checkNewMessages() {
         if (!_state.currentChatId) return;
         
         try {
-            const response = await fetch(`/api/chat/${_state.currentChatId}/new-messages`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ last_message_id: 0 })
-            });
-            
+            const response = await fetch(`/api/chat/${_state.currentChatId}/messages`);
             const messages = await response.json();
             
-            messages.forEach(msg => {
-                if (msg.sender_id !== _state.currentUserId) {
-                    _addMessageToUI(msg, false);
-                }
-            });
-            
-            if (messages.length > 0) {
+            if (messages.length > _state.lastMessageCount) {
+                const newMessages = messages.slice(_state.lastMessageCount);
+                
+                newMessages.forEach(msg => {
+                    const existingMsg = document.querySelector(`[data-message-id="${msg.id}"]`);
+                    if (!existingMsg) {
+                        _addMessageToUI(msg, msg.sender_id === _state.currentUserId);
+                    }
+                });
+                
+                _state.lastMessageCount = messages.length;
                 _scrollToBottom();
             }
         } catch (error) {
-            console.error('Error checking messages:', error);
+            console.error('Error checking new messages:', error);
         }
     }
 
-    function _addMessageToUI(message, isSent) {
-        const messagesList = document.getElementById('messagesList');
+    function _addMessageToUI(message, isSent, containerId = 'messagesList') {
+        const container = document.getElementById(containerId);
+        if (!container) return;
         
         const messageDiv = document.createElement('div');
         messageDiv.className = `message ${isSent ? 'user' : 'bot'}`;
@@ -229,163 +219,111 @@ const ChatModule = (function() {
         contentDiv.className = 'message-content';
         
         const textDiv = document.createElement('div');
+        textDiv.className = 'message-text';
         textDiv.textContent = message.content;
         contentDiv.appendChild(textDiv);
         
-        const timeDiv = document.createElement('div');
-        timeDiv.className = 'message-time';
-        const date = new Date(message.created_at);
-        timeDiv.textContent = date.toLocaleTimeString('ru-RU', {
-            hour: '2-digit',
-            minute: '2-digit'
-        });
-        contentDiv.appendChild(timeDiv);
+        if (message.created_at) {
+            const timeDiv = document.createElement('div');
+            timeDiv.className = 'message-time';
+            const date = new Date(message.created_at);
+            timeDiv.textContent = date.toLocaleTimeString('ru-RU', {
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            contentDiv.appendChild(timeDiv);
+        }
         
         messageDiv.appendChild(avatar);
         messageDiv.appendChild(contentDiv);
-        messagesList.appendChild(messageDiv);
-    }
-
-    function _addSystemMessage(text) {
-        const messagesList = document.getElementById('messagesList');
+        container.appendChild(messageDiv);
         
-        const messageDiv = document.createElement('div');
-        messageDiv.className = 'message bot';
-        
-        const avatar = document.createElement('div');
-        avatar.className = 'avatar';
-        avatar.textContent = '👩‍💻';
-        
-        const contentDiv = document.createElement('div');
-        contentDiv.className = 'message-content';
-        contentDiv.textContent = text;
-        
-        messageDiv.appendChild(avatar);
-        messageDiv.appendChild(contentDiv);
-        messagesList.appendChild(messageDiv);
-    }
-
-    function _scrollToBottom() {
-        const messagesContainer = document.getElementById('chatMessages');
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        if (containerId === 'messagesList') {
+            _scrollToBottom();
+        }
     }
 
     function _addBackButton() {
-        if (document.querySelector('.chat-back-button')) return;
+        const existingBtn = document.querySelector('.back-to-type-btn');
+        if (existingBtn) existingBtn.remove();
         
-        const chatHeader = document.querySelector('.chat-header');
-        const backButton = document.createElement('button');
-        backButton.className = 'chat-back-button';
-        backButton.innerHTML = `
+        const chatPage = document.getElementById('pageActiveChat');
+        if (!chatPage) return;
+        
+        const backBtn = document.createElement('button');
+        backBtn.className = 'back-to-type-btn';
+        backBtn.innerHTML = `
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M19 12H5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M12 19L5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M19 12H5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M12 19L5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
             </svg>
-            Назад
+            <span>Назад к выбору темы</span>
         `;
-        backButton.onclick = (e) => {
-            e.stopPropagation();
-            _resetChat();
+        backBtn.onclick = function() {
+            _showPage('pageChatType');
+            this.remove();
         };
-        
-        chatHeader.appendChild(backButton);
+        chatPage.appendChild(backBtn);
     }
 
-    function _removeBackButton() {
-        const backButton = document.querySelector('.chat-back-button');
-        if (backButton) backButton.remove();
+    function _addEndChatButton() {
+        const existingBtn = document.querySelector('.chat-btn-back');
+        if (existingBtn) existingBtn.remove();
+        
+        const chatPage = document.getElementById('pageActiveChat');
+        if (!chatPage) return;
+        
+        const endChatBtn = document.createElement('button');
+        endChatBtn.className = 'chat-btn-back';
+        endChatBtn.innerHTML = `
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <span>Завершить чат</span>
+        `;
+        endChatBtn.onclick = _endChat;
+        chatPage.appendChild(endChatBtn);
     }
 
     function _removeEndChatButton() {
-        const endChatBtn = document.querySelector('.end-chat-btn');
+        const endChatBtn = document.querySelector('.chat-btn-back');
         if (endChatBtn) endChatBtn.remove();
-    }
-
-    function _removeNewChatButton() {
-        const newChatBtn = document.querySelector('.new-chat-btn');
-        if (newChatBtn) newChatBtn.remove();
-    }
-
-    function _startMessageCheck() {
-        _stopMessageCheck();
-        _state.messageCheckInterval = setInterval(_checkNewMessages, 3000);
-    }
-
-    function _stopMessageCheck() {
-        if (_state.messageCheckInterval) {
-            clearInterval(_state.messageCheckInterval);
-            _state.messageCheckInterval = null;
-        }
     }
 
     function _resetChat() {
         _stopMessageCheck();
         
-        if (_state.currentChatId) {
-            // Не удаляем, просто сбрасываем состояние
-            _state.currentChatId = null;
-        }
-        
+        _state.currentChatId = null;
         _state.currentChatType = null;
+        _state.selectedTypeText = null;
+        _state.lastMessageCount = 0;
         
-        const chatTypeSelection = document.getElementById('chatTypeSelection');
-        const messagesContainer = document.getElementById('messagesContainer');
-        const chatInputArea = document.getElementById('chatInputArea');
         const messagesList = document.getElementById('messagesList');
-        const welcomeMessage = document.querySelector('.welcome-message');
-        
-        if (chatTypeSelection) chatTypeSelection.style.display = 'block';
-        if (messagesContainer) messagesContainer.style.display = 'none';
-        if (chatInputArea) {
-            chatInputArea.style.display = 'none';
-            document.getElementById('messageInput').disabled = false;
-            document.querySelector('.send-btn').disabled = false;
-        }
         if (messagesList) messagesList.innerHTML = '';
-        if (welcomeMessage) welcomeMessage.style.display = 'block';
         
-        _removeBackButton();
+        const endedMessagesList = document.getElementById('endedMessagesList');
+        if (endedMessagesList) endedMessagesList.innerHTML = '';
+        
+        const messageInput = document.getElementById('messageInput');
+        if (messageInput) {
+            messageInput.disabled = false;
+            messageInput.value = '';
+        }
+        
         _removeEndChatButton();
-        _removeNewChatButton();
     }
 
-    async function _handleChatTypeSelection(type) {
-        _state.currentChatType = type;
-        
-        const welcomeMessage = document.querySelector('.welcome-message');
-        if (welcomeMessage) welcomeMessage.style.display = 'none';
-        document.getElementById('chatTypeSelection').style.display = 'none';
-        
-        document.getElementById('messagesContainer').style.display = 'block';
-        document.getElementById('chatInputArea').style.display = 'flex';
-        
-        _addBackButton();
-        
-        const typeTexts = {
-            'technical': 'Нет организации',
-            'sales': 'Другое'
-        };
-        
-        const selectedTypeText = typeTexts[type] || 'Поддержка';
-        
-        const userChoiceMessage = {
-            id: Date.now(),
-            content: `Я выбрал: ${selectedTypeText}`,
-            sender_id: _state.currentUserId,
-            created_at: new Date().toISOString()
-        };
-        _addMessageToUI(userChoiceMessage, true);
-        
-        await _loadOrCreateChat(type);
-        
-        document.getElementById('messageInput').focus();
-        _scrollToBottom();
+    function _scrollToBottom() {
+        const messagesContainer = document.getElementById('chatMessages');
+        setTimeout(() => {
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }, 50);
     }
 
     return {
-        init: function(userId) {
+        init: async function(userId) {
             if (userId) _state.currentUserId = userId;
-            console.log('Chat module initialized');
         },
 
         toggleChat: function() {
@@ -393,16 +331,19 @@ const ChatModule = (function() {
             container.classList.toggle('active');
             
             if (container.classList.contains('active')) {
-                document.querySelector('.chat-toggle').style.display = 'none';
+                const toggleBtn = document.querySelector('.chat-toggle');
+                if (toggleBtn) toggleBtn.style.display = 'none';
                 _resetChat();
+                _checkExistingChatAndOpen();
             } else {
-                document.querySelector('.chat-toggle').style.display = 'flex';
+                const toggleBtn = document.querySelector('.chat-toggle');
+                if (toggleBtn) toggleBtn.style.display = 'flex';
             }
         },
 
         selectChatType: _handleChatTypeSelection,
-        resetChat: _resetChat,
         sendMessage: _sendMessage,
+        endChat: _endChat,
 
         handleKeyDown: function(event) {
             if (event.key === 'Enter' && !event.shiftKey) {
