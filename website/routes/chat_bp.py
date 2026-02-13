@@ -35,6 +35,7 @@ def get_messages(chat_id):
             'id': msg.id,
             'chat_id': msg.chat_id,
             'content': msg.content,
+            'is_user': msg.is_user,
             'created_at': msg.created_at.isoformat() if msg.created_at else None
         } for msg in messages]
         
@@ -49,53 +50,43 @@ def get_messages(chat_id):
 def send_message():
     try:
         data = request.get_json()
-        
-        sender_id = data.get('sender_id')
         content = data.get('content').strip()
         
-        if not sender_id or not content:
-            current_app.logger.info(f"Send message failed: missing fields - sender_id: {sender_id}, content: {content}")
+        if not content:
+            current_app.logger.info(f"Send message failed: missing field - content: {content}")
             return jsonify({
                 'success': False,
-                'error': 'Missing required fields'
+                'error': 'Missing required field'
             }), 400
         
-        chat = Chat.query.filter_by(created_by_id=sender_id).order_by(Chat.created_at.desc()).first()
+        chat = Chat.query.filter_by(created_by_id=current_user.id).order_by(Chat.created_at.desc()).first()
         
         if not chat:
             chat = Chat(
                 title=f"Чат поддержки",
-                created_by_id=sender_id,
-                created_at=TimeByMinsk(),
-                updated_at=TimeByMinsk()
+                created_by_id=current_user.id
             )
             db.session.add(chat)
             db.session.flush()
-            current_app.logger.info(f"Created new chat {chat.id} for user {sender_id}")
+            current_app.logger.info(f"Created new chat")
         
         message = ChatMessage(
             chat_id=chat.id,
-            sender_id=sender_id,
             content=content,
-            created_at=TimeByMinsk(),
-            updated_at=TimeByMinsk()
+            is_user = True
         )
         db.session.add(message)
         
         message_answ = ChatMessage(
             chat_id=chat.id,
-            sender_id=None,
-            content="Да красава",
-            created_at=TimeByMinsk(),
-            updated_at=TimeByMinsk()
+            content="Автоматический ответ",
+            is_user = False
         )
         db.session.add(message_answ)
-        
         chat.updated_at = TimeByMinsk()
         db.session.commit()
         
-        current_app.logger.info(f"Message {message.id} sent to chat {chat.id} by user {sender_id}")
-        
+        current_app.logger.info(f"Message sented to chat {chat.id}")
         return jsonify({
             'success': True,
             'chat_id': chat.id,

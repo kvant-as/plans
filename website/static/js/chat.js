@@ -5,8 +5,34 @@ const ChatModule = (function() {
         currentUserId: 1,
         messageCheckInterval: null,
         selectedTypeText: null,
-        lastMessageCount: 0
+        lastMessageCount: 0,
+        isSending: false
     };
+
+    function _showSendingIndicator() {
+        const sendBtn = document.querySelector('.chat-btn');
+        if (!sendBtn) return;
+        
+        if (!sendBtn.dataset.originalHtml) {
+            sendBtn.dataset.originalHtml = sendBtn.innerHTML;
+        }
+        sendBtn.innerHTML = '<div class="sending-indicator"></div>';
+        sendBtn.disabled = true;
+    }
+
+    function _hideSendingIndicator() {
+        const sendBtn = document.querySelector('.chat-btn');
+        if (!sendBtn) return;
+        if (sendBtn.dataset.originalHtml) {
+            sendBtn.innerHTML = sendBtn.dataset.originalHtml;
+            delete sendBtn.dataset.originalHtml;
+        }
+        sendBtn.disabled = false;
+    }
+
+    function _delay(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
 
     function _showPage(pageId) {
         document.querySelectorAll('.chat-page').forEach(page => {
@@ -20,7 +46,7 @@ const ChatModule = (function() {
         if (pageId === 'pageActiveChat') {
             chatInputArea.style.display = 'flex';
             document.getElementById('messageInput').focus();
-            // _addEndChatButton();
+
         } else {
             chatInputArea.style.display = 'none';
             _removeEndChatButton();
@@ -39,6 +65,7 @@ const ChatModule = (function() {
                 _showPage('pageActiveChat');
                 _startMessageCheck();
                 _scrollToBottom();
+                _addEndChatButton();
             } else {
                 _showPage('pageChatType');
             }
@@ -59,17 +86,21 @@ const ChatModule = (function() {
 
         _state.selectedTypeText = typeTexts[type];
         
-        const welcomeMessage = document.querySelector('#pageActiveChat .welcome-message .message-text');
-        if (welcomeMessage) {
-            welcomeMessage.innerHTML = `Добрый день! <br>Вы выбрали <strong>${_state.selectedTypeText}</strong>, какой вопрос у вас возник? <br> 
-            <br>Для смены темы нажмите <strong>Назад к выбору тем</strong>, для продолжения напишите ваш вопрос
-                                    `
-            
-            ;
-        }
-        
+        await _welcomeInChat(true, _state.selectedTypeText);
         _showPage('pageActiveChat');
         _addBackButton();
+    }
+
+    async function _welcomeInChat(is_full, type){
+        const welcomeMessage = document.querySelector('#pageActiveChat .welcome-message .message-text');
+        if (welcomeMessage) {
+            let message = `Добрый день! <br>Вы выбрали <strong>${_state.selectedTypeText}</strong>, какой вопрос у вас возник?`;
+            
+            if (is_full) {
+                message += ` <br><br>Для смены темы нажмите <strong>Назад к выбору тем</strong>, для продолжения напишите ваш вопрос`;
+            }
+            welcomeMessage.innerHTML = message;
+        }
     }
 
     async function _sendMessage() {
@@ -78,6 +109,9 @@ const ChatModule = (function() {
         
         if (!content) return;
         
+        _state.isSending = true;
+        _showSendingIndicator();
+
         const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
 
         try {
@@ -94,17 +128,23 @@ const ChatModule = (function() {
             });
             
             if (response.ok) {
+                await _delay(2000);
                 const data = await response.json();
                 
                 if (data.success) {
                     _state.currentChatId = data.chat_id;
                     await _loadMessages();
+                    _removeBackButton();
+                    _checkExistingChatAndOpen();
                     input.value = '';
                 }
             }
         } catch (error) {
             console.error('Error sending message:', error);
-            alert('Ошибка при отправке сообщения');
+        }
+        finally {
+            _hideSendingIndicator();
+            _state.isSending = false;
         }
     }
 
@@ -115,11 +155,13 @@ const ChatModule = (function() {
             const response = await fetch(`/api/chat/${_state.currentChatId}/messages`);
             const messages = await response.json();
             
+            
+            _welcomeInChat(false);
             const messagesList = document.getElementById('messagesList');
             messagesList.innerHTML = '';
             
             messages.forEach(msg => {
-                _addMessageToUI(msg, msg.sender_id === _state.currentUserId);
+                _addMessageToUI(msg, msg.is_user);
             });
             
             _scrollToBottom();
@@ -131,6 +173,9 @@ const ChatModule = (function() {
     async function _endChat() {
         if (!_state.currentChatId) return;
             
+        _state.isSending = true;
+        _showSendingIndicator();
+
         const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
 
         try {
@@ -143,26 +188,21 @@ const ChatModule = (function() {
             });
             
             if (response.ok) {
-                const messagesList = document.getElementById('messagesList');
-                const endedMessagesList = document.getElementById('endedMessagesList');
-                endedMessagesList.innerHTML = messagesList.innerHTML;
-
-                const endMessage = {
-                    id: Date.now(),
-                    content: '✅ Чат завершен. Спасибо за обращение!',
-                    sender_id: _state.currentUserId, 
-                    created_at: new Date().toISOString()
-                };
-                _addMessageToUI(endMessage, false, 'endedMessagesList');
-                
-                _showPage('pageChatEnded');
+                await _delay(2000);
                 _stopMessageCheck();
                 
                 _state.currentChatId = null;
                 _state.currentChatType = null;
+                
+                _resetChat();
+                _showPage('pageChatType');
             }
         } catch (error) {
             console.error('Error ending chat:', error);
+        }
+        finally {
+            _hideSendingIndicator();
+            _state.isSending = false;
         }
     }
 
@@ -216,7 +256,7 @@ const ChatModule = (function() {
         avatar.textContent = isSent ? '👤' : '👩‍💻';
         
         const contentDiv = document.createElement('div');
-        contentDiv.className = 'message-content';
+        contentDiv.className = 'chat-message-content';
         
         const textDiv = document.createElement('div');
         textDiv.className = 'message-text';
@@ -266,12 +306,17 @@ const ChatModule = (function() {
         chatPage.appendChild(backBtn);
     }
 
+    function _removeBackButton() {
+        const backBtn = document.querySelector('.back-to-type-btn');
+        if (backBtn) backBtn.remove();
+    }
+
     function _addEndChatButton() {
         const existingBtn = document.querySelector('.chat-btn-back');
         if (existingBtn) existingBtn.remove();
         
-        const chatPage = document.getElementById('pageActiveChat');
-        if (!chatPage) return;
+        const chatContainer = document.getElementById('delchatarrea');
+        if (!chatContainer) return;
         
         const endChatBtn = document.createElement('button');
         endChatBtn.className = 'chat-btn-back';
@@ -283,7 +328,7 @@ const ChatModule = (function() {
             <span>Завершить чат</span>
         `;
         endChatBtn.onclick = _endChat;
-        chatPage.appendChild(endChatBtn);
+        chatContainer.appendChild(endChatBtn);
     }
 
     function _removeEndChatButton() {
@@ -316,11 +361,29 @@ const ChatModule = (function() {
 
     function _scrollToBottom() {
         const messagesContainer = document.getElementById('chatMessages');
-        setTimeout(() => {
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        }, 50);
-    }
+        const start = messagesContainer.scrollTop;
+        const end = messagesContainer.scrollHeight;
+        const duration = 500;
+        
+        const startTime = performance.now();
+        
+        function animateScroll(currentTime) {
+            const elapsed = currentTime - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            const ease = progress < 0.5 
+                ? 2 * progress * progress 
+                : 1 - Math.pow(-2 * progress + 2, 2) / 2;
+                
+            messagesContainer.scrollTop = start + (end - start) * ease;
+            
+            if (progress < 1) {
+                requestAnimationFrame(animateScroll);
+            }
+        }
 
+        requestAnimationFrame(animateScroll);
+    }
+    
     return {
         init: async function(userId) {
             if (userId) _state.currentUserId = userId;
@@ -359,3 +422,4 @@ const ChatModule = (function() {
 })();
 
 window.ChatModule = ChatModule;
+

@@ -34,7 +34,7 @@ Follow these steps to set up and run the project locally.
 ```bash
 # Clone the repository
 git clone <repository-url>
-cd PlansEnergo
+cd EnergoPlans
 
 # Create and activate a virtual environment
 python -m venv .venv

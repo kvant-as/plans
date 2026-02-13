@@ -1,3 +1,5 @@
+
+
 // toggle password
 const togglePassword = {
   init: function() {
@@ -4236,7 +4238,7 @@ document.addEventListener('DOMContentLoaded', () => {
             yesId: 'confirmYes',
             noId: 'confirmNo',
             textId: 'modal-text',
-            modalText: 'Вы действительно хотите выйти из системы PlansEnergo?',
+            modalText: 'Вы действительно хотите выйти из системы EnergoPlans?',
             textSecondId: 'modal-text-second',
             modalTextSecond: 'Это действие нельзя будет отменить. Убедитесь, что вы сохранили свою работу.'
         });
@@ -4550,17 +4552,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 document.write('<script src="/static/js/chat.js"></script>');
-
-// Ждем загрузки всех скриптов и инициализируем
 document.addEventListener('DOMContentLoaded', function() {
-    // Инициализация чата
     if (window.ChatModule) {
-        // Получаем ID пользователя из data-атрибута или сессии
         const userId = document.body.dataset.userId || 1;
         ChatModule.init(userId);
-        console.log('Base.js: Chat module loaded and initialized');
+        // console.log('Base.js: Chat module loaded and initialized');
     }
-    
-    // Здесь можно инициализировать другие модули
-    // if (window.OtherModule) OtherModule.init();
+});
+
+
+// COOKIE INIT
+document.addEventListener('DOMContentLoaded', function() {
+    if (typeof window.initCookieBanner === 'function') {
+        window.initCookieBanner();
+    }
 });
