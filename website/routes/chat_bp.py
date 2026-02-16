@@ -77,14 +77,14 @@ def send_message():
         )
         db.session.add(message)
         
-        message_answ = ChatMessage(
-            chat_id=chat.id,
-            content="Автоматический ответ",
-            is_user = False
-        )
-        db.session.add(message_answ)
-        chat.updated_at = TimeByMinsk()
-        db.session.commit()
+        # message_answ = ChatMessage(
+        #     chat_id=chat.id,
+        #     content="Автоматический ответ",
+        #     is_user = False
+        # )
+        # db.session.add(message_answ)
+        # chat.updated_at = TimeByMinsk()
+        # db.session.commit()
         
         current_app.logger.info(f"Message sented to chat {chat.id}")
         return jsonify({

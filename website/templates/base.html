@@ -29,17 +29,12 @@
                     </div>
                 </div>
                 <div class="header-bside">
-
-                    <a class="clear-but" onclick="window.location.href='/FAQ'">
-                        <img src="{{ url_for('static', filename='img/FAQ.svg') }}" class="clear-icon">
-                    </a>
                     {% if current_user.is_authenticated == false %}
                         <a class="clear-but" onclick="window.location.href='/#contacts-cont'">
                             <img src="{{ url_for('static', filename='img/Phone.svg') }}" class="clear-icon">
                         </a>
                     {% endif %}
                     {% if current_user and current_user.is_authenticated %}
-                        
                         <a class="clear-but" id="notifBtn">
                             <img src="{{ url_for('static', filename='img/Notifications.svg') }}" class="clear-icon">
                             <span id="notifCount" class="notif-count"></span>
@@ -59,6 +54,10 @@
                             <span class="btn-text">{{ _('Онлайн консультант') }}</span>
                         </button>
                         
+                        <button type="button" class="auth-next-button" style = "margin: 0;" onclick="window.location.href='/FAQ'">
+                            <img src="/static/img/FAQ.svg" alt="" class="btn-icon black ">
+                            <span class="btn-text">{{ _('Помощь') }}</span>
+                        </button>
                         <div class="divider"></div>
                         <div class="circle-fi-header" onclick="window.location.href='/profile'">
                             {{ current_user.first_name[:1] | upper if current_user.first_name else '' }}{{ current_user.last_name[:1] | upper if current_user.last_name else '' }}
@@ -67,14 +66,15 @@
                             <path d="M1 1L6 6L11 1" stroke="#666" stroke-width="2" stroke-linecap="round"></path>
                         </svg>
                     {% else %}
+                        <button type="button" class="auth-next-button" style = "margin: 0;" onclick="window.location.href='/FAQ'">
+                            <img src="/static/img/FAQ.svg" alt="" class="btn-icon black ">
+                            <span class="btn-text">{{ _('Помощь') }}</span>
+                        </button>
                         <button type="button" class="auth-next-button" style = "margin: 0;" onclick="window.location.href='{{ url_for('auth.login') }}'">
                             <img src="/static/img/login.svg" alt="" class="btn-icon black ">
                             <span class="btn-text">{{ _('Войти') }}</span>
                         </button>
                     {% endif %}
-                    
-                   
-                    
                 </div>
             </nav>
         </header>
