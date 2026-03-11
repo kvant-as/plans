@@ -2421,8 +2421,9 @@ input::placeholder {
   border-radius: 8px;
   overflow-x: auto;
   max-width: fit-content;
-  white-space: nowrap;  
+  white-space: nowrap;
   display: inline-block;
+  font-size: 14px;
 }
 
 hr {
@@ -2565,17 +2566,17 @@ hr {
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2);
 }
 
-.app-numeric-input,
-.app-numeric-input-negative {
-  width: 100%;
-  padding: 9px 16px 9px 38px;
-  border: none;
-  border-radius: 8px;
-  font-size: 14px;
-  background-color: var(--background-grey);
-  transition: all 0.3s ease-in-out;
-  font-weight: 500;
-}
+  .app-numeric-input,
+  .app-numeric-input-negative {
+    width: 100%;
+    padding: 9px 16px 9px 38px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    background-color: var(--background-grey);
+    transition: all 0.3s ease-in-out;
+    font-weight: 500;
+  }
 
 .app-numeric-input:focus,
 .app-numeric-input-negative:focus {
@@ -4866,7 +4867,7 @@ input[type="checkbox"]:focus {
 }
 
 .answer-highlight-second p{
-font-size: 15px;
+font-size: 13px;
 }
 
 .highlight-icon {

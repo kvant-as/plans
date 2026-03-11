@@ -2,10 +2,9 @@
 <html lang="{{ get_locale() }}">
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">    
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
- 
     <link rel="shortcut icon" href="{{ url_for('static', filename='img/eres.svg')}}">
     <title>{% block title %}{{ _('EnergoPlans - Система представления планов энергосберегающих мероприятий') }}{% endblock %}</title>
   </head>
@@ -14,7 +13,7 @@
         <header>
             <nav>
                 <div class="header-aside" onclick="window.location.href='/'">
-                    <div class="logo-wrapper 
+                    <div class="logo-wrapper
                         {% if current_user and current_user.is_authenticated %}
                             {% if current_user.is_admin %}red-shadow
                             {% elif current_user.is_auditor %}green-shadow
@@ -1203,7 +1202,7 @@
         </div>  
     {% endif %}
 
-{% if change_orgUser_modal %}
+    {% if change_orgUser_modal %}
     <div id="orgUserModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">

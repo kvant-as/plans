@@ -19,7 +19,7 @@ def validate_certificate_for_sending(uploaded_file):
         return False, 'Файл сертификата обязателен.'
 
     ALLOWED_EXTENSIONS = {'cer'}
-    
+
     def allowed_file(filename):
         return '.' in filename and \
                filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -33,10 +33,9 @@ def validate_certificate_for_sending(uploaded_file):
             return False, 'Срок действия сертификата истёк.'
         uploaded_file.seek(0)
         return True, None
-        
+
     except Exception as e:
         return False, f'Ошибка при проверке сертификата: {str(e)}'
 
-# cer_path = 'certificatenon.cer' 
+# cer_path = 'certificatenon.cer'
 # print(check_certificate_expiry(cer_path))
-    

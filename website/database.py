@@ -9,29 +9,29 @@ def create_database(app, db):
         # db.drop_all()
         db.create_all()
         filling_database(db)
-        
+
 def is_db_empty():
     from .models import Organization
     return all([
         Organization.query.count() == 0,
     ])
-        
+
 def read_dbf(file_path, columns):
     data = []
     for record in DBF(file_path):
         row = {col: record[col] for col in columns}
         data.append(row)
-    return data      
-        
+    return data
+
 def filling_database(db):
     if is_db_empty():
         from .models import User, Organization, Unit, Direction, Indicator, Ministry, Region
         from sqlalchemy.exc import IntegrityError
         current_app.logger.info('Filling is in progress...')
-        
+
         ### ORGANIZATION DATA ###
         website_path = os.path.dirname(os.path.abspath(__file__))
-    
+
         Brest_org_data_path = os.path.join(website_path, 'static/files/organizations', 'Брест.dbf')
         Vitebsk_org_data_path = os.path.join(website_path, 'static/files/organizations', 'Витебск.dbf')
         Gomel_org_data_path = os.path.join(website_path, 'static/files/organizations', 'Гомель.dbf')
@@ -70,14 +70,14 @@ def filling_database(db):
 
         for _, row in min_all_data.drop_duplicates('MIN').iterrows():
             ministry = Ministry.query.filter_by(id=row['MIN']).first()
-            
+
             if not ministry:
                 ministry = Ministry(
                     id=row['MIN'],
                     name=row['NAME']
                 )
                 db.session.add(ministry)
-            
+
             ministries_dict[row['MIN']] = ministry
 
         db.session.commit()
@@ -86,14 +86,14 @@ def filling_database(db):
             organization_name = ' '.join(filter(None, [
                 row['NAME']
             ]))
-            
+
             existing_org = Organization.query.filter_by(okpo=row['OKPO']).first()
-            
+
             if not existing_org:
                 organization = Organization(
                     okpo=row['OKPO'],
                     name=organization_name,
-                    ministry_id=row['MIN'], 
+                    ministry_id=row['MIN'],
                     ynp=row['UNP']
                 )
                 db.session.add(organization)
@@ -120,12 +120,12 @@ def filling_database(db):
         ]
 
         for name, okpo in dop_org_data:
-            dop_org = Organization(name=name, okpo=str(okpo)) 
+            dop_org = Organization(name=name, okpo=str(okpo))
             db.session.add(dop_org)
         db.session.commit()
         ### ----------- ###
 
-        ### REGION DATA ###     
+        ### REGION DATA ###
         region_data = [
             ('Брестская область'),
             ('Витебская область'),
@@ -137,7 +137,7 @@ def filling_database(db):
         ]
 
         for name in region_data:
-            new_region = Region(name=name) 
+            new_region = Region(name=name)
             db.session.add(new_region)
 
         db.session.commit()
@@ -148,7 +148,7 @@ def filling_database(db):
             # ('Техник-программист', 'testuser@gmail.com', os.getenv('adminname1'), os.getenv('adminsecondname1'), os.getenv('adminpatr1'), '+375445533333', False, False, 53),
             ('', os.getenv('adminemail1'), os.getenv('adminname1'), os.getenv('adminsecondname1'), os.getenv('adminpatr1'), os.getenv('adminphone1'), True, False, 14),
             ('', os.getenv('adminemail2'), os.getenv('adminname2'), os.getenv('adminsecondname2'), os.getenv('adminpatr2'), os.getenv('adminphone2'), True, False, 6471),
-            
+
             ('', os.getenv('auditoremailBrest'), 'Иванов1', 'Иван', 'Иванович', '+11', False, True, 7940),
             ('', os.getenv('auditoremailVitebsk'), 'Иванов2', 'Иван', 'Иванович', '+22', False, True, 7941),
             ('', os.getenv('auditoremailGomel'), 'Иванов3', 'Иван', 'Иванович', '+33', False, True, 7942),
@@ -157,7 +157,7 @@ def filling_database(db):
             ('', os.getenv('auditoremailMogilev'), 'Иванов6', 'Иван', 'Иванович', '+66', False, True, 7946),
             ('', os.getenv('auditoremailMinsk'), 'Иванов7', 'Иван', 'Иванович', '+77', False, True, 7944),
             ('', os.getenv('auditoremailNadzor'), 'Иванов8', 'Иван', 'Иванович', '+88', False, True, 7947),
-            
+
             ('', os.getenv('auditoremailBrestTEST'), 'Иванов1', 'Иван', 'Иванович', '+1', False, True, 7940),
             ('', os.getenv('auditoremailVitebskTEST'), 'Иванов2', 'Иван', 'Иванович', '+2', False, True, 7941),
             ('', os.getenv('auditoremailGomelTEST'), 'Иванов3', 'Иван', 'Иванович', '+3', False, True, 7942),
@@ -184,7 +184,7 @@ def filling_database(db):
             db.session.add(user)
         db.session.commit()
         ### ----------- ###
-        
+
         ### Unit DATA ###
         unit_data = [
             (1, 'т.у.т.', 'т.у.т.'),
@@ -212,8 +212,8 @@ def filling_database(db):
             )
             db.session.add(unit)
         db.session.commit()
-        ### ----------- ###   
-        
+        ### ----------- ###
+
         ### Direction DATA ###
         direction_data = [
             (1, '2', 'Коды, не относящиеся к основным направлениям', False),
@@ -322,7 +322,7 @@ def filling_database(db):
             (8, '1810', 'Ввод энергогенерирующего и технологического оборудования, работающего с использованием вторичных энергетических ресурсов избыточного давления', False),
             (9, '1900', 'Прочие мероприятия по повышению эффективности использования топливно-энергетических ресурсов', False)
         ]
-        
+
         for id_unit, code, name, is_local in direction_data:
             direction = Direction(
                 id_unit = id_unit,
@@ -331,9 +331,9 @@ def filling_database(db):
                 is_local=is_local
             )
             db.session.add(direction)
-        db.session.commit()  
-        # ### ----------- ###      
-        
+        db.session.commit()
+        # ### ----------- ###
+
         ### Indicator DATA ###
         indicator_data = [
             (1, '1000', 'Котельно-печное топливо израсходовано всего, в том числе', 1.000, True, 1, 1),
@@ -368,7 +368,7 @@ def filling_database(db):
             (1, '1793', 'адсорбированные отходы после очистных сооружений', 1.000, False, 1, 2),
             (1, '1794', 'использованные автопокрышки', 1.000, False, 1, 2),
             (1, '1795', 'прочие горючие отходы', 1.000, False, 1, 2),
-            (1, '1796', 'из него местные виды топлива и отходы', 1.000, True, 1.1, 3),       
+            (1, '1796', 'из него местные виды топлива и отходы', 1.000, True, 1.1, 3),
             (1, '1797', 'из них возобновляемые', 1.000, True, 1.2, 4),
             (6, '1105', 'Электроэнергия израсходовано всего', 0.123, True, 2, 5),
             (6, '1405', 'Электроэнергия, выработанная собственными энергоисточниками, в том числе', 0.123, True, 2, 6),
@@ -388,7 +388,7 @@ def filling_database(db):
             (16, '9916', 'Целевой показатель по доле местных ТЭР в КПТ', 1.000, True, 7, 20),
             (16, '9917', 'Целевой показатель по доле возобновляемых источников энергии в КПТ', 1.000, True, 8, 21)
         ]
-        
+
         from website.plans import to_decimal_3
         for IdUnit, CodeIndicator, NameIndicator, CoeffToTut, IsMandatory, Group, RowN in indicator_data:
             indicator = Indicator(
@@ -402,7 +402,6 @@ def filling_database(db):
             )
             db.session.add(indicator)
         db.session.commit()
-        
         current_app.logger.debug('The filling is finished!')
     else:
         current_app.logger.debug('The database already contains the data!')

@@ -2,15 +2,13 @@
 
 {% block body %}
 <div class="container-fluid">
-    <!-- Заголовок с кнопкой выхода -->
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1><i class="fas fa-chart-line"></i> Панель управления</h1>
+        <h1><i class="fas fa-chart-line"></i></h1>
         <a href="{{ profile_url if profile_url else '/profile' }}" class="btn btn-danger">
             <i class="fas fa-sign-out-alt"></i> Выйти из админ-панели
         </a>
     </div>
-    
-    <!-- Карточки со статистикой -->
+
     <div class="row mt-4">
         <div class="col-md-3 mb-4">
             <div class="card text-white bg-primary">
@@ -24,7 +22,6 @@
                 </div>
             </div>
         </div>
-        
         <div class="col-md-3 mb-4">
             <div class="card text-white bg-success">
                 <div class="card-body">
@@ -34,7 +31,6 @@
                 </div>
             </div>
         </div>
-        
         <div class="col-md-3 mb-4">
             <div class="card text-white bg-info">
                 <div class="card-body">
@@ -47,7 +43,6 @@
                 </div>
             </div>
         </div>
-        
         <div class="col-md-3 mb-4">
             <div class="card text-white bg-warning">
                 <div class="card-body">
@@ -61,136 +56,6 @@
             </div>
         </div>
     </div>
-    
-    <!-- Быстрые ссылки -->
-    <div class="row mt-4">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                    <h5><i class="fas fa-bolt"></i> Быстрый доступ</h5>
-                </div>
-                <div class="card-body">
-                    <!-- Основные разделы -->
-                    <div class="row">
-                        <div class="col-md-3 mb-3">
-                            <div class="d-grid">
-                                <a href="{{ url_for(endpoints.users) }}" class="btn btn-outline-primary">
-                                    <i class="fas fa-users"></i> Пользователи
-                                </a>
-                            </div>
-                        </div>
-                        
-                        <div class="col-md-3 mb-3">
-                            <div class="d-grid">
-                                <a href="{{ url_for(endpoints.organizations) }}" class="btn btn-outline-success">
-                                    <i class="fas fa-building"></i> Организации
-                                </a>
-                            </div>
-                        </div>
-                        
-                        <div class="col-md-3 mb-3">
-                            <div class="d-grid">
-                                <a href="{{ url_for(endpoints.plans) }}" class="btn btn-outline-info">
-                                    <i class="fas fa-file-alt"></i> Планы
-                                </a>
-                            </div>
-                        </div>
-                        
-                        <div class="col-md-3 mb-3">
-                            <div class="d-grid">
-                                <a href="{{ url_for(endpoints.tickets) }}" class="btn btn-outline-secondary">
-                                    <i class="fas fa-ticket-alt"></i> Тикеты
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Справочники -->
-                    <div class="row mt-3">
-                        <div class="col-md-3 mb-3">
-                            <div class="d-grid">
-                                <a href="{{ url_for(endpoints.units) }}" class="btn btn-outline-dark">
-                                    <i class="fas fa-ruler"></i> Единицы измерения
-                                </a>
-                            </div>
-                        </div>
-                        
-                        <div class="col-md-3 mb-3">
-                            <div class="d-grid">
-                                <a href="{{ url_for(endpoints.directions) }}" class="btn btn-outline-warning">
-                                    <i class="fas fa-directions"></i> Направления
-                                </a>
-                            </div>
-                        </div>
-                        
-                        <div class="col-md-3 mb-3">
-                            <div class="d-grid">
-                                <a href="{{ url_for(endpoints.indicators) }}" class="btn btn-outline-primary">
-                                    <i class="fas fa-chart-line"></i> Показатели
-                                </a>
-                            </div>
-                        </div>
-                        
-                        <div class="col-md-3 mb-3">
-                            <div class="d-grid">
-                                <a href="{{ url_for(endpoints.notifications) }}" class="btn btn-outline-warning">
-                                    <i class="fas fa-bell"></i> Уведомления
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Экономические данные -->
-                    <div class="row mt-3">
-                        <div class="col-md-4 mb-3">
-                            <div class="d-grid">
-                                <a href="{{ url_for(endpoints.econ_measures) }}" class="btn btn-outline-success">
-                                    <i class="fas fa-chart-pie"></i> Экономические меры
-                                </a>
-                            </div>
-                        </div>
-                        
-                        <div class="col-md-4 mb-3">
-                            <div class="d-grid">
-                                <a href="{{ url_for(endpoints.econ_execs) }}" class="btn btn-outline-info">
-                                    <i class="fas fa-cogs"></i> Исполнения мер
-                                </a>
-                            </div>
-                        </div>
-                        
-                        <div class="col-md-4 mb-3">
-                            <div class="d-grid">
-                                <a href="{{ url_for(endpoints.indicator_usages) }}" class="btn btn-outline-secondary">
-                                    <i class="fas fa-database"></i> Использование показателей
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Дополнительные ссылки -->
-                    <div class="row mt-3">
-                        <div class="col-md-6 mb-3">
-                            <div class="d-grid">
-                                <a href="{{ url_for('admin.index') }}" class="btn btn-outline-dark">
-                                    <i class="fas fa-home"></i> Главная админ-панели
-                                </a>
-                            </div>
-                        </div>
-                        
-                        <div class="col-md-6 mb-3">
-                            <div class="d-grid">
-                                <a href="{{ profile_url if profile_url else '/profile' }}" class="btn btn-outline-danger">
-                                    <i class="fas fa-sign-out-alt"></i> Выйти в профиль
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Дополнительная статистика -->
     <div class="row mt-4">
         <div class="col-12">
             <div class="card">
@@ -245,10 +110,9 @@
 
 {% block tail %}
 <script>
-    // Автоматическое обновление статистики каждые 5 минут
     setTimeout(function() {
         window.location.reload();
-    }, 300000); // 5 минут = 300000 миллисекунд
+    }, 300000);
 
     document.addEventListener('DOMContentLoaded', function() {
         const buttons = document.querySelectorAll('.btn');
