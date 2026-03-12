@@ -17,6 +17,32 @@ def end_chat(chat_id):
 
         db.session.delete(chat)
         db.session.commit()
+
+        api_url = current_app.config.get('AI_API_URL')
+        x_api_key = current_app.config.get('AI_X_API_KEY')
+        external_payload = {
+            'chat_id': chat_id,
+        }
+        external_headers = {
+            'X-API-KEY': x_api_key,
+            'Content-Type': 'application/json'
+        }
+        try:
+            external_response = requests.post(
+                f"{api_url}/v1/delete-chat",
+                json=external_payload,
+                headers=external_headers,
+                timeout=30
+            )
+            if external_response.status_code == 200:
+                bot_response_data = external_response.json()
+                current_app.logger.info(f"External API response: Yes")
+                # current_app.logger.info(f"External API response: {bot_response_data}")
+            else:
+                current_app.logger.warning(f"External API returned status {external_response.status_code}: {external_response.text}")
+        except requests.exceptions.RequestException as e:
+            current_app.logger.error(f"Error calling external API: {str(e)}")
+
         return jsonify({'success': True})
     except Exception as e:
         db.session.rollback()
