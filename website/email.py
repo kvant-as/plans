@@ -169,7 +169,7 @@ def build_html(message_body, email_type):
         content = f"""
         <div style='padding:20px 40px; color:#000000; font-size:15px;'>
             <p style='margin:0 0 10px 0; color:#000000;'>Здравствуйте!</p>
-            <p style='margin:0 0 10px 0; color:#000000;'>Статус вашего отчета изменен на:</p>
+            <p style='margin:0 0 10px 0; color:#000000;'>Статус вашего плана изменен на:</p>
             <div style='text-align:center; font-size:20px; font-weight:600; padding:10px; margin:15px 0; color:#000000; border:1px solid #000; border-radius:5px; display:inline-block;'>{message_body}</div>
         </div>
         """

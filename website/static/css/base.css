@@ -293,27 +293,33 @@ body {
 }
 
 /*-----------------------notif*/
+.notif-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
 .notif-popup {
-  position: absolute;
-  top: 60px;
-  right: 10%;
-  width: 210px;
-  border-radius: 10px;
-  background: rgb(255, 255, 255);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 8px 32px 0 rgba(0,0,0,0.1);
-  font-family: sans-serif;
-  z-index: 1000;
-  opacity: 0;
-  transform: translateY(-20px);
-  pointer-events: none;
-  transition: all 0.3s ease;
+    position: absolute;
+    top: 100%;
+    right: 0; 
+    width: 210px;
+    margin-top: 5px;
+    border-radius: 10px;
+    background: rgb(255, 255, 255);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 32px 0 rgba(0,0,0,0.1);
+    font-family: sans-serif;
+    z-index: 1000;
+    opacity: 0;
+    transform: translateY(-10px);
+    pointer-events: none;
+    transition: all 0.3s ease;
 }
 
 .notif-popup.show {
-  opacity: 1;
-  transform: translateY(0);
-  pointer-events: auto;
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
 }
 
 .notif-header {

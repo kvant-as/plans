@@ -118,10 +118,10 @@ def send_message():
                 bot_message = bot_response_data.get('response')
                 current_app.logger.info(f"External API response: {bot_response_data}")
             else:
-                bot_message = "Автоматический ответ"
+                bot_message = "error: Ошибка соединения"
                 current_app.logger.warning(f"External API returned status {external_response.status_code}: {external_response.text}")
         except requests.exceptions.RequestException as e:
-            bot_message = "Автоматический ответ"
+            bot_message = "error: Ошибка соединения"
             current_app.logger.error(f"Error calling external API: {str(e)}")
         message_answ = ChatMessage(
             chat_id=chat.id,

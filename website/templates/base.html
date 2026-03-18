@@ -34,18 +34,19 @@
                         </a>
                     {% endif %}
                     {% if current_user and current_user.is_authenticated %}
-                        <a class="clear-but" id="notifBtn">
-                            <img src="{{ url_for('static', filename='img/Notifications.svg') }}" class="clear-icon">
-                            <span id="notifCount" class="notif-count"></span>
-                        </a>
-                        <div id="notifPopup" class="notif-popup">
-                            <div class="notif-header">
-                                <span>Уведомления</span>
-                                <button id="markAllRead" type="button" class="auth-next-button">
-                                    <img src="/static/img/Done_all.svg" class="btn-icon">
-                                </button>
-                            </div>
-                            <div class="notif-body" id="notifList">
+                        <div class="notif-wrapper">
+                            <a class="clear-but" id="notifBtn">
+                                <img src="{{ url_for('static', filename='img/Notifications.svg') }}" class="clear-icon">
+                                <span id="notifCount" class="notif-count"></span>
+                            </a>
+                            <div id="notifPopup" class="notif-popup">
+                                <div class="notif-header">
+                                    <span>Уведомления</span>
+                                    <button id="markAllRead" type="button" class="auth-next-button">
+                                        <img src="/static/img/Done_all.svg" class="btn-icon">
+                                    </button>
+                                </div>
+                                <div class="notif-body" id="notifList"></div>
                             </div>
                         </div>
                         <button type="button" class="auth-next-button" style="margin: 0;" onclick="ChatModule.toggleChat()">
