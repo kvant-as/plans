@@ -1,4 +1,4 @@
-# 
+#
 
 ![Python Version](https://img.shields.io/badge/python-3.12-blue)
 ![Framework](https://img.shields.io/badge/framework-Flask-blue)
@@ -10,19 +10,20 @@
 
 Formation of plans for energy-saving measures
 
-> **Automated complex for creation, analysis and presentation for coordination of energy efficiency plans of organizations** 
+> **Automated complex for creation, analysis and presentation for coordination of energy efficiency plans of organizations**
 
 ## Tech Stack
 
-| Component | Choice |
-| :--- | :--- |
-| **Language** | Python 3.12 |
-| **Web Framework** | Flask |
-| **Database** | PostgreSQL |
+| Component         | Choice      |
+| :---------------- | :---------- |
+| **Language**      | Python 3.12 |
+| **Web Framework** | Flask       |
+| **Database**      | PostgreSQL  |
 
 ## Prerequisites
 
 Ensure you have the following installed on your system:
+
 - **Python 3.12**
 - **PostgreSQL 17**
 
@@ -31,10 +32,11 @@ Ensure you have the following installed on your system:
 Follow these steps to set up and run the project locally.
 
 ### 1. Clone & Setup Environment
+
 ```bash
 # Clone the repository
 git clone <repository-url>
-cd EnergoPlans
+cd ePlans
 
 # Create and activate a virtual environment
 python -m venv .venv
@@ -49,6 +51,7 @@ pip install -r requirements.txt
 ```
 
 ### 2. Start app
+
 ```bash
 python main.py
 ```

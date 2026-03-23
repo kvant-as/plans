@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}{{ _('Планы') }} - EnergoPlans{% endblock %}
+{% block title %}{{ _('Планы') }} - ePlans{% endblock %}
 {% block content %}
 
 <div class="pers-page">
@@ -221,7 +221,7 @@
                     
                     <div class="plan-cont-column">
                         <div class="buttons-row">
-                            <button type="button" class="auth-next-button mobile-button" 
+                            <button type="button" class="white-svg-btn mobile-button" 
                                     onclick="window.location.href='{{ url_for('views.plan_review', token=plan.token) }}'">
                                 <img src="/static/img/Eye.svg" alt="" class="btn-icon">
                                 <span class="btn-text">{{ _('Просмотр') }}</span>
@@ -234,7 +234,7 @@
                                     <button data-modal-trigger="deletePlan" 
                                             data-plan-id="{{ plan.id }}" 
                                             type="submit" 
-                                            class="auth-next-button mobile-button delete-button">
+                                            class="white-svg-btn mobile-button delete-button">
                                         <img src="/static/img/Delete-black.svg" alt="{{ _('Удалить') }}" class="btn-icon">
                                         <span class="btn-text mobile-only">{{ _('Удалить') }}</span>
                                     </button>

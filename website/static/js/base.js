@@ -4238,7 +4238,7 @@ document.addEventListener('DOMContentLoaded', () => {
             yesId: 'confirmYes',
             noId: 'confirmNo',
             textId: 'modal-text',
-            modalText: 'Вы действительно хотите выйти из системы EnergoPlans?',
+            modalText: 'Вы действительно хотите выйти из системы ePlans?',
             textSecondId: 'modal-text-second',
             modalTextSecond: 'Это действие нельзя будет отменить. Убедитесь, что вы сохранили свою работу.'
         });
