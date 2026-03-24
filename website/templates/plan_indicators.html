@@ -8,15 +8,15 @@
 
         <div class="menu-conteiner">
             <div class="element {% if is_disabled %}non{% endif %}" id="AddIndicatorModalButton">
-                <img src="/static/img/add-main.svg" alt="">  
+                {{ icons.icon_ios_add() }}
                 <a class="element-text">Добавить</a>  
             </div>
             <div class="element {% if is_disabled %}non{% endif %}" id="tableDeleteButton">
-                <img src="/static/img/Delete.svg" alt="">  
+                {{ icons.icon_ios_delete() }} 
                 <a class="element-text">Удалить</a>  
             </div>
             <div class="element {% if is_disabled %}non{% endif %}" id="tableEditButton">
-                <img src="/static/img/Edit-main.svg" alt="">  
+                {{ icons.icon_ios_edit() }}  
                 <a class="element-text">Редакт.</a>  
             </div>
             <form id="controlPlanForm" data-plan-type="{{ plan.plan_type }}" action="/api/change-plan-status/{{ plan.token }}" method="POST">
@@ -26,7 +26,7 @@
                         data-plan-type="{{ plan.plan_type }}"
                         type="submit" 
                         class="element {% if is_disabled %}non{% endif %}">
-                    <img src="/static/img/Control.svg" alt="">  
+                    {{ icons.icon_ios_check() }} 
                     <span class="element-text">Контроль</span>  
                 </button>
             </form>

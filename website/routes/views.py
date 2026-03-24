@@ -293,7 +293,7 @@ def edit_plan_type(token):
         db.session.commit()
         
         if plan_type_value == 'org_small':
-            flash_message = 'ТИп плана установлен: Организация с потреблением до 25 тыс. т.'
+            flash_message = 'Тип плана установлен: Организация с потреблением до 25 тыс. т.'
         elif plan_type_value == 'org_large':
             flash_message = 'Тип плана установлен: Организация с потреблением более 25 тыс. т.'
         else:

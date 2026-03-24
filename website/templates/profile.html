@@ -29,7 +29,7 @@
         {% else %}                      
         <div class="answer-highlight-second" style = "margin-bottom: 0;">
             <div class="highlight-icon">💡</div>
-            <p><strong>Отредактировать</strong> персональные данные и отчитывающийся субъект - можно только в случае <strong>отсутствия</strong> каких-либо планов</p>
+            <p><strong>Отредактировать</strong> персональные данные и отчитывающийся субъект - можно только в случае <strong>отсутствия</strong> планов</p>
         </div>
         {% endif %}
         <hr> 
@@ -40,7 +40,7 @@
                 <div class="app-group">
                     <label>{{ _('Фамилия *') }}</label>
                     <div class="input-with-icon">
-                        <img src="/static/img/Account.svg" alt="" class="input-icon">
+                        {{ icons.icon_profile() }}
                         <input type="text" name="last_name" maxlength="30" value="{{current_user.last_name}}" 
                             placeholder="{{ _('Введите фамилию') }}" class="app-input" required>
                     </div>
@@ -48,7 +48,7 @@
                 <div class="app-group">
                     <label>{{ _('Имя *') }}</label>
                     <div class="input-with-icon">
-                        <img src="/static/img/Account.svg" alt="" class="input-icon">
+                        {{ icons.icon_profile() }}
                         <input type="text" name="first_name" maxlength="30" value="{{current_user.first_name}}" class="app-input" placeholder="{{ _('Введите Имя') }}" required>
                     </div>
                 </div>
@@ -56,39 +56,38 @@
             <div class="app-group">
                 <label>{{ _('Отчество') }}</label>
                 <div class="input-with-icon">
-                    <img src="/static/img/Account.svg" alt="" class="input-icon">
+                        {{ icons.icon_profile() }}
                     <input type="text" maxlength="30" name = "patronymic_name" value="{{current_user.patronymic_name}}" placeholder="{{ _('Введите отчество') }}" class="app-input" required>
                 </div>
             </div> 
             <div class="app-group">
                 <label>{{ _('Email *') }}</label>
                 <div class="input-with-icon">
-                    <img src="/static/img/Email.svg" alt="" class="input-icon">
+                    {{ icons.icon_email() }}
                     <input type="text" maxlength="" value="{{current_user.email}}" placeholder="{{ _('Введите email') }}" class="app-input" readonly>
                     <div class="input-mes" title = "{{ _('Не изм.') }}">
-                        <img src="/static/img/Edit_off.svg">
-                        
+                        {{ icons.icon_edit_off()}}
                     </div>
                 </div>
             </div>
             <div class="app-group">
                 <label>{{ _('Телефон *') }}</label>
                 <div class="input-with-icon">
-                    <img src="/static/img/Phone.svg" alt="" class="input-icon">
+                    {{ icons.icon_phone() }}
                     <input type="text" maxlength="13" name = "phone" value="{{current_user.phone}}" placeholder="Введите номер телефона" class="app-input" required>
                 </div>
             </div>
             <div class="app-group">
                 <label>{{ _('Должность') }}</label>
                 <div class="input-with-icon">
-                    <img src="/static/img/Account.svg" alt="" class="input-icon">
+                    {{ icons.icon_profile() }}
                     <input type="text" maxlength="25" name = "post" value="{{ current_user.post }}" placeholder="{{ _('Введите должность') }}" class="app-input">
                 </div>
             </div>
             <div class="button-area">
                 <button type="button" class="main-btn main-btn-primary" id="editprofileButton"
                         style="{% if not can_change_modal or current_user.is_auditor %}display:none;{% endif %}">
-                    <img src="/static/img/Add_wh.svg" alt="" class="btn-icon">
+                    {{ icons.icon_edit() }}
                     <span class="btn-text">{{ _('Применить изменения') }}</span>
                 </button>
             </div>
@@ -101,7 +100,7 @@
                     <div class="app-group">
                         <label>{{ _('Организация *') }}</label>
                         <div class="input-with-icon">
-                            <img src="/static/img/Organization.svg" alt="" class="input-icon">
+                            {{ icons.icon_org() }}
                             <input type="text" value="{{ current_user.organization.name }}"  readonly class="app-input">
                         </div>
                     </div>
@@ -110,11 +109,8 @@
                     <div class="app-group">
                         <label>{{ _('ОКПО') }}</label>
                         <div class="input-with-icon">
-                            <img src="/static/img/Organization.svg" alt="" class="input-icon">
+                            {{ icons.icon_org() }}
                             <input type="text" id="name" placeholder="Номер окпо" value="{{ current_user.organization.okpo }}" readonly class="app-input">
-                            <div class="input-mes" title = "{{ _('Не изм.') }}">
-                                <img src="/static/img/Edit_off.svg">
-                            </div>
                         </div>
                     </div>   
                 {% endif %}
@@ -148,26 +144,24 @@
                 <span class="btn-text">{{ _('Изменить субъект') }}</span>
             </button>
         </div>
-
-
         <hr>
         <a class="sername">{{ _('Прочая информация') }}</a>
         <div class = "support-txt-cont">
             <p class="row"><strong>Наименование *</strong> — обязательные поля для заполнения/выбора</p>
             <div class="row" style = "display: flex;">
                 <div class="input-mes-test" title="Не изм.">
-                    <img src="/static/img/Edit_off.svg">
+                    {{ icons.icon_edit_off() }}
                 </div> 
                 <p>&nbsp; — <strong>&nbsp;не</strong> подлежащие для редактирования поля</p>
             </div> 
         </div>
         <div>
             <div class="no-input"> 
-                <img src="/static/img/Calendar_gray.svg" alt="" >
+                {{ icons.icon_calendar() }}
                 <a>{{ _('Дата регистрации') }}: {{ current_user.begin_time.strftime('%d-%m-%Y') }}</a>
             </div>
             <div class="no-input"> 
-                <img src="/static/img/Account_grey.svg" alt="" >
+                {{ icons.icon_profile() }}
                 <a>{{ _('Id пользователя') }}: demo{{ current_user.id }}</a>
             </div>
         </div>

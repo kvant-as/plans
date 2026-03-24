@@ -308,7 +308,7 @@ def handle_error_status(plan):
     plan.is_draft = plan.is_control = plan.is_sent = plan.is_approved = False
 
     new_ticket = Ticket(
-        note="В плане нашли ошибки, статус изменен на 'Есть ошибки'",
+        note="В плане нашли ошибки, статус изменен на Есть ошибки",
         luck=True,
         is_owner = True,
         plan_id=plan.id,
@@ -329,7 +329,7 @@ def handle_approved_status(plan):
     plan.afch = False 
 
     new_ticket = Ticket(
-        note="План был одобрен, статус был изменен на 'Одобрен'.",
+        note="План был одобрен, статус был изменен на Одобрен.",
         luck=True,
         is_owner = True,
         plan_id=plan.id,

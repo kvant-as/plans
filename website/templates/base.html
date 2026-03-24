@@ -9,6 +9,7 @@
     <title>{% block title %}{{ _('ePlans - Система представления планов энергосберегающих мероприятий') }}{% endblock %}</title>
   </head>
   <body>
+    {% import 'macros/svg_icons.html' as icons %}
     {% if not hide_header %}
         <header>
             <nav>
@@ -41,35 +42,25 @@
                     {% if current_user and current_user.is_authenticated %}
                         <div class="notif-wrapper">
                             <button type="button" class="white-svg-btn" id="notifBtn" style="margin: 0;">
-                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" 
-                                        d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0M12 3c.81 0 1.6.112 2.35.32" 
-                                    />
-                                </svg>
+                                {{ icons.icon_notif() }} 
                                 <span class="btn-text">{{ _('Увед.') }}</span>
                             </button>
                             <div id="notifPopup" class="notif-popup">
                                 <div class="notif-header">
                                     <span>Уведомления</span>
                                     <button id="markAllRead" type="button" class="white-svg-btn">
-                                        <img src="/static/img/Done_all.svg" class="btn-icon">
+                                       {{ icons.icon_read_all() }} 
                                     </button>
                                 </div>
                                 <div class="notif-body" id="notifList"></div>
                             </div>
                         </div>
                        <button type="button" class="white-svg-btn" style="margin: 0;" onclick="ChatModule.toggleChat()">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" 
-                                    d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" 
-                                />
-                            </svg>
+                            {{ icons.icon_helper() }} 
                             <span class="btn-text">{{ _('Консультант') }}</span>
                         </button>
                         <button type="button" class="white-svg-btn" style = "margin: 0;" onclick="window.location.href='/FAQ'">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z" />
-                                </svg>
+                            {{ icons.icon_help() }} 
                             <span class="btn-text">{{ _('Помощь') }}</span>
                         </button>
                         <div class="divider"></div>
@@ -83,21 +74,16 @@
                         </div>
                     {% else %}
                         <button type="button" class="white-svg-btn" onclick="window.location.href='/FAQ'">
-                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="btn-icon">
-                                <path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" 
-                                    d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z" 
-                                />
-                            </svg>
+                            {{ icons.icon_help() }}
                             <span class="btn-text">Помощь</span>
                         </button>
                         <button type="button" class="white-svg-btn" style="margin: 0;" onclick="window.location.href='{{ url_for('auth.login') }}'">
-                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="btn-icon">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                            </svg>
+                            {{ icons.icon_login() }}
                             <span class="btn-text">{{ _('Войти') }}</span>
                         </button>
                     {% endif %}
-                </div></nav>
+                </div>
+            </nav>
         </header>
         
         {% if current_user and current_user.is_authenticated %}
@@ -119,59 +105,34 @@
                 </div>
                 {% if current_user.email %}
                 <div class="input-with-icon">
-                    <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" 
-                            d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" 
-                        />
-                    </svg>
+                    {{ icons.icon_email() }}
                     <input type="text" value="{{ current_user.email }}" class="app-input" readonly>
                 </div>
                 {% endif %}
                 
                 {% if current_user.organization or current_user.ministry or current_user.region %}
                 <div class="input-with-icon">
-                    <svg class="input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" 
-                            d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5M9 9.75h1.5M9 12.75h1.5M9 15.75h1.5M14.25 6.75h1.5M14.25 9.75h1.5M14.25 12.75h1.5M14.25 15.75h1.5M6.75 21V3h10.5v18" 
-                        />
-                    </svg>
+                    {{ icons.icon_org() }}
                     <input type="text" value="{% if current_user.organization %}{{ current_user.organization.name }}{% elif current_user.ministry %}{{ current_user.ministry.name }}{% elif current_user.region %}{{ current_user.region.name }}{% endif %}" 
                         class="app-input" readonly>
                 </div>
                 {% endif %}
                 
                 <hr>
-
-                <button type="button" class="button-grey-border" onclick="window.location.href='/profile'">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="btn-icon">
-                        <path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" 
-                            d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" 
-                        />
-                    </svg>
+                <button type="button" class="dop-menu-btn" onclick="window.location.href='/profile'">
+                    {{ icons.icon_profile() }}
                     <span class="btn-text">Профиль</span>
                 </button>
-                <button type="button" class="button-grey-border" onclick="window.location.href='/FAQ'">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="btn-icon">
-                        <path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" 
-                            d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z" 
-                        />
-                    </svg>
+                <button type="button" class="dop-menu-btn" onclick="window.location.href='/FAQ'">
+                     {{ icons.icon_help() }}
                     <span class="btn-text">Помощь</span>
                 </button>
-                <button type="button" class="button-grey-border" onclick="window.location.href='/'">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="btn-icon">
-                        <path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" 
-                            d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" 
-                        />
-                    </svg>
+                <button type="button" class="dop-menu-btn" onclick="window.location.href='/'">
+                     {{ icons.icon_main() }}
                     <span class="btn-text">Главная</span>
                 </button>
-                <button type="button" class="button-grey-border" onclick="window.location.href='/#contacts-cont'">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="btn-icon">
-                        <path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" 
-                            d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.362-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" 
-                        />
-                    </svg>
+                <button type="button" class="dop-menu-btn" onclick="window.location.href='/#contacts-cont'">
+                     {{ icons.icon_contacts() }}
                     <span class="btn-text">Контакты</span>
                 </button>
                 
@@ -179,11 +140,7 @@
                     <form id="logout_form" action="{{ url_for('auth.logout') }}" method="POST">
                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                         <button type="submit" class="submit-button delete" id="logoutButton">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="btn-icon">
-                                <path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" 
-                                    d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" 
-                                />
-                            </svg>
+                            {{ icons.icon_logout() }}
                             <span class="btn-text">{{ _('Выйти из аккаунта') }}</span>
                         </button>
                     </form>
@@ -198,9 +155,7 @@
         <nav class="navigation-container">
             <div class="nav-item {% if active_tab == 'plans' %} active{% endif %}" onclick="window.location.href='/plans'">
                <div class="nav-icon-wrapper">
-                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
-                    </svg>
+                    {{ icons.icon_plans() }}
                     {% if active_tab == 'plans' %}<div class="active-indicator"></div>{% endif %}
                 </div>
                 <span class="nav-text">{{ _('Планы') }}</span>
@@ -210,9 +165,7 @@
             {%if current_user.is_auditor == false%}
             <div class="nav-item {% if active_tab == 'create' %} active{% endif %}" onclick="window.location.href='/create-plan'">
                 <div class="nav-icon-wrapper">
-                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                    </svg>
+                    {{ icons.icon_add() }}
                     {% if active_tab == 'create' %}<div class="active-indicator"></div>{% endif %}
                 </div>
                 <span class="nav-text">{{ _('Создать') }}</span>
@@ -222,9 +175,7 @@
             
             <div class="nav-item disabled-tab">
                 <div class="nav-icon-wrapper">
-                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
-                    </svg>
+                    {{ icons.icon_stats() }}
                 </div>
                 <span class="nav-text">{{ _('Статистика') }}</span>
                 <span class="nav-text-mobile">{{ _('Статистика') }}</span>
@@ -232,9 +183,7 @@
             
             <div class="nav-item {% if active_tab == 'export' %} active{% endif %}" onclick="window.location.href='/export'">
                 <div class="nav-icon-wrapper">
-                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
-                    </svg>
+                    {{ icons.icon_export() }}
                     {% if active_tab == 'export' %}<div class="active-indicator"></div>{% endif %}
                 </div>
                 <span class="nav-text">{{ _('Экспорт') }}</span>
@@ -243,9 +192,7 @@
             
             <div class="nav-item {% if active_tab == 'account' %} active{% endif %}" onclick="window.location.href='/profile'">
                 <div class="nav-icon-wrapper">
-                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
-                    </svg>
+                    {{ icons.icon_profile() }}
                     {% if active_tab == 'account' %}<div class="active-indicator"></div>{% endif %}
                 </div>
                 <span class="nav-text">{{ _('Кабинет') }}</span>
@@ -254,9 +201,7 @@
             {%if current_user.is_admin== true%}
             <div class="nav-item {% if active_tab == 'admin' %} active{% endif %}" onclick="window.location.href='/admin'">
                 <div class="nav-icon-wrapper">
-                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
-                    </svg>
+                    {{ icons.icon_admin() }}
                     {% if active_tab == 'admin' %}<div class="active-indicator"></div>{% endif %}
                 </div>
                 <span class="nav-text">{{ _('А-панель') }}</span>
@@ -267,7 +212,6 @@
         </nav>
     </div>
     {% endif %}
-
     {% if plan_back_header %}
         <div class="header-cont-for-back">
             <div class="plan-back-header">
@@ -290,13 +234,12 @@
             </div> 
         </div>
     {% endif %}
-
     {% if plan_header %}
     <div class="header-cont">
         <nav class="navigation-container">
             <div class="nav-item {% if active_plan_tab == 'review' %} active{% endif %}" onclick="window.location.href='/plans/plan-review/{{plan.token}}'">
                 <div class="nav-icon-wrapper">
-                    <img src="/static/img/Review.svg" alt="{{ _('Обзор') }}" class="nav-icon">
+                    {{ icons.icon_view() }}
                     {% if active_plan_tab == 'review' %}<div class="active-indicator"></div>{% endif %}
                 </div>
                 <span class="nav-text">{{ _('Обзор') }}</span>
@@ -306,7 +249,7 @@
             {% if current_user.is_auditor == True %}
             <div class="nav-item {% if active_plan_tab == 'audit' %} active{% endif %}" onclick="window.location.href='/plans/plan-audit/{{plan.token}}'">
                 <div class="nav-icon-wrapper">
-                    <img src="/static/img/Email.svg" alt="{{ _('Аудит') }}" class="nav-icon">
+                    {{ icons.icon_audit() }}
                     {% if active_plan_tab == 'audit' %}<div class="active-indicator"></div>{% endif %}
                 </div>
                 <span class="nav-text">{{ _('Аудит') }}</span>
@@ -316,7 +259,7 @@
             
             <div class="nav-item {% if active_plan_tab == 'directions' %} active{% endif %}" onclick="window.location.href='/plans/plan-directions/{{plan.token}}'">
                 <div class="nav-icon-wrapper">
-                    <img src="/static/img/Directions.svg" alt="{{ _('Направления') }}" class="nav-icon">
+                    {{ icons.icon_directions() }}
                     {% if active_plan_tab == 'directions' %}<div class="active-indicator"></div>{% endif %}
                 </div>
                 <span class="nav-text">{{ _('Направления') }}</span>
@@ -325,7 +268,7 @@
             
             <div class="nav-item {% if active_plan_tab == 'events' %} active{% endif %}" onclick="window.location.href='/plans/plan-events/{{plan.token}}'">
                 <div class="nav-icon-wrapper">
-                    <img src="/static/img/Events.svg" alt="{{ _('Мероприятия') }}" class="nav-icon">
+                    {{ icons.icon_events() }}
                     {% if active_plan_tab == 'events' %}<div class="active-indicator"></div>{% endif %}
                 </div>
                 <span class="nav-text">{{ _('Мероприятия') }}</span>
@@ -334,7 +277,7 @@
             
             <div class="nav-item {% if active_plan_tab == 'indicators' %} active{% endif %}" onclick="window.location.href='/plans/plan-indicators/{{plan.token}}'">
                 <div class="nav-icon-wrapper">
-                    <img src="/static/img/Stats.svg" alt="{{ _('Показатели') }}" class="nav-icon">
+                    {{ icons.icon_indicators() }}
                     {% if active_plan_tab == 'indicators' %}<div class="active-indicator"></div>{% endif %}
                 </div>
                 <span class="nav-text">{{ _('Показатели') }}</span>
@@ -363,8 +306,8 @@
                 <button class="no-submit-button" id="confirmNodelete">
                     <span class="btn-text">{{ _('Отмена') }}</span>
                 </button>
-                <button type="submit" class="no-submit-button red" id="confirmYesdelete">
-                    <img src="/static/img/Submit-Progress-wh.svg" alt="" class="btn-icon">
+                <button type="submit" class="no-submit-button red" id="confirmYesdelete">    
+                    {{ icons.icon_confirm() }}
                     <span class="btn-text">{{ _('Да, удалить') }}</span>
                 </button>
             </div> 
@@ -431,7 +374,7 @@
                     <span class="btn-text">{{ _('Отмена') }}</span>
                 </button>
                 <button type="submit" class="no-submit-button red" id="confirmYes">
-                    <img src="/static/img/Submit-Progress-wh.svg" alt="" class="btn-icon">
+                    {{ icons.icon_confirm() }}
                     <span class="btn-text">{{ _('Да, уверен') }}</span>
                 </button>
             </div> 
@@ -506,12 +449,12 @@
                         
                         <div class="answer-highlight-second">
                             <div class="highlight-icon">💡</div>
-                            <p>Укажите требуемые параметры и кликните по кнопке <strong>Добавить наравление</strong></p>
+                            <p>Укажите требуемые параметры и кликните по кнопке <strong>Добавить направление</strong></p>
                         </div>
                         <div class="app-group">
                             <label>{{ _('Условно-годовой экономический эффект, т у. т.') }}</label>
                             <div class="input-with-icon">
-                                <img src="/static/img/Half_gray.svg" alt="" class="input-icon">
+                                {{ icons.icon_half() }}
                                 <input type="text" id="" maxlength="" value="0.000"  name = "year_econ"
                                     placeholder="{{ _('0.000') }}" class="app-numeric-input" required>
                             </div>
@@ -519,7 +462,7 @@
                         <div class="app-group">
                             <label>{{ _('Ожидаемая экономия ТЭР от внедрения мероприятий в') }} 2025 г., т у. т.</label>
                             <div class="input-with-icon">
-                                <img src="/static/img/Eco_gray.svg" alt="" class="input-icon">
+                                {{ icons.icon_half() }}
                                 <input type="text" id="" maxlength="" value="0.000" name = "estim_econ"
                                     placeholder="{{ _('0.000') }}" class="app-numeric-input" required>
                             </div>  
@@ -527,13 +470,10 @@
                         <div class="app-group" style = "display:none;">
                             <label>id</label>
                             <div class="input-with-icon">
-                                <img src="/static/img/Eco_gray.svg" alt="" class="input-icon">
+                                {{ icons.icon_half() }}
                                 <input class="app-input" name = "id_direction" data-action="selected-direction" readonly>
                             </div>  
                         </div>
-
-                        
-
                         <div class="button-auth-area" id="step2-buttons" style="display: flex; justify-content: space-between;">
                             <button type="button" class="white-svg-btn" id="step2-back-btn">
                                 <img src="/static/img/Back.svg" alt="" class="btn-icon">
@@ -541,7 +481,7 @@
                             </button>
 
                             <button type="submit" class="main-btn main-btn-primary">
-                                <img src="/static/img/Add_wh.svg" alt="" class="btn-icon">
+                                {{ icons.icon_add() }}
                                 <span class="btn-text">{{ _('Добавить направление ') }}</span>
                             </button>
 
@@ -571,7 +511,7 @@
                         <div class="app-group">
                             <label>{{ _('Условно-годовой экономический эффект, т у. т.') }}</label>
                             <div class="input-with-icon">
-                                <img src="/static/img/Half_gray.svg" alt="" class="input-icon">
+                                {{ icons.icon_half() }}
                                 <input type="text" id="change-year-econ" value=""  name = "year_econ"
                                     placeholder="{{ _('0.000') }}" class="app-numeric-input" required>
                             </div>
@@ -579,7 +519,7 @@
                         <div class="app-group">
                             <label>{{ _('Ожидаемая экономия ТЭР от внедрения мероприятий в') }} 2025 г., т у. т.</label>
                             <div class="input-with-icon">
-                                <img src="/static/img/Eco_gray.svg" alt="" class="input-icon">
+                                {{ icons.icon_eco() }}
                                 <input type="text" id="change-estim-econ" value="" name = "estim_econ"
                                     placeholder="{{ _('0.000') }}" class="app-numeric-input" required>
                             </div>  
@@ -587,7 +527,7 @@
                         <div class="button-auth-area">
                             <div></div>
                             <button type="submit" class="main-btn main-btn-primary">
-                                <img src="/static/img/Add_wh.svg" alt="" class="btn-icon">
+                                {{ icons.icon_add() }}
                                 <span class="btn-text">{{ _('Добавить изменения') }}</span>
                             </button>
                         </div>
@@ -601,252 +541,256 @@
     {% if add_event_modal %}
     <div id="AddEventModal" class="modal">
         <div class="modal-content">
+            {% if econ_measures %} 
             <div class="modal-header">
                 <a id="modal-title">{{ _('Добавление мероприятия') }}</a>
                 <img class="close" src="/static/img/Close.svg" alt="">  
             </div>    
-            <div class="modal-body">
-                {% if econ_measures %}    
-                    <div class="progress-modal-bar-container">
-                        <div class="progress-modal-bar" id="modal-progress-bar" style="width: 33%"></div>
+            <div class="modal-body">   
+                <div class="progress-modal-bar-container">
+                    <div class="progress-modal-bar" id="modal-progress-bar" style="width: 33%"></div>
+                </div>
+                <div id="step1" class="modal-step">
+                    <div class="answer-highlight-second">
+                        <div class="highlight-icon">💡</div>
+                        <p>Сначала <strong>выберите</strong> мероприятие, а затем нажмите <strong>Далее</strong></p>
                     </div>
-                    <div id="step1" class="modal-step">
-                        <div class="answer-highlight-second">
-                            <div class="highlight-icon">💡</div>
-                            <p>Сначала <strong>выберите</strong> мероприятие, а затем нажмите <strong>Далее</strong></p>
+                    <div class="app-group">
+                        <label>{{ _('Поиск мероприятия') }}</label>
+                        <div class="input-with-icon">
+                            <img src="/static/img/Search_gray.svg" alt="" class="input-icon">
+                            <input type="text" data-action="search-directions" 
+                                placeholder="{{ _('Код или наименование') }}" 
+                                class="app-input" required>
                         </div>
-                        <div class="app-group">
-                            <label>{{ _('Поиск мероприятия') }}</label>
-                            <div class="input-with-icon">
-                                <img src="/static/img/Search_gray.svg" alt="" class="input-icon">
-                                <input type="text" data-action="search-directions" 
-                                    placeholder="{{ _('Код или наименование') }}" 
-                                    class="app-input" required>
-                            </div>
-                        </div>
-                        <div class="modal-table-conteiner"> 
-                        <table class="directions-table" data-action="directions-table">
-                            <thead class="directions-table-titles">
+                    </div>
+                    <div class="modal-table-conteiner"> 
+                    <table class="directions-table" data-action="directions-table">
+                        <thead class="directions-table-titles">
+                            <tr>
+                                <th style="display: none;">id</th>
+                                <th>{{ _('Код') }}</th>
+                                <th>{{ _('Наименование') }}</th>
+                                <th style="text-align: center;">{{ _('Местные ТЭР') }}</th>
+                                <th>{{ _('Эффект (т.у.т.)') }}</th>
+                                <th>{{ _('Экономия') }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in econ_measures %}
                                 <tr>
-                                    <th style="display: none;">id</th>
-                                    <th>{{ _('Код') }}</th>
-                                    <th>{{ _('Наименование') }}</th>
-                                    <th style="text-align: center;">{{ _('Местные ТЭР') }}</th>
-                                    <th>{{ _('Эффект (т.у.т.)') }}</th>
-                                    <th>{{ _('Экономия') }}</th>
+                                <td style="display: none;">{{ row.id }}</td>
+                                <td>{{ row.direction.code }}</td>
+                                <td>{{ row.direction.name }}</td>
+                                <td style="text-align: center;">
+                                    <input type="checkbox" {% if row.direction.is_local %} checked {% endif %} onclick="return false;">
+                                </td>
+                                <td>{{ row.year_econ }}</td>
+                                <td>{{ row.estim_econ }}</td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                {% for row in econ_measures %}
-                                    <tr>
-                                    <td style="display: none;">{{ row.id }}</td>
-                                    <td>{{ row.direction.code }}</td>
-                                    <td>{{ row.direction.name }}</td>
-                                    <td style="text-align: center;">
-                                        <input type="checkbox" {% if row.direction.is_local %} checked {% endif %} onclick="return false;">
-                                    </td>
-                                    <td>{{ row.year_econ }}</td>
-                                    <td>{{ row.estim_econ }}</td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                        </div>
-                        <div class="button-auth-area" id="step1-buttons">
-                            <div></div>
-                            <button type="button" class="white-svg-btn" id="step1-next-btn" data-action="directions-next">
-                                <span class="btn-text">{{ _('Далее') }}</span>
-                                <img src="/static/img/Next.svg" alt="" class="btn-icon">
-                            </button>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    </div>
+                    <div class="button-auth-area" id="step1-buttons">
+                        <div></div>
+                        <button type="button" class="white-svg-btn" id="step1-next-btn" data-action="directions-next">
+                            <span class="btn-text">{{ _('Далее') }}</span>
+                            <img src="/static/img/Next.svg" alt="" class="btn-icon">
+                        </button>
+                    </div>
+                </div>
+                <form action="{{ url_for('views.create_econexeces', token=plan.token) }}" method="POST">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <div id="step2" class="modal-step" style="display: none;">
+                    <div class="answer-highlight-second">
+                        <div class="highlight-icon">💡</div>
+                        <p>Кнопка <strong>Далее</strong> станет активна после заполнения всех обязательных полей.</p>
+                    </div>
+                    <div class="app-group">
+                        <label>[3] {{ _('Наименование мероприятий, работ') }}</label>
+                        <div class="input-with-icon">
+                            <img src="/static/img/3.svg" alt="" class="input-icon">
+                            <input type="text" maxlength="" value=""  name = "name"
+                                placeholder="{{ _('Наименование') }}" class="app-input" required>
                         </div>
                     </div>
-                    <form action="{{ url_for('views.create_econexeces', token=plan.token) }}" method="POST">
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                    <div id="step2" class="modal-step" style="display: none;">
-                        <div class="answer-highlight-second">
-                            <div class="highlight-icon">💡</div>
-                            <p>Кнопка <strong>Далее</strong> станет активна после заполнения всех обязательных полей.</p>
+                    <div class="app-group">
+                        <label>[5] {{ _('Объем внедрения, ед.') }}</label>
+                        <div class="input-with-icon">
+                            {{ icons.icon_half() }}
+                                            <input type="number" name="Volume" step="1" 
+                            placeholder="Объем" class="app-input" value="1" required
+                            oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                        </div>
+                    </div>
+                    <div class="row-app-group">
+                        <div class="app-group">
+                            <label>[6] {{ _('Условно-годовой экономический эффект, т у.т.') }}</label>
+                            <div class="input-with-icon">
+                                {{ icons.icon_half() }}
+                                <input type="text" id="" maxlength="" value="0.000"  name = "EffTut"
+                                    placeholder="0.000" class="app-numeric-input" required>
+                            </div>
+                        
                         </div>
                         <div class="app-group">
-                            <label>[3] {{ _('Наименование мероприятий, работ') }}</label>
+                            <label>[7] {{ _('Условно-годовой экономический эффект, руб.') }}</label>
                             <div class="input-with-icon">
-                                <img src="/static/img/3.svg" alt="" class="input-icon">
-                                <input type="text" maxlength="" value=""  name = "name"
-                                    placeholder="{{ _('Наименование') }}" class="app-input" required>
+                                {{ icons.icon_half() }}
+                                <input type="text" id="" maxlength="" value="0.000"  name = "EffRub"
+                                    placeholder="0.000" class="app-numeric-input" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row-app-group">
+                        <div class="app-group">
+                            <label>[8] {{ _('Ожидаемый срок внедрения мероприятия, квартал') }}</label>
+                            <div class="input-with-icon">
+                                <img src="/static/img/Calendar_gray.svg" alt="" class="input-icon">
+                                <input type="number" name="ExpectedQuarter" min="1" max="4" 
+                                pattern="[1-4]" inputmode="numeric" value="1"
+                                placeholder="Квартал" class="app-input" required
+                                oninput="this.value = this.value.replace(/[^1-4]/g, '').slice(0, 1)">
                             </div>
                         </div>
                         <div class="app-group">
-                            <label>[5] {{ _('Объем внедрения, ед.') }}</label>
+                            <label>[9] {{ _('Ожидаемый экономический эффект от внедрения мероприятия в текущем году, т у.т.') }}</label>
                             <div class="input-with-icon">
-                                <img src="/static/img/Half_gray.svg" alt="" class="input-icon">
-                                                <input type="number" name="Volume" step="1" 
-                                placeholder="Объем" class="app-input" value="1" required
-                                oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                {{ icons.icon_half() }}
+                                <input type="text" id="" maxlength="" value="0.000"  name = "EffCurrYear"
+                                    placeholder="0.000" class="app-numeric-input" required>
                             </div>
                         </div>
-                        <div class="row-app-group">
-                            <div class="app-group">
-                                <label>[6] {{ _('Условно-годовой экономический эффект, т у.т.') }}</label>
-                                <div class="input-with-icon">
-                                    <img src="/static/img/Half_gray.svg" alt="" class="input-icon">
-                                    <input type="text" id="" maxlength="" value="0.000"  name = "EffTut"
-                                        placeholder="0.000" class="app-numeric-input" required>
-                                </div>
-                            
-                            </div>
-                            <div class="app-group">
-                                <label>[7] {{ _('Условно-годовой экономический эффект, руб.') }}</label>
-                                <div class="input-with-icon">
-                                    <img src="/static/img/Half_gray.svg" alt="" class="input-icon">
-                                    <input type="text" id="" maxlength="" value="0.000"  name = "EffRub"
-                                        placeholder="0.000" class="app-numeric-input" required>
-                                </div>
+                    </div>
+                    <div class="row-app-group">
+                        <div class="app-group">
+                            <label>[10] {{ _('Срок окупаемости, лет') }}</label>
+                            <div class="input-with-icon">
+                                {{ icons.icon_half() }}
+                                <input type="text" id="" maxlength="" value="0.000"  name = "Payback"
+                                    placeholder="0.000" class="app-numeric-input" required>
                             </div>
                         </div>
-                        <div class="row-app-group">
-                            <div class="app-group">
-                                <label>[8] {{ _('Ожидаемый срок внедрения мероприятия, квартал') }}</label>
-                                <div class="input-with-icon">
-                                    <img src="/static/img/Calendar_gray.svg" alt="" class="input-icon">
-                                    <input type="number" name="ExpectedQuarter" min="1" max="4" 
-                                    pattern="[1-4]" inputmode="numeric" value="1"
-                                    placeholder="Квартал" class="app-input" required
-                                    oninput="this.value = this.value.replace(/[^1-4]/g, '').slice(0, 1)">
-                                </div>
-                            </div>
-                            <div class="app-group">
-                                <label>[9] {{ _('Ожидаемый экономический эффект от внедрения мероприятия в текущем году, т у.т.') }}</label>
-                                <div class="input-with-icon">
-                                    <img src="/static/img/Half_gray.svg" alt="" class="input-icon">
-                                    <input type="text" id="" maxlength="" value="0.000"  name = "EffCurrYear"
-                                        placeholder="0.000" class="app-numeric-input" required>
-                                </div>
+                        <div class="app-group">
+                            <label>[11] {{ _('Объем финансирования, руб.') }}</label>
+                            <div class="input-with-icon">
+                                {{ icons.icon_half() }}
+                                <input type="text" id="" maxlength="" value="0.000"  name = "VolumeFin"
+                                    placeholder="0.000" class="app-numeric-input" required>
                             </div>
                         </div>
-                        <div class="row-app-group">
-                            <div class="app-group">
-                                <label>[10] {{ _('Срок окупаемости, лет') }}</label>
-                                <div class="input-with-icon">
-                                    <img src="/static/img/Half_gray.svg" alt="" class="input-icon">
-                                    <input type="text" id="" maxlength="" value="0.000"  name = "Payback"
-                                        placeholder="0.000" class="app-numeric-input" required>
-                                </div>
-                            </div>
-                            <div class="app-group">
-                                <label>[11] {{ _('Объем финансирования, руб.') }}</label>
-                                <div class="input-with-icon">
-                                    <img src="/static/img/Half_gray.svg" alt="" class="input-icon">
-                                    <input type="text" id="" maxlength="" value="0.000"  name = "VolumeFin"
-                                        placeholder="0.000" class="app-numeric-input" required>
-                                </div>
-                            </div>
-                        </div> 
+                    </div> 
 
-                        <div class="button-auth-area" id="step2-buttons" style="display: flex; justify-content: space-between;">
-                            <button type="button" class="white-svg-btn" id="step2-back-btn">
-                                <img src="/static/img/Back.svg" alt="" class="btn-icon">
-                                <span class="btn-text">{{ _('Назад') }}</span>
-                            </button>
-                            <button type="button" class="white-svg-btn" id="step2-next-btn" data-action="next-step-2" disabled>
-                                <span class="btn-text">{{ _('Далее') }}</span>
-                                <img src="/static/img/Next.svg" alt="" class="btn-icon">
-                            </button>
+                    <div class="button-auth-area" id="step2-buttons" style="display: flex; justify-content: space-between;">
+                        <button type="button" class="white-svg-btn" id="step2-back-btn">
+                            <img src="/static/img/Back.svg" alt="" class="btn-icon">
+                            <span class="btn-text">{{ _('Назад') }}</span>
+                        </button>
+                        <button type="button" class="white-svg-btn" id="step2-next-btn" data-action="next-step-2" disabled>
+                            <span class="btn-text">{{ _('Далее') }}</span>
+                            <img src="/static/img/Next.svg" alt="" class="btn-icon">
+                        </button>
+                    </div>
+                </div>
+                <div id="step3" class="modal-step" style="display: none;">
+                    <div class="answer-highlight-second">
+                        <div class="highlight-icon">💡</div>
+                        <p>Для добавления мероприятия кликните на <strong>Добавить мероприятие</strong></p>
+                    </div>
+                    <div class="row-app-group">
+                    <div class="app-group">
+                        <label>[12] {{ _('республиканский бюджет на финасирование госпрограммы') }}</label>
+                        <div class="input-with-icon">
+                            {{ icons.icon_half() }}
+                            <input type="text" id="" maxlength="" value="0.000"  name = "BudgetState"
+                                placeholder="0.000" class="app-numeric-input" required>
                         </div>
                     </div>
-                    <div id="step3" class="modal-step" style="display: none;">
-                        <div class="answer-highlight-second">
-                            <div class="highlight-icon">💡</div>
-                            <p>Для добавления мероприятия кликните на <strong>Добавить мероприятие</strong></p>
+                    <div class="app-group">
+                        <label>[13] {{ _('республиканский бюджет') }}</label>
+                        <div class="input-with-icon">
+                            {{ icons.icon_half() }}
+                            <input type="text" id="" maxlength="" value="0.000"  name = "BudgetRep"
+                                placeholder="0.000" class="app-numeric-input" required>
                         </div>
-                        <div class="row-app-group">
-                        <div class="app-group">
-                            <label>[12] {{ _('республиканский бюджет на финасирование госпрограммы') }}</label>
-                            <div class="input-with-icon">
-                                <img src="/static/img/Half_gray.svg" alt="" class="input-icon">
-                                <input type="text" id="" maxlength="" value="0.000"  name = "BudgetState"
-                                    placeholder="0.000" class="app-numeric-input" required>
-                            </div>
+                    </div>
+                    </div> 
+                    <div class="row-app-group">
+                    <div class="app-group">
+                        <label>[14] {{ _('местный бюджет') }}</label>
+                        <div class="input-with-icon">
+                            {{ icons.icon_half() }}
+                            <input type="text" id="" maxlength="" value="0.000"  name = "BudgetLoc"
+                                placeholder="0.000" class="app-numeric-input" required>
                         </div>
-                        <div class="app-group">
-                            <label>[13] {{ _('республиканский бюджет') }}</label>
-                            <div class="input-with-icon">
-                                <img src="/static/img/Half_gray.svg" alt="" class="input-icon">
-                                <input type="text" id="" maxlength="" value="0.000"  name = "BudgetRep"
-                                    placeholder="0.000" class="app-numeric-input" required>
-                            </div>
+                    </div>
+                    <div class="app-group">
+                        <label>[15] {{ _('другие') }}</label>
+                        <div class="input-with-icon">
+                            {{ icons.icon_half() }}
+                            <input type="text" id="" maxlength="" value="0.000"  name = "BudgetOther"
+                                placeholder="0.000" class="app-numeric-input" required>
                         </div>
-                        </div> 
-                        <div class="row-app-group">
-                        <div class="app-group">
-                            <label>[14] {{ _('местный бюджет') }}</label>
-                            <div class="input-with-icon">
-                                <img src="/static/img/Half_gray.svg" alt="" class="input-icon">
-                                <input type="text" id="" maxlength="" value="0.000"  name = "BudgetLoc"
-                                    placeholder="0.000" class="app-numeric-input" required>
-                            </div>
+                    </div>
+                    </div> 
+                    <div class="app-group">
+                        <label>[16] {{ _('собственные средства организации') }}</label>
+                        <div class="input-with-icon">
+                            {{ icons.icon_half() }}
+                            <input type="text" id="" maxlength="" value="0.000"  name = "MoneyOwn"
+                                placeholder="0.000" class="app-numeric-input" required>
                         </div>
-                        <div class="app-group">
-                            <label>[15] {{ _('другие') }}</label>
-                            <div class="input-with-icon">
-                                <img src="/static/img/Half_gray.svg" alt="" class="input-icon">
-                                <input type="text" id="" maxlength="" value="0.000"  name = "BudgetOther"
-                                    placeholder="0.000" class="app-numeric-input" required>
-                            </div>
+                    </div> 
+                    <div class="row-app-group">
+                    <div class="app-group">
+                        <label>[17] {{ _('кредиты банков, займы') }}</label>
+                        <div class="input-with-icon">
+                            {{ icons.icon_half() }}
+                            <input type="text" id="" maxlength="" value="0.000"  name = "MoneyLoan"
+                                placeholder="0.000" class="app-numeric-input" required>
                         </div>
-                        </div> 
-                        <div class="app-group">
-                            <label>[16] {{ _('собственные средства организации') }}</label>
-                            <div class="input-with-icon">
-                                <img src="/static/img/Half_gray.svg" alt="" class="input-icon">
-                                <input type="text" id="" maxlength="" value="0.000"  name = "MoneyOwn"
-                                    placeholder="0.000" class="app-numeric-input" required>
-                            </div>
-                        </div> 
-                        <div class="row-app-group">
-                        <div class="app-group">
-                            <label>[17] {{ _('кредиты банков, займы') }}</label>
-                            <div class="input-with-icon">
-                                <img src="/static/img/Half_gray.svg" alt="" class="input-icon">
-                                <input type="text" id="" maxlength="" value="0.000"  name = "MoneyLoan"
-                                    placeholder="0.000" class="app-numeric-input" required>
-                            </div>
+                    </div>
+                    <div class="app-group">
+                        <label>[18] {{ _('Иные') }}</label>
+                        <div class="input-with-icon">
+                            {{ icons.icon_half() }}
+                            <input type="text" id="" maxlength="" value="0.000"  name = "MoneyOther"
+                                placeholder="0.000" class="app-numeric-input" required>
                         </div>
-                        <div class="app-group">
-                            <label>[18] {{ _('Иные') }}</label>
-                            <div class="input-with-icon">
-                                <img src="/static/img/Half_gray.svg" alt="" class="input-icon">
-                                <input type="text" id="" maxlength="" value="0.000"  name = "MoneyOther"
-                                    placeholder="0.000" class="app-numeric-input" required>
-                            </div>
-                        </div>
-                        </div> 
+                    </div>
+                    </div> 
 
-                        <div class="app-group" style = "display:none;">
-                            <label>id</label>
-                            <div class="input-with-icon">
-                                <img src="/static/img/Eco_gray.svg" alt="" class="input-icon">
-                                <input class="app-input" name = "id_measure" data-action="selected-direction" readonly>
-                            </div>  
-                        </div>
+                    <div class="app-group" style = "display:none;">
+                        <label>id</label>
+                        <div class="input-with-icon">
+                            {{ icons.icon_eco() }}
+                            <input class="app-input" name = "id_measure" data-action="selected-direction" readonly>
+                        </div>  
+                    </div>
 
-                        <div class="button-auth-area" id="step2-buttons" style="display: flex; justify-content: space-between;">
-                            <button type="button" class="white-svg-btn" id="step3-back-btn">
-                                <img src="/static/img/Back.svg" alt="" class="btn-icon">
-                                <span class="btn-text">{{ _('Назад') }}</span>
-                            </button>
-                            <button type="submit" class="main-btn main-btn-primary">
-                                <img src="/static/img/Add_wh.svg" alt="" class="btn-icon">
-                                <span class="btn-text">{{ _('Добавить мероприятие ') }}</span>
-                            </button>
-                        </div>
+                    <div class="button-auth-area" id="step2-buttons" style="display: flex; justify-content: space-between;">
+                        <button type="button" class="white-svg-btn" id="step3-back-btn">
+                            <img src="/static/img/Back.svg" alt="" class="btn-icon">
+                            <span class="btn-text">{{ _('Назад') }}</span>
+                        </button>
+                        <button type="submit" class="main-btn main-btn-primary">
+                            {{ icons.icon_add() }}
+                            <span class="btn-text">{{ _('Добавить мероприятие ') }}</span>
+                        </button>
                     </div>
-                    </form>
-                {% else %}
-                    <div class="no_info-conteiner">
-                        <a>{{ _('Нет активных направлений') }}</td>
-                    </div>
-                {% endif %}
-            </div>  
+                </div>
+                </form>
+            </div>
+            {% else %}
+                <div class="modal-header">
+                    <a id="modal-title">{{ _('') }}</a>
+                    <img class="close" src="/static/img/Close.svg" alt="">  
+                </div>   
+                <div class="no_info-conteiner">
+                    <a>{{ _('Нет активных направлений') }}</td>
+                </div>
+            {% endif %}  
         </div>
     </div>
     {% endif %}
@@ -886,7 +830,7 @@
                     <div class="app-group">
                         <label>[5] {{ _('Объем внедрения, ед.') }}</label>
                         <div class="input-with-icon">
-                            <img src="/static/img/Half_gray.svg" alt="" class="input-icon">
+                            {{ icons.icon_half() }}
                             <input type="number" name="Volume" step="1" 
                             placeholder="Объем" class="app-input" id="change-Volume-edit-model" required
                             oninput="this.value = this.value.replace(/[^0-9]/g, '')">
@@ -896,7 +840,7 @@
                     <div class="app-group">
                         <label>[6] {{ _('Условно-годовой экономический эффект, т у.т.') }}</label>
                         <div class="input-with-icon">
-                            <img src="/static/img/Half_gray.svg" alt="" class="input-icon">
+                            {{ icons.icon_half() }}
                             <input type="text" maxlength="" id="change-EffTut-edit-model" name = "EffTut"
                                 placeholder="0.000" class="app-numeric-input" required>
                         </div>
@@ -904,7 +848,7 @@
                     <div class="app-group">
                         <label>[7] {{ _('Условно-годовой экономический эффект, руб.') }}</label>
                         <div class="input-with-icon">
-                            <img src="/static/img/Half_gray.svg" alt="" class="input-icon">
+                            {{ icons.icon_half() }}
                             <input type="text" maxlength="" id="change-EffRub-edit-model" name = "EffRub"
                                 placeholder="0.000" class="app-numeric-input" required>
                         </div>
@@ -1108,7 +1052,7 @@
                         <div class="app-group">
                             <label>{{ plan.year - 1}} {{ _('г.') }} {{ _('в ед. изм.') }}</label>
                             <div class="input-with-icon prediction-container">
-                                <img src="/static/img/Half_gray.svg" alt="" class="input-icon">
+                                {{ icons.icon_half() }}
                                 <input type="text" maxlength="" value="0.000" name="QYearPrev"
                                     placeholder="0.000" class="app-numeric-input" required>
                                     <span class="prediction-value" data-multiplier="">0.000</span>
@@ -1117,7 +1061,7 @@
                         <div class="app-group">
                             <label>{{ plan.year}} {{ _('г.') }} {{ _('в ед. изм.') }}</label>
                             <div class="input-with-icon">
-                                <img src="/static/img/Half_gray.svg" alt="" class="input-icon">
+                                {{ icons.icon_half() }}
                                 <input type="text" id="" maxlength="" value="0.000"  name = "QYearCurr"
                                     placeholder="0.000" class="app-numeric-input" required>
                                     <span class="prediction-value" data-multiplier="">0.000</span>
@@ -1126,7 +1070,7 @@
                         <div class="app-group">
                             <label>{{ plan.year + 1}} {{ _('г.') }} {{ _('в ед. изм.') }}</label>
                             <div class="input-with-icon">
-                                <img src="/static/img/Half_gray.svg" alt="" class="input-icon">
+                                {{ icons.icon_half() }}
                                 <input type="text" id="" maxlength="" value="0.000"  name = "QYearNext"
                                     placeholder="0.000" class="app-numeric-input" required>
                                     <span class="prediction-value" data-multiplier="">0.000</span>
@@ -1135,7 +1079,7 @@
                         <div class="app-group" style = "display:none;">
                             <label>id</label>
                             <div class="input-with-icon">
-                                <img src="/static/img/Eco_gray.svg" alt="" class="input-icon">
+                                {{ icons.icon_eco() }}
                                 <input class="app-input" name = "id_indicator" data-action="selected-direction" readonly>
                             </div>  
                         </div>
@@ -1145,7 +1089,7 @@
                                 <span class="btn-text">{{ _('Назад') }}</span>
                             </button>
                             <button type="submit" class="main-btn main-btn-primary">
-                                <img src="/static/img/Add_wh.svg" alt="" class="btn-icon">
+                                {{ icons.icon_add() }}
                                 <span class="btn-text">{{ _('Добавить показатель') }}</span>
                             </button>
                         </div>
@@ -1174,7 +1118,7 @@
                         <div class="app-group" id = "QYearPrev-edit-nodisplay">
                             <label>{{ plan.year - 1}} {{ _('г.') }} {{ _('в ед. изм.') }}</label>
                             <div class="input-with-icon">
-                                <img src="/static/img/Half_gray.svg" alt="" class="input-icon">
+                                {{ icons.icon_half() }}
                                 <input type="text" id="QYearPrev-edit" maxlength="" value="0.000"  name = "QYearPrev"
                                     placeholder="0.000" class="app-numeric-input" required>
                                 <span class="prediction-value" data-multiplier="">0.000</span>
@@ -1183,7 +1127,7 @@
                         <div class="app-group" id = "QYearCurr-edit-nodisplay">
                             <label>{{ plan.year}} {{ _('г.') }} {{ _('в ед. изм.') }}</label>
                             <div class="input-with-icon">
-                                <img src="/static/img/Half_gray.svg" alt="" class="input-icon">
+                                {{ icons.icon_half() }}
                                 <input type="text" id="QYearCurr-edit" maxlength="" value="0.000"  name = "QYearCurr"
                                     placeholder="0.000" class="app-numeric-input" required>
                                 <span class="prediction-value" data-multiplier="">0.000</span>
@@ -1192,7 +1136,7 @@
                         <div class="app-group">
                             <label>{{ plan.year + 1}} {{ _('г.') }} {{ _('в ед. изм.') }}</label>
                             <div class="input-with-icon">
-                                <img src="/static/img/Half_gray.svg" alt="" class="input-icon">
+                                {{ icons.icon_half() }}
                                 <input type="text" id="QYearNext-edit" maxlength="" value="0.000"  name = "QYearNext"
                                     placeholder="0.000" class="app-numeric-input" required>
                                 <span class="prediction-value" data-multiplier="">0.000</span>
@@ -1201,14 +1145,14 @@
                         <div class="app-group" style = "display:none;">
                         <label>id</label>
                         <div class="input-with-icon">
-                            <img src="/static/img/Eco_gray.svg" alt="" class="input-icon">
+                            {{ icons.icon_eco() }}
                             <input class="app-input" name = "id_indicator" data-action="selected-direction" readonly>
                         </div>  
                         </div>
                         <div class="button-auth-area">
                             <div></div>
                             <button type="submit" class="main-btn main-btn-primary">
-                                <img src="/static/img/Add_wh.svg" alt="" class="btn-icon">
+                                {{ icons.icon_add() }}
                                 <span class="btn-text">{{ _('Добавить изменения') }}</span>
                             </button>
                         </div>
@@ -1223,16 +1167,16 @@
         {% set is_disabled = plan.is_sent or plan.is_approved or current_user.is_auditor %}
 
         <div id="MenuMainTable" class="white-panel" style="display:none;">
+            <button class="dop-menu-btn {% if is_disabled %}non{% endif %}" id="contextEditButton">
+                {{ icons.icon_edit() }}
+                <span class="btn-text">{{ _('Редактировать') }}</span>
+            </button>
             <form id="removeForm" method="POST" action="">
-                <button type="button" class="button-grey-border {% if is_disabled %}non{% endif %}" id="contextDeleteButton">
-                    <img src="{{ url_for('static', filename='img/Trash_black.svg') }}" class="btn-icon">
+                <button type="button" class="dop-menu-btn {% if is_disabled %}non{% endif %}" id="contextDeleteButton">
+                    {{ icons.icon_delete() }}
                     <span class="btn-text">{{ _('Удалить') }}</span>
                 </button> 
             </form>
-            <button class="button-grey-border {% if is_disabled %}non{% endif %}" id="contextEditButton">
-                <img src="{{ url_for('static', filename='img/Edit_black.svg') }}" class="btn-icon">
-                <span class="btn-text">{{ _('Редактировать') }}</span>
-            </button>
         </div>  
     {% endif %}
 

@@ -23,21 +23,21 @@
                             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                             <input type="hidden" name="status" value="draft">
                             <button id = "cancelsentPlanButton" type="submit" class="submit-button delete">
-                                <img src="/static/img/Send.svg" alt="" class="btn-icon">
+                                {{ icons.icon_send() }}
                                 <span class="btn-text">{{ _('Отменить отправку') }}</span>
                             </button>
                         </form>
                     {% endif %}
                     <button id = "sentPlanButton" type="submit" class="submit-button sent" 
-                            {% if plan.is_sent or plan.is_approved or plan.is_draft or plan.is_error%}disabled{% endif %}>
-                        <img src="/static/img/Send.svg" alt="" class="btn-icon">
+                        {% if plan.is_sent or plan.is_approved or plan.is_draft or plan.is_error%}disabled{% endif %}>
+                        {{ icons.icon_send() }}
                         <span class="btn-text">{{ _('Отправить') }}</span>
                     </button>
                     <form data-modal-form="deletePlan" action="{{ url_for('views.delete_plan', token=plan.token) }}" method="POST" class="button-area" style="text-align: left;">
                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                         <button type="submit" data-modal-trigger="deletePlan" class="submit-button delete" 
                                 {% if plan.is_sent or plan.is_approved %}disabled{% endif %}>
-                            <img src="/static/img/Delete_white.svg" alt="{{ _('Удалить') }}" class="btn-icon">
+                            {{ icons.icon_delete() }}
                             <span class="btn-text">{{ _('Удалить') }}</span>
                         </button>
                     </form>
@@ -52,7 +52,7 @@
                 <div class="app-group">
                     <label>{{ _('Год') }}</label>
                     <div class="input-with-icon">
-                        <img src="/static/img/Calendar_gray.svg" alt="" class="input-icon">
+                        {{ icons.icon_calendar() }}
                         <input type="number" id="year" name="year" min="2024" max="2030" value="{{ plan.year }}" 
                             placeholder="" class="app-input" required
                             onchange="checkExistingPlan(this.value)"
@@ -73,7 +73,7 @@
                 <div class="app-group">
                     <label>{{ _('Показатель энергосбережения') }} (%)</label>
                     <div class="input-with-icon">
-                        <img src="/static/img/Eco_gray.svg" alt="" class="input-icon">
+                        {{ icons.icon_eco() }}
                         <input type="text" name="energy_saving" maxlength="15" value="{{ plan.energy_saving }}" required
                             placeholder="0.000" class="app-numeric-input-negative"
                             pattern="-?[0-9]+([\.,][0-9]+)?" title="{{ _('Введите числовое значение (например: 12.345)') }}">
@@ -82,7 +82,7 @@
                 <div class="app-group">
                     <label>{{ _('Доля местных ТЭР в КПТ') }} (%)</label>
                     <div class="input-with-icon">
-                        <img src="/static/img/Half_gray.svg" alt="" class="input-icon">
+                        {{ icons.icon_half() }}
                         <input type="text" name="share_fuel" maxlength="15" value="{{ plan.share_fuel }}" required
                             placeholder="0.000" class="app-numeric-input" required
                             pattern="[0-9]+([\.,][0-9]+)?" title="{{ _('Введите числовое значение (например: 12.345)') }}">
@@ -93,7 +93,7 @@
                 <div class="app-group">
                     <label>{{ _('Задания по экономии ТЭР (т. у. т.)') }}</label>
                     <div class="input-with-icon">
-                        <img src="/static/img/Pig_gray.svg" alt="" class="input-icon">
+                        {{ icons.icon_eco() }}
                         <input type="text" name="saving_fuel" maxlength="15" value="{{ plan.saving_fuel }}" 
                             placeholder="0.000" class="app-numeric-input" required
                             pattern="[0-9]+([\.,][0-9]+)?" title="{{ _('Введите числовое значение (например: 12.345)') }}">
@@ -102,7 +102,7 @@
                 <div class="app-group">
                     <label>{{ _('Доля ВИЭ в КПТ') }} (%)</label>
                     <div class="input-with-icon">
-                        <img src="/static/img/Half_gray.svg" alt="" class="input-icon">
+                        {{ icons.icon_half() }}
                         <input type="text" name="share_energy" maxlength="15" value="{{ plan.share_energy }}" 
                             placeholder="0.000" class="app-numeric-input" required
                             pattern="[0-9]+([\.,][0-9]+)?" title="{{ _('Введите числовое значение (например: 12.345)') }}">
@@ -112,104 +112,12 @@
             {% if current_user.is_auditor != true %}
             <div class="button-area">
                 <button id = "editPlanButton" type="submit" class="main-btn main-btn-primary" {% if plan.is_sent or plan.is_approved %}disabled{% endif %} >
-                    <img src="/static/img/Edit_wh.svg" alt="" class="btn-icon">
+                    {{ icons.icon_edit() }}
                     <span class="btn-text">{{ _('Применить изменения') }}</span>
                 </button>
             </div>
             {% endif %}
         </form>
-  
-        {# 
-        <div class="user-info-section" data-action="close">
-            <div class="section-header" id="section-header">
-                <div class="section-title-switcher">
-                    <span>{{ _('Данные пользователя') }}</span>
-                </div>
-                <div class="toggle-icon">−</div>
-            </div>
-            <div class="section-content">
-                <div class="row-app-group">
-                    {% set org = none %}
-                    {% set ministry = none %}
-                    {% set region = none %}
-
-                    {% if plan.organization %}
-                        {% set org = plan.organization.name %}
-                    {% endif %}
-
-                    {% if plan.ministry %}
-                        {% set ministry = plan.ministry.name %}
-                    {% endif %}
-
-                    {% if plan.region %}
-                        {% set region = plan.region.name %}
-                    {% endif %}
-
-                    {% if org or ministry or region %}
-                        <div class="app-group">
-                            {% if org %}
-                                <label>{{ _('Организация') }}</label>
-                                <div class="input-with-icon">
-                                    <img src="/static/img/Organization.svg" alt="" class="input-icon">
-                                    <input type="text" value="{{ org }}" readonly class="app-input">
-                            {% elif ministry %}
-                                <label>{{ _('Министерство') }}</label>
-                                <div class="input-with-icon">
-                                    <img src="/static/img/Organization.svg" alt="" class="input-icon">
-                                    <input type="text" value="{{ ministry }}" readonly class="app-input">
-                            {% elif region %}
-                                <label>{{ _('Регион') }}</label>
-                                <div class="input-with-icon">
-                                    <img src="/static/img/Organization.svg" alt="" class="input-icon">
-                                    <input type="text" value="{{ region }}" readonly class="app-input">
-                            {% endif %}
-                                    <div class="input-mes" title="{{ _('Не изм.') }}">
-                                        <img src="/static/img/Edit_off.svg">
-                                    </div>
-                                </div>
-                        </div>
-                    {% endif %}
-                    <div class="app-group">
-                        <label>{{ _('ФИО') }}</label>
-                        <div class="input-with-icon">
-                            <img src="/static/img/Account.svg" alt="" class="input-icon">
-                            <input type="text" id="secondname" maxlength="15"  value="{{ plan.user.last_name }} {{ plan.user.first_name }} {{ plan.user.patronymic_name }}" 
-                                placeholder="{{ _('ФИО') }}" class="app-input" readonly>
-                            <div class="input-mes" title = "{{ _('Не изм.') }}">
-                                <img src="/static/img/Edit_off.svg">
-                                
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row-app-group">
-                    <div class="app-group">
-                        <label>{{ _('Email') }}</label>
-                        <div class="input-with-icon">
-                            <img src="/static/img/Email.svg" alt="" class="input-icon">
-                            <input type="text" maxlength="15" value="{{ plan.user.email }}" placeholder="{{ _('demo@example.com') }}"  readonly class="app-input">
-                            <div class="input-mes" title = "{{ _('Не изм.') }}">
-                                <img src="/static/img/Edit_off.svg">
-                                
-                            </div>
-                        </div>
-                    </div>
-                    <div class="app-group">
-                        <label>{{ _('Телефон') }}</label>
-                        <div class="input-with-icon">
-                            <img src="/static/img/Phone.svg" alt="" class="input-icon">
-                            <input type="text" maxlength="15" value="{{ plan.user.phone }}" placeholder="+375.." readonly class="app-input">
-                            <div class="input-mes" title = "{{ _('Не изм.') }}">
-                                <img src="/static/img/Edit_off.svg">
-                                
-                            </div>
-                        </div>
-                    </div>
-                </div>   
-            </div> 
-        </div>
-        <hr>
-        #}
         {% if current_user.is_auditor == true or current_user.is_admin == true%}  
             <hr>
             <a class="sername">{{ _('Респондент и организация') }}</a>
@@ -235,17 +143,17 @@
                         {% if org %}
                             <label>{{ _('Организация') }}</label>
                             <div class="input-with-icon">
-                                <img src="/static/img/Organization.svg" alt="" class="input-icon">
+                                {{ icons.icon_org() }}
                                 <input type="text" value="{{ org }}" readonly class="app-input">
                         {% elif ministry %}
                             <label>{{ _('Министерство') }}</label>
                             <div class="input-with-icon">
-                                <img src="/static/img/Organization.svg" alt="" class="input-icon">
+                                {{ icons.icon_org() }}
                                 <input type="text" value="{{ ministry }}" readonly class="app-input">
                         {% elif region %}
                             <label>{{ _('Регион') }}</label>
                             <div class="input-with-icon">
-                                <img src="/static/img/Organization.svg" alt="" class="input-icon">
+                                {{ icons.icon_org() }}
                                 <input type="text" value="{{ region }}" readonly class="app-input">
                         {% endif %}
                           
@@ -255,7 +163,7 @@
                 <div class="app-group">
                     <label>{{ _('ФИО') }}</label>
                     <div class="input-with-icon">
-                        <img src="/static/img/Account.svg" alt="" class="input-icon">
+                        {{ icons.icon_profile() }}
                         <input type="text" id="secondname" maxlength="15"  value="{{ plan.user.last_name }} {{ plan.user.first_name }} {{ plan.user.patronymic_name }}" 
                             placeholder="{{ _('ФИО') }}" class="app-input" readonly>
              
@@ -266,7 +174,7 @@
                 <div class="app-group">
                     <label>{{ _('Email') }}</label>
                     <div class="input-with-icon">
-                        <img src="/static/img/Email.svg" alt="" class="input-icon">
+                        {{ icons.icon_email() }}
                         <input type="text" maxlength="15" value="{{ plan.user.email }}" placeholder="{{ _('demo@example.com') }}"  readonly class="app-input">
               
                     </div>
@@ -274,16 +182,12 @@
                 <div class="app-group">
                     <label>{{ _('Телефон') }}</label>
                     <div class="input-with-icon">
-                        <img src="/static/img/Phone.svg" alt="" class="input-icon">
+                        {{ icons.icon_phone() }}
                         <input type="text" maxlength="15" value="{{ plan.user.phone }}" placeholder="+375.." readonly class="app-input">
-               
                     </div>
                 </div>
             </div>   
-           
-
         {%endif%}
-
         {% if current_user.is_auditor != true %}
             <hr>
             <a class="sername">{{ _('Результаты проверки') }}</a>
@@ -300,9 +204,7 @@
                                             {{ _('Аудитор') }}
                                         {% endif %}
                                     </span>
-                                    <span class="message-time">{{ ticket.begin_time.strftime('%H:%M') if ticket.begin_time else '--:--' }}</span>
-                                    
-                                                                                                    
+                                    <span class="message-time">{{ ticket.begin_time.strftime('%H:%M') if ticket.begin_time else '--:--' }}</span>                                                         
                                     <button class="btn-sender-info" onclick="toggleTicketInfo({{ ticket.id }})">
                                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
                                             <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" 
@@ -310,7 +212,6 @@
                                         </svg>
                                     </button>
                                 </div>
-                                
                                 <div class="message-bubble">
                                     <p class="text-ticket">{{ ticket.note }}</p>
                                     
@@ -335,7 +236,7 @@
                     {% endfor %}
                 {% else %}
                     <div class="no_info-conteiner">
-                        <div class="telegram-empty-state">
+                        <div class="empty-state">
                             <svg width="64" height="64" viewBox="0 0 24 24" fill="none">
                                 <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z" 
                                     fill="#E6E6E6"/>
@@ -354,19 +255,19 @@
         {# <div class="no-input"> 
             <a>{{ _('Тип') }}: {{ plan.plan_type if plan.plan_type else '--'}}</a>
         </div>#}
-        <div class="no-input"> 
-            <img src="/static/img/Calendar_gray.svg" alt="" >
+        <div class="no-input">
+            {{ icons.icon_calendar() }}
             <a>{{ _('Создан') }}: {{ plan.begin_time.strftime('%d-%m-%Y %H:%M') if plan.begin_time else '-- -- --' }}</a>
         </div>
-        <div class="no-input"> 
-            <img src="/static/img/Calendar_gray.svg" alt="" >
+        <div class="no-input">
+            {{ icons.icon_calendar() }}
             <a>    
                 {{ _('Последняя редакция') }}: 
-                    {{ plan.change_time.strftime('%d-%m-%Y %H:%M') if plan.change_time else '-- -- --' }}
+                {{ plan.change_time.strftime('%d-%m-%Y %H:%M') if plan.change_time else '-- -- --' }}
             </a>
         </div>
-        <div class="no-input"> 
-            <img src="/static/img/Calendar_gray.svg" alt="" >
+        <div class="no-input">
+            {{ icons.icon_calendar() }}
             <a>    
                 {{ _('Отправлен') }}: 
                 {{ plan.sent_time.strftime('%d-%m-%Y %H:%M') if plan.sent_time else '-- -- --' }}
@@ -378,12 +279,12 @@
 <div id="planTypeModal" class="modal {% if show_plan_type_modal %}active-delay{% endif %}">
     <div class="modal-content" style = "width: fit-content;">
         <div class="modal-header">
-            <a id="modal-title">{{ _('Какой у вас тип плана?') }}</a>
+            <a id="modal-title">{{ _('Выберите тип плана') }}</a>
         </div>
-        <div class = "answer-highlight-second">
+       {# <div class = "answer-highlight-second">
             <div class="highlight-icon">💡</div>
             <p>Экспорт плана, <strong>зависит от данного парамметра</strong></p>
-        </div> 
+        </div> #}
         <form action="{{ url_for('views.edit_plan_type', token=plan.token) }}" method="POST">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <div class="radio-org-container">
@@ -408,7 +309,7 @@
             <div class="button-auth-area">
               <a></a>
               <button type="submit" class="no-submit-button blue">
-                  <img src="/static/img/Submit-Progress-wh.svg" alt="" class="btn-icon">
+                  {{ icons.icon_confirm() }}
                   <span class="btn-text">{{ _('Подтвердить') }}</span>
               </button>
             </div>

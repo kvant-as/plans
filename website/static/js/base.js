@@ -1766,10 +1766,10 @@ class MultiTypeSearchManager {
         this.totalPagesSpan = document.querySelector(this.config.totalPagesSelector);
         this.clearSearchButton = document.querySelector(this.config.clearSearchSelector);
 
-        if (!this.searchInput || !this.tableBody || !this.selectedOrgInput) {
-            console.error('MultiTypeSearchManager: Не найдены необходимые элементы');
-            return;
-        }
+        // if (!this.searchInput || !this.tableBody || !this.selectedOrgInput) {
+        //     console.error('MultiTypeSearchManager: Не найдены необходимые элементы');
+        //     return;
+        // }
 
         this.bindEvents();
         this.updateSubmitButtonState();
