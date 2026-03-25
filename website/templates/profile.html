@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}{{ _('Личный кабинет') }} - ePlans{% endblock %}
+{% block title %}{{ _('Личный кабинет') }} - PlansEnergo{% endblock %}
 {% block content %}
 
 <div class="pers-page">
@@ -73,7 +73,7 @@
             <div class="app-group">
                 <label>{{ _('Телефон *') }}</label>
                 <div class="input-with-icon">
-                    {{ icons.icon_phone() }}
+                    {{ icons.icon_contacts() }}
                     <input type="text" maxlength="13" name = "phone" value="{{current_user.phone}}" placeholder="Введите номер телефона" class="app-input" required>
                 </div>
             </div>
@@ -87,7 +87,7 @@
             <div class="button-area">
                 <button type="button" class="main-btn main-btn-primary" id="editprofileButton"
                         style="{% if not can_change_modal or current_user.is_auditor %}display:none;{% endif %}">
-                    {{ icons.icon_edit() }}
+                    {{ icons.icon_confirm() }}
                     <span class="btn-text">{{ _('Применить изменения') }}</span>
                 </button>
             </div>
@@ -121,7 +121,7 @@
                 <div class="app-group">
                     <label>{{ _('Министерство *') }}</label>
                     <div class="input-with-icon">
-                        <img src="/static/img/Organization.svg" alt="" class="input-icon">
+                        {{ icons.icon_org() }}
                         <input type="text" value="{{ current_user.ministry.name }}"  readonly class="app-input">
                     </div>
                 </div>
@@ -131,7 +131,7 @@
                 <div class="app-group">
                     <label>{{ _('Регион *') }}</label>
                     <div class="input-with-icon">
-                        <img src="/static/img/Organization.svg" alt="" class="input-icon">
+                        {{ icons.icon_org() }}
                         <input type="text" value="{{ current_user.region.name }}"  readonly class="app-input">
                     </div>
                 </div>
@@ -140,7 +140,7 @@
         <div class="button-area">
             <button id="orgUserbutton" type="button" class="main-btn main-btn-primary"
                     style="{% if not can_change_modal or current_user.is_auditor %}display:none;{% endif %}">
-                <img src="/static/img/Edit_wh.svg" alt="" class="btn-icon">
+                {{ icons.icon_edit() }}
                 <span class="btn-text">{{ _('Изменить субъект') }}</span>
             </button>
         </div>

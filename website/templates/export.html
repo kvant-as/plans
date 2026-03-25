@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}{{ _('Экспорт') }} - ePlans{% endblock %}
+{% block title %}{{ _('Экспорт') }} - PlansEnergo{% endblock %}
 {% block content %}
 <div class="pers-page">
     <div class="personal-acc-conteiner">
@@ -11,21 +11,21 @@
 
         <div class="choose-conteiner-area">
             <div class="choose-conteiner" data-format="xlsx">
-                <img src="/static/img/Plan_gray.svg" alt="">
+                {{ icons.icon_xlsx() }}
                 <div class="choose-conteiner-text">
                     <a class="choose-conteiner-text-title">Формат (.xlsx)</a>
                     <a class="choose-conteiner-text-dis">Таблица с данными планов и мероприятий</a>
                 </div>
             </div>
             <div class="choose-conteiner disabled" data-format="pdf" >
-                <img src="/static/img/Pdf.svg" alt="">
+                {{ icons.icon_pdf() }}
                 <div class="choose-conteiner-text">
                     <a class="choose-conteiner-text-title">Формат (.pdf)</a>
                     <a class="choose-conteiner-text-dis">Форматированный план для печати</a>
                 </div>
             </div>
             <div class="choose-conteiner disabled" data-format="xml">
-                <img src="/static/img/Xml.svg" alt="">
+                {{ icons.icon_xml() }}
                 <div class="choose-conteiner-text">
                     <a class="choose-conteiner-text-title">Формат (.xml)</a>
                     <a class="choose-conteiner-text-dis">Структурированные данные для программ</a>
@@ -86,13 +86,13 @@
 
             {% if current_user.is_auditor %}     
                 <div class="input-with-icon">
-                    <img src="/static/img/Search_gray.svg" alt="" class="input-icon">
+                    {{ icons.icon_search() }}
                     <input type="text" data-action="search-directions" 
                             placeholder="{{ _('Наим. предприятия') }}" 
                             class="app-input" id="search-name">
                 </div>
                 <div class="input-with-icon">
-                    <img src="/static/img/Search_gray.svg" alt="" class="input-icon">
+                    {{ icons.icon_search() }}
                     <input type="text" data-action="search-directions" 
                             placeholder="{{ _('ОКПО предприятия') }}" 
                             class="app-input" id="search-okpo">
@@ -139,15 +139,34 @@
                                         {% endif %}
                                         <span class="plan-info" style="font-weight: 600;">{{ plan.year }} {{ _('год') }}</span>
                                     </a>
-                
-                                    <a class="status-plan">
-                                        {% if plan.is_draft %}{{ _('В редакции') }}{% endif %}
-                                        {% if plan.is_error %}{{ _('Есть ошибки') }}{% endif %}
-                                        {% if plan.is_control %}{{ _('Контроль пройден') }}{% endif %}
-                                        {% if plan.is_sent %}
-                                            {% if current_user.is_auditor != true %}{{ _('На рассмотрении') }}{% else %}{{ _('Не просмотрен') }}{% endif %}
+                                    <a class="status-plan {% if plan.is_draft %}status-draft
+                                        {% elif plan.is_error %}status-warning
+                                        {% elif plan.is_control %}status-control
+                                        {% elif plan.is_sent %}status-pending
+                                        {% elif plan.is_approved %}status-approved
+                                        {% endif %}">
+                                        
+                                        {% if plan.is_draft %}
+                                            {{ icons.draft_icon() }}
+                                            <span>В редакции</span>
+                                            
+                                        {% elif plan.is_error %}
+                                            {{ icons.error_icon() }}
+                                            <span>Есть ошибки</span>
+                                            
+                                        {% elif plan.is_control %}
+                                            {{ icons.control_icon() }}
+                                            <span>Контроль пройден</span>
+                                            
+                                        {% elif plan.is_sent %}
+                                            {{ icons.pending_icon() }}
+                                            <span>{% if current_user.is_auditor != true %}На рассмотрении{% else %}Не просмотрен{% endif %}</span>
+                                            
+                                        {% elif plan.is_approved %}
+                                            {{ icons.approved_icon() }}
+                                            <span>Одобрен</span>
+                                            
                                         {% endif %}
-                                        {% if plan.is_approved %}{{ _('Одобрен') }}{% endif %}
                                     </a>
                                 </div>
                                 <div class="plan-cont-column-footer">

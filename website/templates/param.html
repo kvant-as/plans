@@ -1,12 +1,12 @@
 {% extends "base.html" %}
-{% block title %}{{ _('Регистрация - ePlans') }}{% endblock %}
+{% block title %}{{ _('Регистрация - PlansEnergo') }}{% endblock %}
 {% block content %}
 
 <div class="auth-page">
   <div class="auth-text-upper">
     <div class="auth-title" onclick="window.location.href='/login'">
-      <img src="/static/img/Logo-black.png" alt="">
-      <a>ePlans</a>
+      <img src="/static/img/logo.svg" alt="">
+      <a>PlansEnergo</a>
     </div>
     <p class="auth-subtitle">{{ _(' Система представления планов энергосберегающих <br> мероприятий') }}
     </p>
@@ -48,7 +48,7 @@
                 <div></div>
                 <button type="button" class="white-svg-btn" id="next-btn-1">
                     <span class="btn-text">{{ _('Далее') }}</span>
-                    <img src="/static/img/Next.svg" alt="" class="btn-icon">
+                    {{ icons.next_icon() }}
                 </button>
             </div>
         </div>
@@ -94,12 +94,12 @@
 
         <div class="button-auth-area">
             <button type="button" class="white-svg-btn" id="prev-btn-2">
-                <img src="/static/img/Back.svg" alt="" class="btn-icon">
+                {{ icons.back_icon() }}
                 <span class="btn-text">{{ _('Назад') }}</span>
             </button>
             <button type="button" class="white-svg-btn" id="next-btn-2">
                 <span class="btn-text">{{ _('Далее') }}</span>
-                <img src="/static/img/Next.svg" alt="" class="btn-icon">
+                {{ icons.next_icon() }}
             </button>
         </div>
     </div>
@@ -118,7 +118,7 @@
             <div class="form-group">
                 <label>{{ _('Организация') }} *</label>
                 <div class="input-with-icon search-container">
-                    <img src="/static/img/Search_gray.svg" alt="" class="input-icon">
+                    {{ icons.icon_search() }}
                     <input type="text" 
                           name="organization_search"
                           data-type="organization" 
@@ -146,7 +146,7 @@
             <div class="form-group">
                 <label>{{ _('Министерство') }} *</label>
                 <div class="input-with-icon search-container">
-                    <img src="/static/img/Search_gray.svg" alt="" class="input-icon">
+                    {{ icons.icon_search() }}
                     <input type="text" 
                           name="ministry_search"
                           data-type="ministry" 
@@ -174,7 +174,7 @@
             <div class="form-group">
                 <label>{{ _('Регион') }} *</label>
                 <div class="input-with-icon search-container">
-                    <img src="/static/img/Search_gray.svg" alt="" class="input-icon">
+                    {{ icons.icon_search() }}
                     <input type="text" 
                           name="region_search"
                           data-type="region" 
@@ -199,13 +199,13 @@
 
         <div class="button-auth-area">
             <button type="button" class="white-svg-btn" id="prev-btn-3">
-                <img src="/static/img/Back.svg" alt="" class="btn-icon">
+                {{ icons.back_icon() }}
                 <span class="btn-text">{{ _('Назад') }}</span>
             </button>
         </div>
         <div class="button-auth-area">
             <button type="submit" class="auth-button" id="submit-btn" disabled>
-                <img src="/static/img/Sign.svg" alt="" class="btn-icon">
+                {{ icons.icon_login2() }}
                 <span class="btn-text">{{ _('Зарегистрироваться') }}</span>
             </button>
         </div>

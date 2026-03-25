@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
-    <link rel="shortcut icon" href="{{ url_for('static', filename='img/eres.svg')}}">
-    <title>{% block title %}{{ _('ePlans - Система представления планов энергосберегающих мероприятий') }}{% endblock %}</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='img/logo-white.svg')}}">
+    <title>{% block title %}{{ _('PlansEnergo - Система представления планов энергосберегающих мероприятий') }}{% endblock %}</title>
   </head>
   <body>
     {% import 'macros/svg_icons.html' as icons %}
@@ -14,28 +14,23 @@
         <header>
             <nav>
                 <div class="header-aside" onclick="window.location.href='/'">
-                    <div class="logo-wrapper
-                        {% if current_user and current_user.is_authenticated %}
+                    <div class="logo-wrapper {% if current_user and current_user.is_authenticated %}
                             {% if current_user.is_admin %}red-shadow
                             {% elif current_user.is_auditor %}green-shadow
                             {% endif %}
                         {% endif %}">
-                    <img src="{{ url_for('static', filename='img/Logo-black.svg') }}"
+                    <img src="{{ url_for('static', filename='img/logo.svg') }}"
                         class="header-aside-logo">
                     </div>
                     <div class="header-aside-text">
-                        <a class="title">ePlans</a>
+                        <a class="title">PlansEnergo</a>
                         <a class="description">{{ _('Система представления планов энергосберегающих мероприятий') }}</a>
                     </div>
                 </div>
                 <div class="header-bside">
                     {% if current_user.is_authenticated == false %}        
                         <button type="button" class="white-svg-btn" onclick="window.location.href='/#contacts-cont'">
-                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" 
-                                    d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.362-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" 
-                                />
-                            </svg>
+                            {{ icons.icon_contacts() }} 
                             <span class="btn-text">Контакты</span>
                         </button>
                     {% endif %}
@@ -119,21 +114,21 @@
                 {% endif %}
                 
                 <hr>
-                <button type="button" class="dop-menu-btn" onclick="window.location.href='/profile'">
-                    {{ icons.icon_profile() }}
-                    <span class="btn-text">Профиль</span>
-                </button>
-                <button type="button" class="dop-menu-btn" onclick="window.location.href='/FAQ'">
-                     {{ icons.icon_help() }}
-                    <span class="btn-text">Помощь</span>
-                </button>
                 <button type="button" class="dop-menu-btn" onclick="window.location.href='/'">
                      {{ icons.icon_main() }}
                     <span class="btn-text">Главная</span>
                 </button>
+                <button type="button" class="dop-menu-btn" onclick="window.location.href='/profile'">
+                    {{ icons.icon_profile() }}
+                    <span class="btn-text">Профиль</span>
+                </button>
                 <button type="button" class="dop-menu-btn" onclick="window.location.href='/#contacts-cont'">
                      {{ icons.icon_contacts() }}
                     <span class="btn-text">Контакты</span>
+                </button>
+                <button type="button" class="dop-menu-btn" onclick="window.location.href='/FAQ'">
+                     {{ icons.icon_help() }}
+                    <span class="btn-text">Помощь</span>
                 </button>
                 
                 <div class="user-sidebar-buttons-area">
@@ -216,19 +211,40 @@
         <div class="header-cont-for-back">
             <div class="plan-back-header">
                 <button type="button" class="white-svg-btn" onclick="window.location.href='/plans'">
-                    <img src="/static/img/Back.svg" alt="" class="btn-icon">
+                    {{ icons.back_icon() }}
                     <span class="btn-text">{{ _('Назад') }}</span>
                 </button>
                 <a class="plan-info">
                     <span class= "plan-text">{{ _('План энергосбережения на') }}</span>
                     <span class= "plan-year">{{ plan.year }} {{ _('год') }}</span>
                 </a>
-                <a class="status-plan"> 
-                    {% if plan.is_draft %}В редакции
-                    {% elif plan.is_error %}Есть ошибки
-                    {% elif plan.is_control %}Контроль пройден
-                    {% elif plan.is_sent %}{% if current_user.is_auditor != true %}На рассмотрении{%else%}Не просмотрен{%endif%}
-                    {% elif plan.is_approved %}Одобрен
+                <a class="status-plan {% if plan.is_draft %}status-draft
+                    {% elif plan.is_error %}status-warning
+                    {% elif plan.is_control %}status-control
+                    {% elif plan.is_sent %}status-pending
+                    {% elif plan.is_approved %}status-approved
+                    {% endif %}">
+                    
+                    {% if plan.is_draft %}
+                        {{ icons.draft_icon() }}
+                        <span>В редакции</span>
+                        
+                    {% elif plan.is_error %}
+                        {{ icons.error_icon() }}
+                        <span>Есть ошибки</span>
+                        
+                    {% elif plan.is_control %}
+                        {{ icons.control_icon() }}
+                        <span>Контроль пройден</span>
+                        
+                    {% elif plan.is_sent %}
+                        {{ icons.pending_icon() }}
+                        <span>{% if current_user.is_auditor != true %}На рассмотрении{% else %}Не просмотрен{% endif %}</span>
+                        
+                    {% elif plan.is_approved %}
+                        {{ icons.approved_icon() }}
+                        <span>Одобрен</span>
+                        
                     {% endif %}
                 </a>
             </div> 
@@ -293,7 +309,7 @@
     <div id="confirmModal" class="modal">
       <div class="modal-content"  style = "max-width: 450px;">
             <div class="modal-header">
-                <img src="/static/img/Submit-Progress.svg" class="modal-header-icon">
+                
                 <a id = "modal-title">{{ _('Подтверждение') }}</a>    
             </div>
             <div class="modal-body">
@@ -342,12 +358,11 @@
                             <input type="file" id="certificate_to_check" name="certificate" accept=".cer,.pem,.der" hidden 
                                 aria-describedby="file-format-hint">
                         </div>
-                        <!-- <div id="file-error-message" class="error-message" hidden></div> -->
                     </div>
                     
                     <div class="modal-buttons-area">
                         <button type="submit" class="submit-button delete" id="submit_sent_button" disabled>
-                            <img src="/static/img/Submit-Progress-wh.svg" alt="" class="btn-icon">
+                            {{ icons.icon_confirm() }}
                             <span class="btn-text">{{ _('Да. отправить план') }}</span>
                         </button>
                     </div>
@@ -360,7 +375,7 @@
     <div id="confirmModal2" class="modal">
       <div class="modal-content" style = "max-width: 450px;">
             <div class="modal-header">
-                <img src="/static/img/Submit-Progress.svg" class="modal-header-icon">
+                
                <a id = "modal-title">{{ _('Подтверждение') }}</a>  
             </div>
            <div class="modal-body">
@@ -400,7 +415,7 @@
                     <div class="app-group">
                         <label>{{ _('Поиск направления') }}</label>
                         <div class="input-with-icon">
-                            <img src="/static/img/Search_gray.svg" alt="" class="input-icon">
+                            {{ icons.icon_search() }}
                             <input type="text" data-action="search-directions" 
                                     placeholder="{{ _('Код или наименование') }}" 
                                     class="app-input" required>
@@ -439,7 +454,7 @@
                         <div></div>
                         <button type="button" class="white-svg-btn" id="step1-next-btn" data-action="directions-next">
                             <span class="btn-text">{{ _('Далее') }}</span>
-                            <img src="/static/img/Next.svg" alt="" class="btn-icon">
+                            {{ icons.next_icon() }}
                         </button>
                     </div>
                 </div>
@@ -476,7 +491,7 @@
                         </div>
                         <div class="button-auth-area" id="step2-buttons" style="display: flex; justify-content: space-between;">
                             <button type="button" class="white-svg-btn" id="step2-back-btn">
-                                <img src="/static/img/Back.svg" alt="" class="btn-icon">
+                                {{ icons.back_icon() }}
                                 <span class="btn-text">{{ _('Назад') }}</span>
                             </button>
 
@@ -558,7 +573,7 @@
                     <div class="app-group">
                         <label>{{ _('Поиск мероприятия') }}</label>
                         <div class="input-with-icon">
-                            <img src="/static/img/Search_gray.svg" alt="" class="input-icon">
+                            {{ icons.icon_search() }}
                             <input type="text" data-action="search-directions" 
                                 placeholder="{{ _('Код или наименование') }}" 
                                 class="app-input" required>
@@ -596,7 +611,7 @@
                         <div></div>
                         <button type="button" class="white-svg-btn" id="step1-next-btn" data-action="directions-next">
                             <span class="btn-text">{{ _('Далее') }}</span>
-                            <img src="/static/img/Next.svg" alt="" class="btn-icon">
+                            {{ icons.next_icon() }}
                         </button>
                     </div>
                 </div>
@@ -610,7 +625,7 @@
                     <div class="app-group">
                         <label>[3] {{ _('Наименование мероприятий, работ') }}</label>
                         <div class="input-with-icon">
-                            <img src="/static/img/3.svg" alt="" class="input-icon">
+                            {{ icons.text_icon() }}
                             <input type="text" maxlength="" value=""  name = "name"
                                 placeholder="{{ _('Наименование') }}" class="app-input" required>
                         </div>
@@ -647,7 +662,7 @@
                         <div class="app-group">
                             <label>[8] {{ _('Ожидаемый срок внедрения мероприятия, квартал') }}</label>
                             <div class="input-with-icon">
-                                <img src="/static/img/Calendar_gray.svg" alt="" class="input-icon">
+                                {{ icons.icon_calendar() }}
                                 <input type="number" name="ExpectedQuarter" min="1" max="4" 
                                 pattern="[1-4]" inputmode="numeric" value="1"
                                 placeholder="Квартал" class="app-input" required
@@ -684,12 +699,12 @@
 
                     <div class="button-auth-area" id="step2-buttons" style="display: flex; justify-content: space-between;">
                         <button type="button" class="white-svg-btn" id="step2-back-btn">
-                            <img src="/static/img/Back.svg" alt="" class="btn-icon">
+                            {{ icons.back_icon() }}
                             <span class="btn-text">{{ _('Назад') }}</span>
                         </button>
                         <button type="button" class="white-svg-btn" id="step2-next-btn" data-action="next-step-2" disabled>
                             <span class="btn-text">{{ _('Далее') }}</span>
-                            <img src="/static/img/Next.svg" alt="" class="btn-icon">
+                            {{ icons.next_icon() }}
                         </button>
                     </div>
                 </div>
@@ -771,7 +786,7 @@
 
                     <div class="button-auth-area" id="step2-buttons" style="display: flex; justify-content: space-between;">
                         <button type="button" class="white-svg-btn" id="step3-back-btn">
-                            <img src="/static/img/Back.svg" alt="" class="btn-icon">
+                            {{ icons.back_icon() }}
                             <span class="btn-text">{{ _('Назад') }}</span>
                         </button>
                         <button type="submit" class="main-btn main-btn-primary">
@@ -822,7 +837,7 @@
                     <div class="app-group">
                         <label>[3] {{ _('Наименование мероприятий, работ') }}</label>
                         <div class="input-with-icon">
-                            <img src="/static/img/3.svg" alt="" class="input-icon">
+                            {{ icons.text_icon() }}
                             <input type="text" maxlength="" id="change-name-edit-model" value=""  name = "name"
                                 placeholder="{{ _('Наименование') }}" class="app-input" required>
                         </div>
@@ -868,7 +883,7 @@
                     <div class="app-group">
                         <label>[9] {{ _('Ожидаемый экономический эффект от внедрения мероприятия в текущем году, т у.т.') }}</label>
                         <div class="input-with-icon">
-                            <img src="/static/img/Half_gray.svg" class="input-icon">
+                            {{ icons.icon_half() }}
                             <input type="text" id="change-EffCurrYear-edit-model" name = "EffCurrYear"
                                 placeholder="0.000" class="app-numeric-input" required>
                         </div>
@@ -878,7 +893,7 @@
                     <div class="app-group">
                         <label>[10] {{ _('Срок окупаемости, лет') }}</label>
                         <div class="input-with-icon">
-                            <img src="/static/img/Half_gray.svg" class="input-icon">
+                            {{ icons.icon_half() }}
                             <input type="text" id="change-Payback-edit-model" name = "Payback"
                                 placeholder="0.000" class="app-numeric-input" required>
                         </div>
@@ -886,7 +901,7 @@
                     <div class="app-group">
                         <label>[11] {{ _('Объем финансирования, руб.') }}</label>
                         <div class="input-with-icon">
-                            <img src="/static/img/Half_gray.svg" class="input-icon">
+                            {{ icons.icon_half() }}
                             <input type="text" id="change-VolumeFin-edit-model" name = "VolumeFin"
                                 placeholder="0.000" class="app-numeric-input" required>
                         </div>
@@ -910,7 +925,7 @@
                     <div class="app-group">
                         <label>[12] {{ _('республиканский бюджет на финасирование госпрограммы') }}</label>
                         <div class="input-with-icon">
-                            <img src="/static/img/Half_gray.svg" class="input-icon">
+                            {{ icons.icon_half() }}
                             <input type="text" id="change-BudgetState-edit-model" name = "BudgetState"
                                 placeholder="0.000" class="app-numeric-input" required>
                         </div>
@@ -918,7 +933,7 @@
                     <div class="app-group">
                         <label>[13] {{ _('республиканский бюджет') }}</label>
                         <div class="input-with-icon">
-                            <img src="/static/img/Half_gray.svg" class="input-icon">
+                            {{ icons.icon_half() }}
                             <input type="text" id="change-BudgetRep-edit-model" name = "BudgetRep"
                                 placeholder="0.000" class="app-numeric-input" required>
                         </div>
@@ -928,7 +943,7 @@
                     <div class="app-group">
                         <label>[14] {{ _('местный бюджет') }}</label>
                         <div class="input-with-icon">
-                            <img src="/static/img/Half_gray.svg" class="input-icon">
+                            {{ icons.icon_half() }}
                             <input type="text" id="change-BudgetLoc-edit-model" name = "BudgetLoc"
                                 placeholder="0.000" class="app-numeric-input" required>
                         </div>
@@ -936,7 +951,7 @@
                     <div class="app-group">
                         <label>[15] {{ _('другие') }}</label>
                         <div class="input-with-icon">
-                            <img src="/static/img/Half_gray.svg" class="input-icon">
+                            {{ icons.icon_half() }}
                             <input type="text" id="change-BudgetOther-edit-model" name = "BudgetOther"
                                 placeholder="0.000" class="app-numeric-input" required>
                         </div>
@@ -945,7 +960,7 @@
                     <div class="app-group">
                         <label>[16] {{ _('собственные средства организации') }}</label>
                         <div class="input-with-icon">
-                            <img src="/static/img/Half_gray.svg" class="input-icon">
+                            {{ icons.icon_half() }}
                             <input type="text" id="change-MoneyOwn-edit-model" name = "MoneyOwn"
                                 placeholder="0.000" class="app-numeric-input" required>
                         </div>
@@ -954,7 +969,7 @@
                     <div class="app-group">
                         <label>[17] {{ _('кредиты банков, займы') }}</label>
                         <div class="input-with-icon">
-                            <img src="/static/img/Half_gray.svg" class="input-icon">
+                            {{ icons.icon_half() }}
                             <input type="text" id="change-MoneyLoan-edit-model" name = "MoneyLoan"
                                 placeholder="0.000" class="app-numeric-input" required>
                         </div>
@@ -970,12 +985,12 @@
                     </div> 
                     <div class="button-auth-area" id="step2-buttons" style="display: flex; justify-content: space-between;">
                         <button type="button" class="white-svg-btn" id="step2-back-btn">
-                            <img src="/static/img/Back.svg" alt="" class="btn-icon">
+                            {{ icons.back_icon() }}
                             <span class="btn-text">{{ _('Назад') }}</span>
                         </button>
 
                         <button type="submit" class="main-btn main-btn-primary">
-                            <img src="/static/img/Edit_wh.svg" alt="" class="btn-icon">
+                            {{ icons.icon_edit() }}
                             <span class="btn-text">{{ _('Добавить изменения ') }}</span>
                         </button>
 
@@ -1006,7 +1021,7 @@
                     <div class="app-group">
                         <label>{{ _('Поиск показателя') }}</label>
                         <div class="input-with-icon">
-                            <img src="/static/img/Search_gray.svg" alt="" class="input-icon">
+                            {{ icons.icon_search() }}
                             <input type="text" data-action="search-directions" 
                                 placeholder="{{ _('Код или наименование') }}" 
                                 class="app-input" required>
@@ -1038,7 +1053,7 @@
                         <div></div>
                         <button type="button" class="white-svg-btn" id="step1-next-btn" data-action="directions-next">
                             <span class="btn-text">{{ _('Далее') }}</span>
-                            <img src="/static/img/Next.svg" alt="" class="btn-icon">
+                            {{ icons.next_icon() }}
                         </button>
                     </div>
                 </div>
@@ -1085,7 +1100,7 @@
                         </div>
                         <div class="button-auth-area" id="step2-buttons" style="display: flex; justify-content: space-between;">
                             <button type="button" class="white-svg-btn" id="step2-back-btn">
-                                <img src="/static/img/Back.svg" alt="" class="btn-icon">
+                                {{ icons.back_icon() }}
                                 <span class="btn-text">{{ _('Назад') }}</span>
                             </button>
                             <button type="submit" class="main-btn main-btn-primary">
@@ -1213,7 +1228,7 @@
                     <div class="app-group">
                         <label id="search-label">{{ _('Поиск организации') }}</label>
                         <div class="input-with-icon">
-                            <img src="/static/img/Search_gray.svg" alt="" class="input-icon">
+                            {{ icons.icon_search() }}
                             <input type="text" data-action="search-organization" 
                                 placeholder="{{ _('Код или наименование') }}" 
                                 class="app-input" required>
@@ -1265,7 +1280,7 @@
                         <div class="button-auth-area">
                             <div></div>
                             <button type="submit" class="main-btn main-btn-primary" data-action="submit">
-                                <img src="/static/img/Edit_wh.svg" alt="" class="btn-icon">
+                                {{ icons.icon_confirm() }}
                                 <span class="btn-text">{{ _('Сохранить изменения') }}</span>
                             </button>
                         </div>

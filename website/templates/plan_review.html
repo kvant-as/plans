@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}{{ _('Общее') }} - ePlans{% endblock %}
+{% block title %}{{ _('Общее') }} - PlansEnergo{% endblock %}
 {% block content %}
 
 <div class="pers-page">
@@ -7,14 +7,36 @@
         <div class="header-content">
             <div class="header-content-left"> 
                 <a class="name" style = "padding-bottom: 0;">{{ _('План энергосбережения на') }} {{ plan.year }} {{ _('год') }}</a>
-                <a class="status-plan">
-                    {% if plan.is_draft %}В редакции
-                    {% elif plan.is_error %}Есть ошибки
-                    {% elif plan.is_control %}Контроль пройден
-                    {% elif plan.is_sent %}{% if current_user.is_auditor != true %}На рассмотрении{%else%}Не просмотрен{%endif%}
-                    {% elif plan.is_approved %}Одобрен
+                
+                <a class="status-plan {% if plan.is_draft %}status-draft
+                    {% elif plan.is_error %}status-warning
+                    {% elif plan.is_control %}status-control
+                    {% elif plan.is_sent %}status-pending
+                    {% elif plan.is_approved %}status-approved
+                    {% endif %}">
+                    
+                    {% if plan.is_draft %}
+                        {{ icons.draft_icon() }}
+                        <span>В редакции</span>
+                        
+                    {% elif plan.is_error %}
+                        {{ icons.error_icon() }}
+                        <span>Есть ошибки</span>
+                        
+                    {% elif plan.is_control %}
+                        {{ icons.control_icon() }}
+                        <span>Контроль пройден</span>
+                        
+                    {% elif plan.is_sent %}
+                        {{ icons.pending_icon() }}
+                        <span>{% if current_user.is_auditor != true %}На рассмотрении{% else %}Не просмотрен{% endif %}</span>
+                        
+                    {% elif plan.is_approved %}
+                        {{ icons.approved_icon() }}
+                        <span>Одобрен</span>
+                        
                     {% endif %}
-                </a>  
+                </a>
             </div> 
             <div class="header-content-right"> 
                 {% if current_user.is_auditor != true %}
@@ -182,7 +204,7 @@
                 <div class="app-group">
                     <label>{{ _('Телефон') }}</label>
                     <div class="input-with-icon">
-                        {{ icons.icon_phone() }}
+                        {{ icons.icon_contacts() }}
                         <input type="text" maxlength="15" value="{{ plan.user.phone }}" placeholder="+375.." readonly class="app-input">
                     </div>
                 </div>

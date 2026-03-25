@@ -151,7 +151,7 @@ def build_html(message_body, email_type):
         content = f"""
         <div style='padding:20px 40px; color:#000000; font-size:15px;'>
             <p style='margin:0 0 10px 0; color:#000000;'>Здравствуйте!</p>
-            <p style='margin:0 0 10px 0; color:#000000;'>Кто-то пытается войти в <b>ePlans</b> используя вашу электронную почту.</p>
+            <p style='margin:0 0 10px 0; color:#000000;'>Кто-то пытается войти в <b>PlansEnergo</b> используя вашу электронную почту.</p>
             <p style='margin:0 0 10px 0; color:#000000;'>Ваш код активации:</p>
             <div style='text-align:center; font-size:32px; font-weight:bold; padding:15px; margin:20px 0; color:#000000;'>{message_body}</div>
         </div>
@@ -160,7 +160,7 @@ def build_html(message_body, email_type):
         content = f"""
         <div style='padding:20px 40px; color:#000000; font-size:15px;'>
             <p style='margin:0 0 10px 0; color:#000000;'>Здравствуйте!</p>
-            <p style='margin:0 0 10px 0; color:#000000;'>Вы запросили новый пароль для входа в <b>ePlans</b>.</p>
+            <p style='margin:0 0 10px 0; color:#000000;'>Вы запросили новый пароль для входа в <b>PlansEnergo</b>.</p>
             <p style='margin:0 0 10px 0; color:#000000;'>Ваш новый пароль:</p>
             <div style='text-align:center; font-size:32px; font-weight:bold; padding:15px; margin:20px 0; color:#000000;'>{message_body}</div>
         </div>
@@ -177,7 +177,7 @@ def build_html(message_body, email_type):
         content = f"""
         <div style='padding:20px 40px; color:#000000; font-size:15px;'>
             <p style='margin:0 0 10px 0; color:#000000;'>Здравствуйте!</p>
-            <p style='margin:0 0 10px 0; color:#000000;'>Вы запросили сброс пароля для вашей учетной записи в <b>ePlans</b>.</p>
+            <p style='margin:0 0 10px 0; color:#000000;'>Вы запросили сброс пароля для вашей учетной записи в <b>PlansEnergo</b>.</p>
             <p style='margin:0 0 15px 0; color:#000000;'>Для сброса пароля перейдите по ссылке ниже:</p>
             <div style='text-align:center; margin:25px 0;'>
                 <a href='{message_body}' style='background-color:#4CAF50; color:white; padding:12px 30px; text-decoration:none; border-radius:5px; font-size:16px; font-weight:bold; display:inline-block;'>
@@ -197,12 +197,12 @@ def build_html(message_body, email_type):
       <body style="font-family:'Montserrat',Arial,sans-serif; background-color:#eeeeee; margin:0; padding:20px;">
         <div style="max-width:600px; margin:0 auto; background-color:#ffffff; border-radius:8px; overflow:hidden; box-shadow:0 0 6px rgba(0,0,0,0.1);">
           <div style="text-align:center; font-size:17px; font-weight:500; padding:20px 50px; color:#000000;">
-            Ваша учетная запись ePlans
+            Ваша учетная запись PlansEnergo
           </div>
           {content}
           <div style="padding:10px; background-color:#eeeeee;  text-align:center; font-size:12px; color:#555555;">
             <p style="margin:5px 0;">Дополнительную информацию можно найти <a href="#" style="color:#6441a5; text-decoration:none;">здесь</a>.</p>
-            <p style="margin:5px 0;">Спасибо,<br>ePlans</p>
+            <p style="margin:5px 0;">Спасибо,<br>PlansEnergo</p>
           </div>
         </div>
       </body>

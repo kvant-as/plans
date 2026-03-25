@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}{{ _('Направления') }} - ePlans{% endblock %}
+{% block title %}{{ _('Направления') }} - PlansEnergo{% endblock %}
 {% block content %}
 
 <div class="pers-page">
@@ -8,7 +8,7 @@
 
         <div class="menu-conteiner">
             <div class="element {% if is_disabled %}non{% endif %}" id="AddDirectionModalButton">
-               {{ icons.icon_ios_add() }}
+                {{ icons.icon_ios_add() }}
                 <a class="element-text">Добавить</a>  
             </div>
             <div class="element {% if is_disabled %}non{% endif %}" id="tableDeleteButton">

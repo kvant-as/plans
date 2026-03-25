@@ -1,12 +1,12 @@
 {% extends "base.html" %}
-{% block title %}{{ _('Вход') }} - ePlans{% endblock %}
+{% block title %}{{ _('Вход') }} - PlansEnergo{% endblock %}
 {% block content %}
 
 <div class="auth-page">
     <div class="auth-text-upper">
         <div class="auth-title" onclick="window.location.href='/login'">
-            <img src="/static/img/Logo-black.png" alt="">
-            <a>ePlans</a>
+            <img src="/static/img/logo.svg" alt="">
+            <a>PlansEnergo</a>
         </div>
         <p class="auth-subtitle">{{ _('Система представления планов энергосберегающих <br> мероприятий') }}</p>
     </div>
@@ -14,8 +14,15 @@
         <div class="auth-container-title">{{ _('Вход в систему') }}</div>
 
         <div class="auth-choose" role="tablist">
-            <a class="auth-tab active" href="/login" role="tab" aria-selected="true">{{ _('Вход') }}</a>
-            <a class="auth-tab" href="/sign" role="tab" aria-selected="false">{{ _('Регистрация') }}</a>
+            <a class="auth-tab active" href="/login" role="tab" aria-selected="true">
+                {{ icons.icon_login2() }}
+                <span>{{ _('Вход') }}</span>
+            </a>
+            <a class="auth-tab" href="/sign" role="tab" aria-selected="false">
+                
+                {{ icons.icon_login() }}
+                {{ _('Регистрация') }}
+            </a>
         </div>
 
         <form class="auth-form" action = "/login" method="POST">
@@ -29,14 +36,14 @@
                 <div class="password-input-wrapper">
                     <input type="password" id="password" name="password" maxlength="10" placeholder="{{ _('Введите пароль') }}" class="auth-input" required>
                     <button type="button" class="toggle-password" aria-label="Показать пароль">
-                    <img src="/static/img/Show_pass.svg" alt="" class="eye-icon eye-visible">
-                    <img src="/static/img/UnShow_pass.svg" alt="" class="eye-icon eye-hidden" style="display: none;">
+                        {{ icons.eye_open() }}
+                        {{ icons.eye_closed() }}
                     </button>
                 </div>
             </div>
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <button type="submit" class="auth-button">
-                <img src="/static/img/Login.svg" alt="" class="btn-icon">
+                {{ icons.icon_login2() }}
                 <span class="btn-text">{{ _('Войти') }}</span>
             </button>
         </form>
