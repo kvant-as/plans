@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}{{ _('Общее') }} - PlansEnergo{% endblock %}
+{% block title %}{{ _('Обзор') }} - PlansEnergo{% endblock %}
 {% block content %}
 
 <div class="pers-page">
@@ -44,20 +44,20 @@
                         <form id = "cancelsentPlanForm" action="{{ url_for('views.api_change_plan_status', token=plan.token) }}" method="POST" class="button-area" style="text-align: left;">
                             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                             <input type="hidden" name="status" value="draft">
-                            <button id = "cancelsentPlanButton" type="submit" class="submit-button delete">
+                            <button id = "cancelsentPlanButton" type="submit" class="white-svg-btn delete-button">
                                 {{ icons.icon_send() }}
                                 <span class="btn-text">{{ _('Отменить отправку') }}</span>
                             </button>
                         </form>
                     {% endif %}
-                    <button id = "sentPlanButton" type="submit" class="submit-button sent" 
+                    <button id = "sentPlanButton" type="submit" class="white-svg-btn send-button" 
                         {% if plan.is_sent or plan.is_approved or plan.is_draft or plan.is_error%}disabled{% endif %}>
                         {{ icons.icon_send() }}
                         <span class="btn-text">{{ _('Отправить') }}</span>
                     </button>
                     <form data-modal-form="deletePlan" action="{{ url_for('views.delete_plan', token=plan.token) }}" method="POST" class="button-area" style="text-align: left;">
                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                        <button type="submit" data-modal-trigger="deletePlan" class="submit-button delete" 
+                        <button type="submit" data-modal-trigger="deletePlan" class="white-svg-btn delete-button" 
                                 {% if plan.is_sent or plan.is_approved %}disabled{% endif %}>
                             {{ icons.icon_delete() }}
                             <span class="btn-text">{{ _('Удалить') }}</span>

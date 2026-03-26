@@ -50,12 +50,12 @@
                 </div>
             </div>
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-            <button type="submit" class="auth-button">
+            <button type="submit" class="main-btn main-btn-primary">
                 {{ icons.icon_login() }}
                 <span class="btn-text">{{ _('Зарегистрироваться') }}</span>
             </button>
         </form>
     </div>
 </div>
-
+{{ affects.bg_effect() }}
 {% endblock %}

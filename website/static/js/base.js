@@ -217,9 +217,9 @@ const Notifications = {
     updateCounter(count) {
         if (count > 0) {
             this.notifCountEl.innerText = count;
-            this.notifCountEl.classList.add("active"); // показываем
+            this.notifCountEl.classList.add("active");
         } else {
-            this.notifCountEl.classList.remove("active"); // скрываем
+            this.notifCountEl.classList.remove("active");
             this.notifCountEl.innerText = "";
         }
     },
@@ -4565,5 +4565,50 @@ document.addEventListener('DOMContentLoaded', function() {
 document.addEventListener('DOMContentLoaded', function() {
     if (typeof window.initCookieBanner === 'function') {
         window.initCookieBanner();
+    }
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    const statNumbers = document.querySelectorAll('.stat-numbers');
+    
+    if (statNumbers.length > 0) {
+        const animateCounter = (element) => {
+            const target = parseInt(element.getAttribute('data-count'));
+            const duration = 2000;
+            const start = 0;
+            const increment = target / (duration / 16);
+            let current = start;
+            
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    current = target;
+                    clearInterval(timer);
+                }
+                element.textContent = Math.floor(current);
+            }, 16);
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateCounter(entry.target);
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+        
+        statNumbers.forEach(stat => observer.observe(stat));
+    }
+    
+    const bgGrid = document.querySelector('.bg-grid');
+    
+    if (bgGrid) {
+        window.addEventListener('mousemove', (e) => {
+            const x = (e.clientX / window.innerWidth) * 20;
+            const y = (e.clientY / window.innerHeight) * 20;
+            
+            bgGrid.style.transform = `translate(${x}px, ${y}px)`;
+        });
     }
 });

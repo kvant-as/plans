@@ -10,7 +10,7 @@
             </div>
             <div class="header-content-right">
                 {% if current_user.is_auditor != true %}
-                <button type="button" class="submit-button" onclick="window.location.href='/create-plan'">
+                <button type="button" class="main-btn main-btn-primary" onclick="window.location.href='/create-plan'">
                    {{ icons.icon_add() }}       
                     <span class="btn-text">{{ _('Создать новый') }}</span>
                 </button>

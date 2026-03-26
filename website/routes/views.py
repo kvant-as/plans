@@ -13,6 +13,7 @@ from sqlalchemy.orm import joinedload
 from sqlalchemy import func, asc, or_
 
 from website.plans import get_cumulative_econ_metrics, get_filtered_plans, other_data_indicatorUpdate, to_decimal_3, status_handlers, update_ChangeTimePlan
+from website.sessions import session_required
 
 from ..models import Ministry, Region, User, Organization, Plan, Ticket, Unit, Direction, Indicator, EconMeasure, EconExec, IndicatorUsage, Notification, TimeByMinsk
 from .. import db
@@ -64,6 +65,7 @@ def change_language(lang_code):
 @views.route('/profile')
 @user_with_all_params()
 @login_required
+@session_required
 def profile():
     can_change_modal = True
     if Plan.query.filter(Plan.user_id == current_user.id).count() > 0:
@@ -261,6 +263,7 @@ def edit_user_org():
     
 @views.route('/edit-plan-type/<token>', methods=['POST'])
 @login_required
+@session_required
 @owner_only
 def edit_plan_type(token):
     try:
@@ -308,6 +311,7 @@ def edit_plan_type(token):
 @views.route('/plans', methods=['GET'])
 @user_with_all_params()
 @login_required
+@session_required
 def plans():
     status_filter = request.args.get('status', 'all')
     year_filter = request.args.get('year', 'all')
@@ -334,6 +338,7 @@ def plans():
 @views.route('/export', methods=['GET'])
 @user_with_all_params()
 @login_required
+@session_required
 def export():
     status_filter = request.args.get('status', 'all')
     year_filter = request.args.get('year', 'all')
@@ -360,6 +365,7 @@ def export():
 @views.route('/export-to/<string:format>', methods=['POST'])
 @user_with_all_params()
 @login_required
+@session_required
 def export_to(format):
     ids = request.form.getlist("ids")
     if not ids:
@@ -411,6 +417,7 @@ def export_to(format):
 @views.route('/create-plan', methods=['GET', 'POST'])
 @user_with_all_params()
 @login_required
+@session_required
 def create_plan():
     if request.method == 'POST':
         year = request.form.get('year')
@@ -493,6 +500,7 @@ def create_plan():
 @user_with_all_params()
 @owner_only
 @login_required
+@session_required
 def edit_plan(token):
     current_plan = g.current_plan
 
@@ -532,6 +540,7 @@ def edit_plan(token):
 @user_with_all_params()
 @owner_only
 @login_required
+@session_required
 def delete_plan(token):
     try:
         current_plan = g.current_plan
@@ -548,6 +557,7 @@ def delete_plan(token):
 @views.route('/check-plan-year')
 @user_with_all_params()
 @login_required
+@session_required
 def check_plan_year():
     year = request.args.get('year')
     current_plan_year = request.args.get('current_plan_year')
@@ -568,6 +578,7 @@ def check_plan_year():
 @views.route('/stats', methods=['GET', 'POST'])
 @user_with_all_params()
 @login_required
+@session_required
 def stats():
     if request.method == 'POST':
         pass
@@ -579,6 +590,7 @@ def stats():
 @views.route('/plans/plan-review/<token>', methods=['GET', 'POST'])
 @user_with_all_params()
 @login_required
+@session_required
 @owner_only
 def plan_review(token):    
     current_plan = g.current_plan
@@ -619,6 +631,7 @@ def plan_review(token):
 @user_with_all_params()
 @login_required
 @owner_only
+@session_required
 def plan_audit(token):    
     current_plan = g.current_plan
     if request.method == 'POST':
@@ -635,6 +648,7 @@ def plan_audit(token):
 @user_with_all_params()
 @login_required
 @owner_only
+@session_required
 def plan_directions(token):    
     if request.method == 'POST':
         pass
@@ -682,6 +696,7 @@ def get_econmeasure(id):
 @user_with_all_params()
 @login_required
 @owner_only
+@session_required
 def create_econmeasure(token):
     current_plan = g.current_plan
     id_direction = request.form.get('id_direction')
@@ -704,6 +719,7 @@ def create_econmeasure(token):
 @views.route('/delete-econmeasure/<int:id>', methods=['POST'])
 @user_with_all_params()
 @login_required
+@session_required
 def delete_econmeasure(id):
     econ_measure = EconMeasure.query.get_or_404(id)
     current_plan = Plan.query.get_or_404(econ_measure.id_plan)
@@ -720,6 +736,7 @@ def delete_econmeasure(id):
 @views.route('/edit-econmeasure/<int:id>', methods=['POST'])
 @user_with_all_params()
 @login_required
+@session_required
 def edit_econmeasure(id):
     year_econ = to_decimal_3(request.form.get('year_econ'))
     estim_econ = to_decimal_3(request.form.get('estim_econ'))
@@ -743,6 +760,7 @@ def edit_econmeasure(id):
 @user_with_all_params()
 @login_required
 @owner_only
+@session_required
 def plan_events(token):    
     if request.method == 'POST':
         pass
@@ -815,6 +833,7 @@ def plan_events(token):
 @user_with_all_params()
 @login_required
 @owner_only
+@session_required
 def create_econexeces(token):
     current_plan = g.current_plan
     
@@ -880,6 +899,7 @@ def create_econexeces(token):
 @views.route('/delete-econexeces/<int:id>', methods=['POST'])
 @user_with_all_params()
 @login_required
+@session_required
 def delete_econexeces(id):
     econ_exec = EconExec.query.get_or_404(id)
     current_plan = Plan.query.get_or_404(econ_exec.econ_measures.id_plan)
@@ -895,6 +915,7 @@ def delete_econexeces(id):
 @views.route('/edit-econexeces/<int:id>', methods=['POST'])
 @user_with_all_params()
 @login_required
+@session_required
 def edit_econexeces(id):
     name = request.form.get('name') or None
 
@@ -966,6 +987,7 @@ def get_econexece(id):
 @user_with_all_params()
 @login_required
 @owner_only
+@session_required
 def plan_indicators(token):    
     if request.method == 'POST':
         pass
@@ -1004,6 +1026,7 @@ def plan_indicators(token):
 @views.route('/get-indicator/<int:id>', methods=['GET'])
 @user_with_all_params()
 @login_required
+@session_required
 def get_indicator(id):
     try:
         existing_IndicatorUsage = IndicatorUsage.query.get(id)
@@ -1019,6 +1042,7 @@ def get_indicator(id):
 @user_with_all_params()
 @login_required
 @owner_only
+@session_required
 def create_indicator(token):
     current_plan = g.current_plan
     
@@ -1056,6 +1080,7 @@ def create_indicator(token):
 @views.route('/edit-indicator/<int:id>', methods=['POST'])
 @user_with_all_params()
 @login_required
+@session_required
 def edit_indicator(id):
     QYearPrev_ed = to_decimal_3(request.form.get('QYearPrev'))
     QYearCurr_ed = to_decimal_3(request.form.get('QYearCurr'))
@@ -1080,6 +1105,7 @@ def edit_indicator(id):
 @views.route('/delete-indicator/<int:id>', methods=['POST'])
 @user_with_all_params()
 @login_required
+@session_required
 def delete_indicator(id):
     indicator = IndicatorUsage.query.get_or_404(id)
     current_plan = Plan.query.get_or_404(indicator.id_plan)
@@ -1199,6 +1225,7 @@ def api_change_plan_status(token):
 @user_with_all_params()
 @login_required
 @owner_only
+@session_required
 def create_ticket(token):
     current_plan = g.current_plan
     if not current_plan:
@@ -1294,6 +1321,7 @@ def api_notifications():
 @views.route('/api/notifications/mark-all-read', methods=['POST'])
 @user_with_all_params()
 @login_required
+@session_required
 def mark_all_notifications_read():
     Notification.query.filter_by(user_id=current_user.id, is_read=False).update({'is_read': True})
     db.session.commit()

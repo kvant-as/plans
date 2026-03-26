@@ -10,6 +10,7 @@
   </head>
   <body>
     {% import 'macros/svg_icons.html' as icons %}
+    {% import 'macros/affects.html' as affects %}
     {% if not hide_header %}
         <header>
             <nav>
@@ -122,6 +123,10 @@
                     {{ icons.icon_profile() }}
                     <span class="btn-text">Профиль</span>
                 </button>
+                <button type="button" class="dop-menu-btn" onclick="window.location.href='/plans'">
+                     {{ icons.icon_plans() }}
+                    <span class="btn-text">Планы</span>
+                </button>
                 <button type="button" class="dop-menu-btn" onclick="window.location.href='/#contacts-cont'">
                      {{ icons.icon_contacts() }}
                     <span class="btn-text">Контакты</span>
@@ -134,7 +139,7 @@
                 <div class="user-sidebar-buttons-area">
                     <form id="logout_form" action="{{ url_for('auth.logout') }}" method="POST">
                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                        <button type="submit" class="submit-button delete" id="logoutButton">
+                        <button type="submit" class="main-btn main-btn-delete" id="logoutButton">
                             {{ icons.icon_logout() }}
                             <span class="btn-text">{{ _('Выйти из аккаунта') }}</span>
                         </button>
@@ -310,7 +315,7 @@
       <div class="modal-content"  style = "max-width: 450px;">
             <div class="modal-header">
                 
-                <a id = "modal-title">{{ _('Подтверждение') }}</a>    
+                <h1 id = "modal-title">{{ _('Подтверждение') }}</h1>    
             </div>
             <div class="modal-body">
                 <div class = "modal-subtext">
@@ -335,15 +340,16 @@
     <div id="sentmodalecp" class="modal">
         <div class="modal-content" style="max-width: 450px;">
             <div class="modal-header">
-                <a id="modal-title">{{ _('Отправка плана') }}</a>
-                <img src="/static/img/Close.svg"  class="close" alt="Закрыть">
+                <h1 id="modal-title">{{ _('Отправка плана') }}</h1>
+                {{ icons.icon_close() }}
+
             </div>
             <div class="modal-body">
                 <div class="modal-subtext">
                     <p class="first-child">{{ _('Вы действительно хотите отправить план?') }}</p>
                     <p>
-                        {{ _('Для отправки плана необходим сертификат цифровой подписи. Подробней об этом') }} 
-                        <a href="/FAQ#ecp-certificate" class="link-word" id="certificate-help-link">{{ _('тут') }}</a>.
+                        {{ _('Для отправки плана необходим сертификат цифровой подписи. Подробней об этом в ') }} 
+                        <a href="/FAQ#ecp-certificate" class="instruction-link" id="certificate-help-link">{{ _('инструкции') }}</a>.
                     </p>
                 </div>
                 <form id="sentForm" class="sent-form" action="/api/change-plan-status/{{ plan.token }}" method="POST" enctype="multipart/form-data">
@@ -361,7 +367,7 @@
                     </div>
                     
                     <div class="modal-buttons-area">
-                        <button type="submit" class="submit-button delete" id="submit_sent_button" disabled>
+                        <button type="submit" class="main-btn main-btn-delete" id="submit_sent_button" disabled>
                             {{ icons.icon_confirm() }}
                             <span class="btn-text">{{ _('Да. отправить план') }}</span>
                         </button>
@@ -376,7 +382,7 @@
       <div class="modal-content" style = "max-width: 450px;">
             <div class="modal-header">
                 
-               <a id = "modal-title">{{ _('Подтверждение') }}</a>  
+               <h1 id = "modal-title">{{ _('Подтверждение') }}</h1>  
             </div>
            <div class="modal-body">
                 <div class = "modal-subtext">
@@ -400,8 +406,8 @@
     <div id="AddDirectionModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <a id="modal-title">{{ _('Добавление направления') }}</a>
-                <img class="close" src="/static/img/Close.svg" alt="">  
+                <h1 id="modal-title">{{ _('Добавление направления') }}</h1>
+                {{ icons.icon_close() }}  
             </div>
             <div class="modal-body">
                 <div class="progress-modal-bar-container">
@@ -512,8 +518,8 @@
     <div id="EditDirectionModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <a id="modal-title">{{ _('Измените направление') }}</a>
-                <img class="close" src="/static/img/Close.svg" alt="">  
+                <h1 id="modal-title">{{ _('Измените направление') }}</h1>
+                {{ icons.icon_close() }}  
             </div>
             <div class="answer-highlight-second">
                 <div class="highlight-icon">💡</div>
@@ -558,8 +564,8 @@
         <div class="modal-content">
             {% if econ_measures %} 
             <div class="modal-header">
-                <a id="modal-title">{{ _('Добавление мероприятия') }}</a>
-                <img class="close" src="/static/img/Close.svg" alt="">  
+                <h1 id="modal-title">{{ _('Добавление мероприятия') }}</h1>
+                {{ icons.icon_close() }}  
             </div>    
             <div class="modal-body">   
                 <div class="progress-modal-bar-container">
@@ -799,8 +805,8 @@
             </div>
             {% else %}
                 <div class="modal-header">
-                    <a id="modal-title">{{ _('') }}</a>
-                    <img class="close" src="/static/img/Close.svg" alt="">  
+                    <h1 id="modal-title">{{ _('') }}</h1>
+                    {{ icons.icon_close() }}  
                 </div>   
                 <div class="no_info-conteiner">
                     <a>{{ _('Нет активных направлений') }}</td>
@@ -814,8 +820,8 @@
     <div id="EditEventModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <a id="modal-title">{{ _('Измените мероприятие') }}</a>
-                <img class="close" src="/static/img/Close.svg" alt="">  
+                <h1 id="modal-title">{{ _('Измените мероприятие') }}</h1>
+                {{ icons.icon_close() }}  
             </div>
             <div class="modal-body">
                 <div class="progress-modal-bar-container">
@@ -1006,8 +1012,8 @@
     <div id="AddIndicatorModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <a id="modal-title">{{ _('Добавление показателя') }}</a>
-                <img class="close" src="/static/img/Close.svg" alt="">  
+                <h1 id="modal-title">{{ _('Добавление показателя') }}</h1>
+                {{ icons.icon_close() }}  
             </div>
             <div class="modal-body">
                 <div class="progress-modal-bar-container">
@@ -1119,8 +1125,8 @@
     <div id="EditIndicatorModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <a id="modal-title">{{ _('Редактирование показателя') }}</a>
-                <img class="close" src="/static/img/Close.svg" alt="">  
+                <h1 id="modal-title">{{ _('Редактирование показателя') }}</h1>
+                {{ icons.icon_close() }}  
             </div>  
             <div class="modal-body">             
                 <div class="answer-highlight-second">
@@ -1199,8 +1205,8 @@
     <div id="orgUserModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <a id="modal-title">{{ _('Выберите отчитывающийся субъект') }}</a>
-                <img class="close" src="/static/img/Close.svg" alt="">  
+                <h1 id="modal-title">{{ _('Выберите отчитывающийся субъект') }}</h1>
+                {{ icons.icon_close() }}  
             </div>
 
             <div class="telegram-type-selector">
@@ -1290,7 +1296,6 @@
         </div>
     </div>
     {% endif %}
-
     {% if not chat_widget %}
         <div class="chat-container" id="chatContainer">
             <div class="chat-header">
@@ -1298,7 +1303,10 @@
                     <span class="chat-subtitle">Виртуальный помощник</span>
                     <span class="chat-subtitle-online">Онлайн консультант</span>
                 </div>
-                <img class="close-btn white" onclick="ChatModule.toggleChat()" src="/static/img/Close.svg" alt="">
+                <div onclick="ChatModule.toggleChat()" class="close-btn">
+                    {{ icons.icon_close() }}
+                </div>
+           
             </div>
 
             <div class="chat-messages" id="chatMessages">
@@ -1418,7 +1426,7 @@
                 <p>Мы используем файлы cookie для улучшения работы сайта. Продолжая использовать наш сайт, вы соглашаетесь с <a href="/privacy-policy">политикой конфиденциальности</a>.</p>
             </div>
             <div class="cookie-banner-buttons">
-                <button class="submit-button" id="accept-cookies">
+                <button class="main-btn main-btn-primary" id="accept-cookies">
                     <span class="btn-text">Принять</span>
                 </button>
                 <button class="no-submit-button" id="decline-cookies">

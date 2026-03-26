@@ -204,7 +204,7 @@
             </button>
         </div>
         <div class="button-auth-area">
-            <button type="submit" class="auth-button" id="submit-btn" disabled>
+            <button type="submit" class="main-btn main-btn-primary" id="submit-btn" disabled>
                 {{ icons.icon_login2() }}
                 <span class="btn-text">{{ _('Зарегистрироваться') }}</span>
             </button>
@@ -215,5 +215,5 @@
     <input type="hidden" name="entity_type" id="entity_type" value="organization">
 </form>
 </div>
-
+{{ affects.bg_effect() }}
 {% endblock %}
