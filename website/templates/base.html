@@ -60,7 +60,7 @@
                             <span class="btn-text">{{ _('Помощь') }}</span>
                         </button>
                         <div class="divider"></div>
-                        <div class="user-container" id="user-info-trigger" >
+                        <div class="user-container" id="user-info-trigger">
                             <div class="avatar-wrapper">
                                 <div class="avatar-circle">
                                     {{ current_user.first_name[:1] | upper if current_user.first_name else '' }}{{ current_user.last_name[:1] | upper if current_user.last_name else '' }}
@@ -68,6 +68,72 @@
                             </div>
                             <span class="chevron-icon">›</span>
                         </div>
+                        {% if current_user and current_user.is_authenticated %}
+                            <div class="user-sidebar" id="user-sidebar">
+                                <div class="sidebar-content">
+                                    <div class="short-acc-info">
+                                        <div class="circle-fi">
+                                            {{ current_user.first_name[:1] | upper if current_user.first_name else '' }}{{ current_user.last_name[:1] | upper if current_user.last_name else '' }}
+                                        </div>
+                                        <div class="employee-card">
+                                            <a class="employee-name">
+                                                {{ current_user.first_name if current_user.first_name else '' }} 
+                                                {{ current_user.last_name if current_user.last_name else '' }}
+                                            </a>
+                                            {% if current_user.post %}
+                                            <a class="employee-position">{{ current_user.post }}</a>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    {% if current_user.email %}
+                                    <div class="input-with-icon">
+                                        {{ icons.icon_email() }}
+                                        <input type="text" value="{{ current_user.email }}" class="app-input" readonly>
+                                    </div>
+                                    {% endif %}
+                                    
+                                    {% if current_user.organization or current_user.ministry or current_user.region %}
+                                    <div class="input-with-icon">
+                                        {{ icons.icon_org() }}
+                                        <input type="text" value="{% if current_user.organization %}{{ current_user.organization.name }}{% elif current_user.ministry %}{{ current_user.ministry.name }}{% elif current_user.region %}{{ current_user.region.name }}{% endif %}" 
+                                            class="app-input" readonly>
+                                    </div>
+                                    {% endif %}
+                                    
+                                    <hr>
+                                    <button type="button" class="dop-menu-btn" onclick="window.location.href='/'">
+                                        {{ icons.icon_main() }}
+                                        <span class="btn-text">Главная</span>
+                                    </button>
+                                    <button type="button" class="dop-menu-btn" onclick="window.location.href='/profile'">
+                                        {{ icons.icon_profile() }}
+                                        <span class="btn-text">Профиль</span>
+                                    </button>
+                                    <button type="button" class="dop-menu-btn" onclick="window.location.href='/plans'">
+                                        {{ icons.icon_plans() }}
+                                        <span class="btn-text">Планы</span>
+                                    </button>
+                                    <button type="button" class="dop-menu-btn" onclick="window.location.href='/#contacts-cont'">
+                                        {{ icons.icon_contacts() }}
+                                        <span class="btn-text">Контакты</span>
+                                    </button>
+                                    <button type="button" class="dop-menu-btn" onclick="window.location.href='/FAQ'">
+                                        {{ icons.icon_help() }}
+                                        <span class="btn-text">Помощь</span>
+                                    </button>
+                                    
+                                    <div class="user-sidebar-buttons-area">
+                                        <form id="logout_form" action="{{ url_for('auth.logout') }}" method="POST">
+                                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                            <button type="submit" class="main-btn main-btn-delete" id="logoutButton">
+                                                {{ icons.icon_logout() }}
+                                                <span class="btn-text">{{ _('Выйти из аккаунта') }}</span>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
                     {% else %}
                         <button type="button" class="white-svg-btn" onclick="window.location.href='/FAQ'">
                             {{ icons.icon_help() }}
@@ -81,73 +147,6 @@
                 </div>
             </nav>
         </header>
-        
-        {% if current_user and current_user.is_authenticated %}
-        <div class="user-sidebar" id="user-sidebar">
-            <div class="sidebar-content">
-                <div class="short-acc-info">
-                    <div class="circle-fi">
-                        {{ current_user.first_name[:1] | upper if current_user.first_name else '' }}{{ current_user.last_name[:1] | upper if current_user.last_name else '' }}
-                    </div>
-                    <div class="employee-card">
-                        <a class="employee-name">
-                            {{ current_user.first_name if current_user.first_name else '' }} 
-                            {{ current_user.last_name if current_user.last_name else '' }}
-                        </a>
-                        {% if current_user.post %}
-                        <a class="employee-position">{{ current_user.post }}</a>
-                        {% endif %}
-                    </div>
-                </div>
-                {% if current_user.email %}
-                <div class="input-with-icon">
-                    {{ icons.icon_email() }}
-                    <input type="text" value="{{ current_user.email }}" class="app-input" readonly>
-                </div>
-                {% endif %}
-                
-                {% if current_user.organization or current_user.ministry or current_user.region %}
-                <div class="input-with-icon">
-                    {{ icons.icon_org() }}
-                    <input type="text" value="{% if current_user.organization %}{{ current_user.organization.name }}{% elif current_user.ministry %}{{ current_user.ministry.name }}{% elif current_user.region %}{{ current_user.region.name }}{% endif %}" 
-                        class="app-input" readonly>
-                </div>
-                {% endif %}
-                
-                <hr>
-                <button type="button" class="dop-menu-btn" onclick="window.location.href='/'">
-                     {{ icons.icon_main() }}
-                    <span class="btn-text">Главная</span>
-                </button>
-                <button type="button" class="dop-menu-btn" onclick="window.location.href='/profile'">
-                    {{ icons.icon_profile() }}
-                    <span class="btn-text">Профиль</span>
-                </button>
-                <button type="button" class="dop-menu-btn" onclick="window.location.href='/plans'">
-                     {{ icons.icon_plans() }}
-                    <span class="btn-text">Планы</span>
-                </button>
-                <button type="button" class="dop-menu-btn" onclick="window.location.href='/#contacts-cont'">
-                     {{ icons.icon_contacts() }}
-                    <span class="btn-text">Контакты</span>
-                </button>
-                <button type="button" class="dop-menu-btn" onclick="window.location.href='/FAQ'">
-                     {{ icons.icon_help() }}
-                    <span class="btn-text">Помощь</span>
-                </button>
-                
-                <div class="user-sidebar-buttons-area">
-                    <form id="logout_form" action="{{ url_for('auth.logout') }}" method="POST">
-                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                        <button type="submit" class="main-btn main-btn-delete" id="logoutButton">
-                            {{ icons.icon_logout() }}
-                            <span class="btn-text">{{ _('Выйти из аккаунта') }}</span>
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
-        {% endif %}
     {% endif %}
 
     {% if second_header %}
@@ -414,7 +413,7 @@
                     <div class="progress-modal-bar" id="modal-progress-bar" style="width: 50%"></div>
                 </div>
                 <div id="step1" class="modal-step">
-                    <div class="answer-highlight-second">
+                    <div class="answer-highlight">
                         <div class="highlight-icon">💡</div>
                         <p>Сначала <strong>выберите</strong> направление, а затем нажмите <strong>Далее</strong></p>
                     </div>
@@ -468,7 +467,7 @@
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <div id="step2" class="modal-step" style="display: none;">
                         
-                        <div class="answer-highlight-second">
+                        <div class="answer-highlight">
                             <div class="highlight-icon">💡</div>
                             <p>Укажите требуемые параметры и кликните по кнопке <strong>Добавить направление</strong></p>
                         </div>
@@ -521,7 +520,7 @@
                 <h1 id="modal-title">{{ _('Измените направление') }}</h1>
                 {{ icons.icon_close() }}  
             </div>
-            <div class="answer-highlight-second">
+            <div class="answer-highlight">
                 <div class="highlight-icon">💡</div>
                 <p><strong>Измените</strong> требуемые параметры и кликните по кнопке <strong>Добавить изменения</strong></p>
             </div>
@@ -572,7 +571,7 @@
                     <div class="progress-modal-bar" id="modal-progress-bar" style="width: 33%"></div>
                 </div>
                 <div id="step1" class="modal-step">
-                    <div class="answer-highlight-second">
+                    <div class="answer-highlight">
                         <div class="highlight-icon">💡</div>
                         <p>Сначала <strong>выберите</strong> мероприятие, а затем нажмите <strong>Далее</strong></p>
                     </div>
@@ -624,7 +623,7 @@
                 <form action="{{ url_for('views.create_econexeces', token=plan.token) }}" method="POST">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <div id="step2" class="modal-step" style="display: none;">
-                    <div class="answer-highlight-second">
+                    <div class="answer-highlight">
                         <div class="highlight-icon">💡</div>
                         <p>Кнопка <strong>Далее</strong> станет активна после заполнения всех обязательных полей.</p>
                     </div>
@@ -715,7 +714,7 @@
                     </div>
                 </div>
                 <div id="step3" class="modal-step" style="display: none;">
-                    <div class="answer-highlight-second">
+                    <div class="answer-highlight">
                         <div class="highlight-icon">💡</div>
                         <p>Для добавления мероприятия кликните на <strong>Добавить мероприятие</strong></p>
                     </div>
@@ -808,7 +807,7 @@
                     <h1 id="modal-title">{{ _('') }}</h1>
                     {{ icons.icon_close() }}  
                 </div>   
-                <div class="no_info-conteiner">
+                <div class="no-info-conteiner">
                     <a>{{ _('Нет активных направлений') }}</td>
                 </div>
             {% endif %}  
@@ -836,7 +835,7 @@
                 <form  id="editEconexeceForm" action="" method="POST">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <div id="step1" class="modal-step">
-                    <div class="answer-highlight-second">
+                    <div class="answer-highlight">
                         <div class="highlight-icon">💡</div>
                         <p>Кнопка <strong>Далее</strong> станет активна после заполнения всех обязательных полей.</p>
                     </div>
@@ -923,7 +922,7 @@
                 </div>
                 <div id="step2" class="modal-step" style="display: none;">
                     
-                    <div class="answer-highlight-second">
+                    <div class="answer-highlight">
                         <div class="highlight-icon">💡</div>
                         <p>Для сохранения изменений кликните на <strong>Добавить изменения</strong></p>
                     </div>
@@ -1020,7 +1019,7 @@
                     <div class="progress-modal-bar" id="modal-progress-bar" style="width: 50%"></div>
                 </div> 
                 <div id="step1" class="modal-step">
-                    <div class="answer-highlight-second">
+                    <div class="answer-highlight">
                         <div class="highlight-icon">💡</div>
                         <p><strong>Выберите</strong> показатель кликнув по нему, а затем нажмите <strong>Далее</strong></p>
                     </div>
@@ -1066,7 +1065,7 @@
                 <form action="{{ url_for('views.create_indicator', token=plan.token) }}" method="POST">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <div id="step2" class="modal-step" style="display: none;">
-                        <div class="answer-highlight-second">
+                        <div class="answer-highlight">
                             <div class="highlight-icon">💡</div>
                             <p>Укажите значения в исходных <strong>единицах измерения</strong> — они будут автоматически преобразованы в <strong>тонны</strong> условного топлива (т.у.т.).</p>
                         </div>
@@ -1129,7 +1128,7 @@
                 {{ icons.icon_close() }}  
             </div>  
             <div class="modal-body">             
-                <div class="answer-highlight-second">
+                <div class="answer-highlight">
                     <div class="highlight-icon">💡</div>
                     <p>Укажите значения в исходных <strong>единицах измерения</strong> — они будут автоматически преобразованы в <strong>тонны</strong> условного топлива (т.у.т.).</p>
                 </div>

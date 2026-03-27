@@ -1,6 +1,9 @@
 {% extends "base.html" %}
-{% block title %}{{ _('Помощь') }} - PlansEnergo{% endblock %}
+{% block title %}{{ _('Ответы на часто задаваемые вопросы') }} - PlansEnergo{% endblock %}
+
 {% block content %}
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/faq.css') }}">
 
 <div class="faq-modern">
     <div class="faq-content-wrapper">
@@ -11,7 +14,7 @@
                 </div>
 
                 <nav class="categories-modern">
-                    <div class="category-modern ">
+                    <div class="category-modern">
                         <div class="category-header-modern">
                             <h3>Основы работы</h3>
                         </div>
@@ -46,6 +49,7 @@
                             </a>
                         </div>
                     </div>
+                    
                     <div class="category-modern">
                         <div class="category-header-modern">
                             <h3>Безопасность и подписи</h3>
@@ -74,7 +78,6 @@
 
             <main class="faq-content-modern">
                 <div class="answer-placeholder" id="default-view">
-                    {#<div class="placeholder-icon">❓</div>#}
                     <h2>Выберите вопрос</h2>
                     <p>Выберите вопрос из списка, чтобы увидеть подробный ответ.</p>
                     <div style="margin-top: 30px; font-size: 14px; opacity: 0.6;">
@@ -83,15 +86,13 @@
                 </div>
 
                 <article class="answer-active-modern" id="what-is">
-                    <header class="answer-header-modern">
+                    <div class="answer-header-modern">
                         <h1 class="answer-title-modern">Что такое PlansEnergo?</h1>
-                    </header>
-
+                    </div>
                     <div class="answer-body-modern">
                         <div class="answer-text">
                             <p><strong>PlansEnergo</strong> — это автоматизированный комплекс для создания, анализа и представления для согласования планов энергоэффективности организаций.</p>
                         </div>
-
                         <div class="answer-highlight">
                             <div class="highlight-icon">💡</div>
                             <p><strong>Ключевая особенность:</strong> PlansEnergo автоматизирует 95% рутинных расчетов, позволяя сосредоточиться на стратегических решениях.</p>
@@ -108,77 +109,72 @@
                                 <p>Точный расчет экономических показателей и сроков окупаемости</p>
                             </div>
                             <div class="feature-card">
-                                
                                 <div class="feature-icon">📋</div>
                                 <h4>Формирование планов</h4>
+                                <p>Формирование планов энергосберегающих мероприятий</p>
                             </div>
                         </div>
-
                         <div class="answer-text">
                             <h3>Для кого предназначена система?</h3>
-                            <ul style="list-style: none; padding-left: 0;">
-                                <li style="padding: 10px 0; border-bottom: 1px solid #eee;">
-                                    <strong>🏢 Респондентов</strong> — управление энергосберегающими планами
-                                </li>
-                                <li style="padding: 10px 0;">
-                                    <strong>📑 Аудиторов</strong> — анализ планов и принятие решения
-                                </li>
-                            </ul>
+                      
+                            <div class="features-grid">
+                                <div class="feature-card">
+                                    <div class="feature-icon">🏢</div>
+                                    <h4>Респондентов</h4>
+                                    <p>заполнение и управление энергосберегающими планами</p>
+                                </div>
+                                <div class="feature-card">
+                                    <div class="feature-icon">📑</div>
+                                    <h4>Аудиторов</h4>
+                                    <p>анализ планов и принятие решения</p>
+                                </div>
+                            </div>
+
                         </div>
 
-          
 
                         <div class="answer-navigation">
                             <div></div>
-                            <a href="#getting-started" class="nav-btn next">
-                                Следующий вопрос
-                                <i>→</i>
-                            </a>
+                            <a href="#getting-started" class="nav-btn next">Следующий вопрос <i> {{ icons.next_icon() }}</i></a>
                         </div>
                     </div>
                 </article>
 
                 <article class="answer-active-modern" id="getting-started">
-                    <header class="answer-header-modern">
+                    <div class="answer-header-modern">
                         <h1 class="answer-title-modern">Как начать работу с системой?</h1>
-                    </header>
-
+                    </div>
                     <div class="answer-body-modern">
                         <div class="answer-text">
                             <p>Начать работу с PlansEnergo просто даже для новичков. Следуйте этому пошаговому руководству, и вы сможете создать свой первый план за 15 минут.</p>
                         </div>
-
                         <div class="steps-container">
                             <div class="step-item">
-                                <div class="step-number"></div>
+                                <div class="step-number">1</div>
                                 <div class="step-content">
                                     <h4>Регистрация и настройка аккаунта</h4>
                                     <p>Используйте электронную почту для регистрации. После подтверждения укажите личную информацию.</p>
                                 </div>
                             </div>
-
                             <div class="step-item">
-                                <div class="step-number"></div>
+                                <div class="step-number">2</div>
                                 <div class="step-content">
                                     <h4>Выбор организации</h4>
                                     <p>Выберите организацию за которую вы будете отчитываться, это может быть: предприятие, министерство или регион.</p>
                                 </div>
                             </div>
-
                             <div class="step-item">
-                                <div class="step-number"></div>
+                                <div class="step-number">3</div>
                                 <div class="step-content">
                                     <h4>Создание первого плана</h4>
                                     <p>Перейдите на страницу "Создать план", укажите год и заполните необходимые данные.</p>
                                 </div>
                             </div>
                         </div>
-
                         <div class="answer-highlight">
                             <div class="highlight-icon">🎯</div>
                             <p><strong>Совет для начала:</strong> Начните с просмотра демо, чтобы ознакомиться с интерфейсом и основными функциями без риска.</p>
                         </div>
-
                         <div class="video-container">
                             <video controls poster="/static/img/faq/video-poster.png">
                                 <source src="/static/video/sign-demo.mp4" type="video/mp4">
@@ -189,13 +185,11 @@
                                 <p>Посмотрите как начать работу с PlansEnergo</p>
                             </div>
                         </div>
-
                         <div class="answer-text">
                             <h3>Чеклист для начала работы:</h3>
                             <div class="checklist-container">
                                 <h4 class="checklist-header">Проверьте готовность к работе</h4>
                                 <p class="checklist-subtitle">Выполните все пункты для полноценной работы в системе</p>
-                                
                                 <label class="checklist-item">
                                     <input type="checkbox">
                                     <span>Электронная почта подтверждена</span>
@@ -213,799 +207,434 @@
                                     <span>Ознакомление с руководством пользователя или же с FAQ</span>
                                 </label>
                             </div>
-                        </div>    
-                    </div>  
-                    <div class="answer-navigation">
-                        <a href="#what-is" class="nav-btn prev">
-                            <i>←</i>
-                            Предыдущий вопрос
-                        </a>
-                        <div></div>
+                        </div>
+                        <div class="answer-navigation">
+                            <a href="#what-is" class="nav-btn prev"><i>{{ icons.back_icon() }}</i> Предыдущий вопрос</a>
+                            <div></div>
+                        </div>
                     </div>
                 </article>
 
                 <article class="answer-active-modern" id="create-plan">
-                    <header class="answer-header-modern">
+                    <div class="answer-header-modern">
                         <h1 class="answer-title-modern">Создание плана энергоэффективности</h1>
-                    </header>
-
+                    </div>
                     <div class="answer-body-modern">
                         <div class="answer-text">
                             <p>Создание плана энергоэффективности в PlansEnergo — это простой пошаговый процесс, который занимает всего несколько минут. Система проведет вас через все необходимые этапы.</p>
                         </div>
-
                         <div class="steps-container">
                             <div class="step-item">
-                                <div class="step-number"></div>
+                                <div class="step-number">1</div>
                                 <div class="step-content">
                                     <h4>Переход к созданию плана</h4>
                                     <p>В главном меню выберите <strong>"Создать"</strong> или нажмите соответствующую кнопку на панели управления на странице <strong>Планы</strong>.</p>
                                 </div>
                             </div>
-
                             <div class="step-item">
-                                <div class="step-number"></div>
+                                <div class="step-number">2</div>
                                 <div class="step-content">
                                     <h4>Выбор типа плана</h4>
                                     <p>Определите категорию организации по объему энергопотребления:</p>
                                     
-                                    <div style="display: flex; gap: 20px; margin-top: 16px;">
-                                        <div style="flex: 1; background: #ffffff; border: 2px solid rgba(0, 0, 0, 0.08); border-radius: 12px; padding: 20px; transition: all 0.3s ease;">
-                                            <div style="width: 40px; height: 40px; background: rgba(67, 97, 238, 0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px;">
-                                                <span style="color: #4361ee; font-size: 20px;">📋</span>
-                                            </div>
-                                            <h5 style="margin: 0 0 8px 0; color: #000; font-size: 16px;">До 25 тыс. т. у. т.</h5>
-                                            <p style="margin: 0; color: #666; font-size: 14px;">Упрощенный формат отчетности для организаций с меньшим потреблением</p>
+                                    <div class="plan-type-cards">
+                                        <div class="plan-type-card">
+                                            <div class="plan-type-icon">📋</div>
+                                            <h5 class="plan-type-title">До 25 тыс. т. у. т.</h5>
+                                            <p class="plan-type-description">Упрощенный формат отчетности для организаций с меньшим потреблением</p>
                                         </div>
                                         
-                                        <div style="flex: 1; background: #ffffff; border: 2px solid rgba(0, 0, 0, 0.08); border-radius: 12px; padding: 20px; transition: all 0.3s ease;">
-                                            <div style="width: 40px; height: 40px; background: rgba(58, 12, 163, 0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px;">
-                                                <span style="color: #3a0ca3; font-size: 20px;">📊</span>
-                                            </div>
-                                            <h5 style="margin: 0 0 8px 0; color: #000; font-size: 16px;">Более 25 тыс. т. у. т.</h5>
-                                            <p style="margin: 0; color: #666; font-size: 14px;">Расширенный формат с детальными расчетами для крупных потребителей</p>
+                                        <div class="plan-type-card">
+                                            <div class="plan-type-icon">📊</div>
+                                            <h5 class="plan-type-title">Более 25 тыс. т. у. т.</h5>
+                                            <p class="plan-type-description">Расширенный формат с детальными расчетами для крупных потребителей</p>
                                         </div>
                                     </div>
                                     
-                                    <div style="margin-top: 20px; padding: 16px; background: #f8fafc; border-radius: 8px; border: 1px solid rgba(0,0,0,0.08);">
-                                        <p style="margin: 0; font-size: 14px; color: #666;">
-                                            <strong>Выбор влияет на:</strong> структуру экспорта, требования к данным, детализацию отчетности и процесс аудита.
-                                        </p>
+                                    <div class="plan-type-info">
+                                        <p><strong>Выбор влияет на:</strong> структуру экспорта, требования к данным, детализацию отчетности и процесс аудита.</p>
                                     </div>
                                 </div>
                             </div>
-
                             <div class="step-item">
-                                <div class="step-number"></div>
+                                <div class="step-number">3</div>
                                 <div class="step-content">
                                     <h4>Выбор базовых параметров</h4>
-                                    <p>Укажите обязательные параметры:</p>
-                                    <ul style="margin-top: 8px;">
-                                        <li><strong>Год</strong> — выберите год из доступных вариантов (система покажет предупреждение, если план на этот год уже существует)</li>
-                                        <li><strong>Показатель энергосбережения (%)</strong> — планируемый процент экономии энергии</li>
-                                        <li><strong>Задания по экономии ТЭР (т. у. т.)</strong> — целевой показатель экономии в тоннах условного топлива</li>
-                                        <li><strong>Доля местных ТЭР в КПТ (%)</strong> — процент использования местных топливно-энергетических ресурсов</li>
-                                        <li><strong>Доля ВИЭ в КПТ (%)</strong> — процент использования возобновляемых источников энергии</li>
-                                    </ul>
+                                    <p>Укажите обязательные параметры: год, показатель энергосбережения, задания по экономии ТЭР, долю местных ТЭР и ВИЭ.</p>
                                 </div>
                             </div>
-
                             <div class="step-item">
-                                <div class="step-number"></div>
+                                <div class="step-number">4</div>
                                 <div class="step-content">
                                     <h4>Заполнение данных</h4>
-                                    <p>Внесите информацию о энергопотреблении заполнив таблицы:
-                                        <ul>
-                                            <li><strong>Направления</strong> —</li>
-                                            <li><strong>Мероприятия</strong> —</li>
-                                            <li><strong>Показатели</strong> —</li>
-                                        </ul>
-                                    </p>
+                                    <p>Внесите информацию о энергопотреблении, заполнив таблицы направлений, мероприятий и показателей.</p>
                                 </div>
                             </div>
                         </div>
-
-                        <div class="answer-highlight">
-                            <div class="highlight-icon">💾</div>
-                            <div>
-                                <p><strong>Сохранение данных:</strong> Все изменения фиксируются в системе после нажатия:</p>
-                                <div style="margin-top: 12px; display: flex; flex-wrap: wrap; gap: 10px;">
-                                    <span style="background: rgba(0, 0, 0, 0.08); padding: 6px 12px; border-radius: 6px; font-size: 13px; display: inline-flex; align-items: center; gap: 6px;">
-                                        <span style="width: 8px; height: 8px; background: #00b894; border-radius: 50%;"></span>
-                                        <strong>Применить изменения</strong>
-                                    </span>
-                                    <span style="background: rgba(0, 0, 0, 0.08); padding: 6px 12px; border-radius: 6px; font-size: 13px; display: inline-flex; align-items: center; gap: 6px;">
-                                        <span style="width: 8px; height: 8px; background: #0984e3; border-radius: 50%;"></span>
-                                        <strong>Добавить</strong>
-                                    </span>
-                                </div>
-                                <p style="margin-top: 12px; font-size: 14px; opacity: 0.8;">Не требуется отдельное сохранение — после этих действий данные надежно сохраняются в системе.</p>
-                            </div>
-                        </div>
-
                         <div class="video-container">
-                            <video controls poster="/static/img/faq/work-demo-preview.png">
+                            <video controls poster="/static/img/faq/video-poster.png">
                                 <source src="/static/video/work-demo.mp4" type="video/mp4">
                                 Ваш браузер не поддерживает видео.
                             </video>
                             <div class="video-caption">
-                                <h5>Создание плана за 5 минут</h5>
-                                <p>Посмотрите полный процесс создания и заполнения плана энергоэффективности</p>
+                                <h5>Создание плана</h5>
+                                <p>Посмотрите как создать и заполнить план в PlansEnergo</p>
                             </div>
                         </div>
-
+                        <div class="answer-highlight">
+                            <div class="highlight-icon">💾</div>
+                            <p><strong>Сохранение данных:</strong> Все изменения фиксируются в системе автоматически после нажатия кнопок "Применить изменения" или "Добавить".</p>
+                        </div>
                         <div class="plan-after-creation">
                             <h3>Что происходит после создания плана?</h3>
-                            <p>После заполнения всех данных вам доступно:</p>
-                            
                             <div class="plan-features">
                                 <div class="plan-feature-item">
                                     <span class="plan-feature-check">✓</span>
                                     <span class="plan-feature-text">Контроль плана с последующей отправкой на проверку</span>
                                 </div>
-                                
                                 <div class="plan-feature-item">
                                     <span class="plan-feature-check">✓</span>
                                     <span class="plan-feature-text">Просмотр статистики</span>
                                 </div>
-                                
                                 <div class="plan-feature-item">
                                     <span class="plan-feature-check">✓</span>
                                     <span class="plan-feature-text">Экспорт плана</span>
                                 </div>
                             </div>
                         </div>
-
                         <div class="answer-navigation">
-                            <a href="#audit-data" class="nav-btn next">
-                                Следующий вопрос
-                                <i>→</i>
-                            </a>
+                            <a href="#audit-data" class="nav-btn next">Следующий вопрос <i> {{ icons.next_icon() }}</i></a>
                         </div>
                     </div>
                 </article>
 
                 <article class="answer-active-modern" id="audit-data">
-                    <header class="answer-header-modern">
+                    <div class="answer-header-modern">
                         <h1 class="answer-title-modern">Аудит планов энергоэффективности</h1>
-                    </header>
-
+                    </div>
                     <div class="answer-body-modern">
                         <div class="answer-text">
-                            <p>Аудит планов в PlansEnergo выполняется специально назначенными аудиторами — региональными управлениями по надзору за энергоэффективностью. Аудиторы проводят проверку всех таблиц и данных плана, после чего выносят официальный вердикт.</p>
+                            <p>Аудит планов в PlansEnergo выполняется специально назначенными аудиторами — региональными управлениями по надзору за энергоэффективностью.</p>
                         </div>
-
-                        <div class="answer-highlight" >
-                            <div style="display: flex; gap: 20px; align-items: flex-start;">
-                                <div style="flex-shrink: 0;">
-                                    <div>
-                                        <span style="color: white; font-size: 24px;">👔</span>
-                                    </div>
-                                </div>
-                                
-                                <div style="flex: 1;">
-                                    <h3 style="margin: 0 0 12px 0; color: #000; font-size: 18px; font-weight: 700;">
-                                        Роль аудиторов в системе
-                                    </h3>
-                                    
-                                    <div style="background: rgba(255, 255, 255, 0.9); padding: 20px; border-radius: 8px; border: 1px solid rgba(0, 0, 0, 0.08); margin-bottom: 16px;">
-                                        <p style="margin: 0 0 12px 0; color: #000; font-weight: 600; display: flex; align-items: center; gap: 8px;">
-                                            <span style="width: 8px; height: 8px; background: #000; border-radius: 50%;"></span>
-                                            Кто осуществляет проверку?
-                                        </p>
-                                        <p style="margin: 0; color: #2d3436; line-height: 1.6; padding-left: 16px;">
-                                            Официальные представители региональных управлений по надзору за энергоэффективностью Республики Беларусь
-                                        </p>
-                                    </div>
-                                    
-                                    <div style="background: rgba(255, 255, 255, 0.9); padding: 20px; border-radius: 8px; border: 1px solid rgba(0, 0, 0, 0.08);">
-                                        <p style="margin: 0 0 12px 0; color: #000; font-weight: 600; display: flex; align-items: center; gap: 8px;">
-                                            <span style="width: 8px; height: 8px; background: #000; border-radius: 50%;"></span>
-                                            Их полномочия и доступы
-                                        </p>
-                                        <p style="margin: 0; color: #2d3436; line-height: 1.6; padding-left: 16px;">
-                                            Полный доступ ко всем таблицам, расчетам и исходным данным плана для проведения официальной проверки и вынесения заключения
-                                        </p>
-                                    </div>
-                                </div>
+                        <div class="answer-highlight">
+                            <h3>Роль аудиторов в системе</h3>
+                            <div class="white-cont-ul">
+                                <p>Кто осуществляет проверку?</p>
+                                <span>Официальные представители региональных управлений по надзору за энергоэффективностью Республики Беларусь</span>
+                            </div>
+                            <div class="white-cont-ul">
+                                <p>Их полномочия и доступы</p>
+                                <span>Полный доступ ко всем таблицам, расчетам и исходным данным плана для проведения официальной проверки</span>
                             </div>
                         </div>
-
                         <div class="steps-container">
                             <div class="step-item">
-                                <div class="step-number"></div>
+                                <div class="step-number">1</div>
                                 <div class="step-content">
                                     <h4>Доступ к плану на проверку</h4>
-                                    <p>Аудитор получает план в статусе "Не просмотренные" в своем интерфейсе. Доступны все разделы плана для детального изучения.</p>
+                                    <p>Аудитор получает план в статусе "Не просмотренные" в своем интерфейсе.</p>
                                 </div>
                             </div>
-
                             <div class="step-item">
-                                <div class="step-number"></div>
+                                <div class="step-number">2</div>
                                 <div class="step-content">
                                     <h4>Проверка данных</h4>
-                                    <p>Аудитор последовательно проверяет:
-                                    <ul>
-                                        <li><strong>Основные показатели</strong> — корректность расчетов энергосбережения и экономии</li>
-                                        <li><strong>Таблицы данных</strong> — полнота и правильность заполнения всех форм и разделов</li>
-                                        <li><strong>Данные респондента</strong> — точность информации об организации и ответственных лицах</li>
-                                        <li><strong>Мероприятия по экономии</strong> — обоснованность и реалистичность предложенных мер</li>
-                                        <li><strong>Мероприятия по местным ТЭР</strong> — корректность планов по увеличению использования местных ресурсов</li>
-                                    </ul>
-                                    </p>
+                                    <p>Аудитор последовательно проверяет основные показатели, таблицы данных, мероприятия по экономии и местным ТЭР.</p>
                                 </div>
                             </div>
-
                             <div class="step-item">
-                                <div class="step-number"></div>
+                                <div class="step-number">3</div>
                                 <div class="step-content">
                                     <h4>Вынесение вердикта</h4>
-                                    <p>По результатам проверки аудитор выбирает один из вариантов:
-                                        <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 12px;">
-                                            <div style="display: flex; align-items: center; padding: 12px; background: rgba(220, 53, 69, 0.05); border-radius: 8px; border-left: 4px solid #dc3545;">
-                                                <span style="width: 10px; height: 10px; background: #dc3545; border-radius: 50%; margin-right: 12px;"></span>
-                                                <div>
-                                                    <strong style="color: #000;">Есть ошибки</strong>
-                                                    <p style="margin: 4px 0 0 0; font-size: 13px; color: #666;">Указываются конкретные ошибки, план возвращается на доработку</p>
-                                                </div>
-                                            </div>
-                                            
-                                            <div style="display: flex; align-items: center; padding: 12px; background: rgba(40, 167, 69, 0.05); border-radius: 8px; border-left: 4px solid #28a745;">
-                                                <span style="width: 10px; height: 10px; background: #28a745; border-radius: 50%; margin-right: 12px;"></span>
-                                                <div>
-                                                    <strong style="color: #000;">Одобрить</strong>
-                                                    <p style="margin: 4px 0 0 0; font-size: 13px; color: #666;">План соответствует требованиям, переводится в статус "Одобрен"</p>
-                                                </div>
-                                            </div>
-                                            
-                                            <div style="display: flex; align-items: center; padding: 12px; background: rgba(108, 117, 125, 0.05); border-radius: 8px; border-left: 4px solid #6c757d;">
-                                                <span style="width: 10px; height: 10px; background: #6c757d; border-radius: 50%; margin-right: 12px;"></span>
-                                                <div>
-                                                    <strong style="color: #000;">Отменить</strong>
-                                                    <p style="margin: 4px 0 0 0; font-size: 13px; color: #666;">План переходит в изначальное состояние для аудитора "Не просмотренный"</p>
-                                                </div>
+                                    <p>По результатам проверки аудитор выбирает один из вариантов:</p>
+                                    <div class="options-container">
+                                        <div class="option-card error">
+                                            <span class="option-indicator"></span>
+                                            <div class="option-content">
+                                                <div class="option-title">Есть ошибки</div>
+                                                <div class="option-description">Указываются конкретные ошибки, план возвращается на доработку</div>
                                             </div>
                                         </div>
-                                    </p>
+                                        <div class="option-card success">
+                                            <span class="option-indicator"></span>
+                                            <div class="option-content">
+                                                <div class="option-title">Одобрить</div>
+                                                <div class="option-description">План соответствует требованиям, переводится в статус "Одобрен"</div>
+                                            </div>
+                                        </div>
+                                        <div class="option-card cancel">
+                                            <span class="option-indicator"></span>
+                                            <div class="option-content">
+                                                <div class="option-title">Отменить</div>
+                                                <div class="option-description">План переходит в изначальное состояние для аудитора "Не просмотренный"</div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-
+                        
                         <div class="video-container">
-                            <video controls poster="/static/img/faq/audit-demo-preview.png">
+                            <video controls poster="/static/img/faq/video-poster.png">
                                 <source src="/static/video/audit-report.mp4" type="video/mp4">
                                 Ваш браузер не поддерживает видео.
                             </video>
                             <div class="video-caption">
-                                <h5>Проверка плана за 1 минуту</h5>
-                                <p>Посмотрите полный процесс проверки плана энергоэффективности</p>
+                                <h5>Проверка планов</h5>
+                                <p>Посмотрите как проверять планы</p>
                             </div>
                         </div>
-
-                        <div class="features-grid">
-                            <div class="feature-card">
-                                <div class="feature-icon">📋</div>
-                                <h4>Полный доступ к данным</h4>
-                                <p>Аудиторы видят все таблицы, расчеты и исходные данные плана без ограничений</p>
-                            </div>
-                            
-                            <div class="feature-card">
-                                <div class="feature-icon">✍️</div>
-                                <h4>Детальные комментарии</h4>
-                                <p>Возможность указать конкретные ошибки с пояснениями для каждой таблицы</p>
-                            </div>
-                            
-                            <div class="feature-card">
-                                <div class="feature-icon">🔄</div>
-                                <h4>История проверок</h4>
-                                <p>Все действия аудитора фиксируются с указанием даты, времени и автора</p>
-                            </div>
-                        </div>
-
                         <div class="after-inspection">
                             <h3>Что происходит после проверки?</h3>
-                            
                             <div class="inspection-outcomes">
                                 <div class="outcomes-grid">
-                                    <!-- Если есть ошибки -->
                                     <div class="outcome-item outcome-error">
-                                        <div class="outcome-icon">
-                                            <span>✗</span>
-                                        </div>
+                                        <div class="outcome-icon"><span>✗</span></div>
                                         <h4 class="outcome-title">Если есть ошибки</h4>
-                                        <p class="outcome-description">
-                                            План возвращается респонденту с комментариями. Статус меняется на "Требует доработки"
-                                        </p>
+                                        <p class="outcome-description">План возвращается респонденту с комментариями. Статус меняется на "Требует доработки"</p>
                                     </div>
-                                    
-                                    <!-- Если одобрено -->
                                     <div class="outcome-item outcome-approved">
-                                        <div class="outcome-icon">
-                                            <span>✓</span>
-                                        </div>
+                                        <div class="outcome-icon"><span>✓</span></div>
                                         <h4 class="outcome-title">Если одобрено</h4>
-                                        <p class="outcome-description">
-                                            План переводится в статус "Одобрен" и считается официально принятым
-                                        </p>
+                                        <p class="outcome-description">План переводится в статус "Одобрен" и считается официально принятым</p>
                                     </div>
-                                    
-                                    <!-- Если отменено -->
                                     <div class="outcome-item outcome-canceled">
-                                        <div class="outcome-icon">
-                                            <span>↩️</span>
-                                        </div>
+                                        <div class="outcome-icon"><span>↩️</span></div>
                                         <h4 class="outcome-title">Если отменено</h4>
-                                        <p class="outcome-description">
-                                            Статус плана возвращается к изначальному для аудитора
-                                        </p>
+                                        <p class="outcome-description">Статус плана возвращается к изначальному для аудитора</p>
                                     </div>
                                 </div>
                             </div>
                         </div>
-
                         <div class="answer-navigation">
-                            <a href="#create-plan" class="nav-btn prev">
-                                <i>←</i>
-                                Предыдущий вопрос
-                            </a>
-                            <a href="#export" class="nav-btn next">
-                                Следующий вопрос
-                                <i>→</i>
-                            </a>
+                            <a href="#create-plan" class="nav-btn prev"><i>{{ icons.back_icon() }}</i> Предыдущий вопрос</a>
+                            <a href="#export" class="nav-btn next">Следующий вопрос <i> {{ icons.next_icon() }}</i></a>
                         </div>
                     </div>
                 </article>
 
                 <article class="answer-active-modern" id="export">
-                    <header class="answer-header-modern">
+                    <div class="answer-header-modern">
                         <h1 class="answer-title-modern">Экспорт плана</h1>
-                    </header>
-
+                    </div>
                     <div class="answer-body-modern">
                         <div class="answer-text">
-                            <p>PlansEnergo предоставляет несколько форматов экспорта для различных целей: от аналитики в Excel до официальных проектов плана для подачи. Все форматы создаются автоматически на основе ваших данных.</p>
+                            <p>PlansEnergo предоставляет несколько форматов экспорта для различных целей: от аналитики в Excel до официальных проектов плана для подачи.</p>
                         </div>
-
                         <div class="steps-container">
                             <div class="step-item">
-                                <div class="step-number"></div>
+                                <div class="step-number">1</div>
                                 <div class="step-content">
                                     <h4>Переход к экспорту</h4>
-                                    <p>В меню плана выберите <strong>"Экспорт"</strong> или перейдите в раздел "Экспорт данных" в главном меню.</p>
+                                    <p>В меню плана выберите "Экспорт" или перейдите в раздел "Экспорт данных" в главном меню.</p>
                                 </div>
                             </div>
-
                             <div class="step-item">
-                                <div class="step-number"></div>
+                                <div class="step-number">2</div>
                                 <div class="step-content">
                                     <h4>Настройка параметров экспорта</h4>
-                                    <ul>
-                                        <li><strong>Формат файла</strong> — выберите из трех вариантов:
-                                            <ul>
-                                                <li><strong>Проект плана (.xlsx)</strong> — табличные данные для анализа</li>
-                                                <li><strong>Проект плана (.pdf)</strong> — оформленный файл для печати и подачи</li>
-                                                <li><strong>Проект плана (.xml)</strong> — структурированные данные для программ</li>
-                                            </ul>
-                                        </li>
-                                        <li><strong>Фильтрация планов</strong> — используйте фильтры "Статус" и "Год" для выбора</li>
-                                        <li><strong>Выбор планов</strong> — отметьте нужные планы или выберите "Выбрать все"</li>
-                                    </ul>
+                                    <p>Выберите формат файла (.xlsx, .pdf, .xml), используйте фильтры по статусу и году, отметьте нужные планы.</p>
                                 </div>
                             </div>
-
                             <div class="step-item">
-                                <div class="step-number"></div>
+                                <div class="step-number">3</div>
                                 <div class="step-content">
                                     <h4>Формирование и скачивание</h4>
-                                    <p>После выбора параметров нажмите кнопку <strong>"Экспортировать"</strong>. Система автоматически сформирует файл в выбранном формате и предложит его скачать.</p>
+                                    <p>Нажмите кнопку "Экспортировать". Система автоматически сформирует файл и предложит его скачать.</p>
                                 </div>
                             </div>
                         </div>
-
-                        <div class="answer-highlight">
-                            <div class="highlight-icon">📊</div>
-                            <div>
-                                <p><strong>Структура экспорта данных:</strong></p>
-                                
-                                <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 16px;">
-                                    <div style="display: flex; align-items: flex-start; padding: 14px; background: rgba(255,255,255,0.5); border-radius: 8px; border: 1px solid rgba(0,0,0,0.08);">
-                                        <span style="display: inline-block; width: 24px; height: 24px; background: #4361ee; color: white; border-radius: 6px; display: flex; align-items: center; justify-content: center; margin-right: 12px; flex-shrink: 0;">2</span>
-                                        <div>
-                                            <strong style="color: #000; font-size: 15px;">Часть 2 — Мероприятия по экономии энергоресурсов</strong>
-                                            <p style="margin: 6px 0 0 0; font-size: 14px; color: #666;">Включается при наличии заполненных мероприятий по энергосбережению</p>
-                                        </div>
-                                    </div>
-                                    
-                                    <div style="display: flex; align-items: flex-start; padding: 14px; background: rgba(255,255,255,0.5); border-radius: 8px; border: 1px solid rgba(0,0,0,0.08);">
-                                        <span style="display: inline-block; width: 24px; height: 24px; background: #3a0ca3; color: white; border-radius: 6px; display: flex; align-items: center; justify-content: center; margin-right: 12px; flex-shrink: 0;">3</span>
-                                        <div>
-                                            <strong style="color: #000; font-size: 15px;">Часть 3 — Мероприятия по увеличению местных ТЭР</strong>
-                                            <p style="margin: 6px 0 0 0; font-size: 14px; color: #666;">Включается при наличии мероприятий по использованию местных топливно-энергетических ресурсов</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <p style="margin-top: 16px; font-size: 14px; color: #666; padding: 12px; background: rgba(0,0,0,0.02); border-radius: 8px;">
-                                    <strong>Примечание:</strong> Если разделы не заполнены в плане, они не будут включены в экспортируемый файл. Система формирует только актуальные данные.
-                                </p>
-                            </div>
-                        </div>
-
                         <div class="features-grid">
                             <div class="feature-card">
                                 <div class="feature-icon">📈</div>
                                 <h4>Проект плана (.xlsx)</h4>
-                                <p><strong>Для анализа и работы с данными</strong><br>
-                                • Полные таблицы планов и мероприятий<br>
-                                • Возможность дальнейшей обработки<br>
-                                • Готов к печати</p>
+                                <p>Для анализа и работы с данными. Полные таблицы планов и мероприятий.</p>
                             </div>
-                            
                             <div class="feature-card">
                                 <div class="feature-icon">📄</div>
                                 <h4>Проект плана (.pdf)</h4>
-                                <p><strong>Для официальной подачи</strong><br>
-                                • Форматированный проект плана<br>
-                                • Готов к печати<br>
+                                <p>Для официальной подачи. Форматированный проект плана, готов к печати.</p>
                             </div>
-                            
                             <div class="feature-card">
                                 <div class="feature-icon">⚙️</div>
                                 <h4>Проект плана (.xml)</h4>
-                                <p><strong>Для интеграции с программами</strong><br>
-                                • Структурированные данные<br>
-                                • Машинно-читаемый формат<br>
-                                • Легкая интеграция</p>
+                                <p>Для интеграции с программами. Структурированные данные, машинно-читаемый формат.</p>
                             </div>
                         </div>
-
-                        <div class="answer-text">
-                            <h3>Что включается в экспорт?</h3>
-                            <div style="background: #f8fafc; padding: 24px; border-radius: 12px; margin-top: 20px; border: 1px solid rgba(0,0,0,0.08);">
-                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                                    <div>
-                                        <h4 style="margin: 0 0 12px 0; font-size: 15px; color: #000;">Обязательные данные (всегда):</h4>
-                                        <ul style="list-style: none; padding: 0; margin: 0;">
-                                            <li style="padding: 6px 0; font-size: 14px;">✓ Основные параметры плана</li>
-                                            <li style="padding: 6px 0; font-size: 14px;">✓ Показатели энергосбережения</li>
-                                            <li style="padding: 6px 0; font-size: 14px;">✓ Информация об организации</li>
-                                            <li style="padding: 6px 0; font-size: 14px;">✓ Метаданные и статус</li>
-                                        </ul>
-                                    </div>
-                                    <div>
-                                        <h4 style="margin: 0 0 12px 0; font-size: 15px; color: #000;">Условные данные (при наличии):</h4>
-                                        <ul style="list-style: none; padding: 0; margin: 0;">
-                                            <li style="padding: 6px 0; font-size: 14px;">✓ Часть 2 — мероприятия по экономии</li>
-                                            <li style="padding: 6px 0; font-size: 14px;">✓ Часть 3 — мероприятия по увеличению местных ТЭР</li>
-                                            <li style="padding: 6px 0; font-size: 14px;">✓ Графики и диаграммы</li>
-                                            <li style="padding: 6px 0; font-size: 14px;">✓ Приложения и доп. материалы</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div style="margin-top: 20px; padding: 16px; background: rgba(0,0,0,0.03); border-radius: 8px;">
-                                    <p style="margin: 0; font-size: 13px; color: #666;">
-                                        <strong>Примечание:</strong> Время формирования отчета зависит от объема данных и выбранного формата. PDF отчеты формируются дольше из-за сложного форматирования.
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-
                         <div class="answer-navigation">
-                            <a href="#create-plan" class="nav-btn prev">
-                                <i>←</i>
-                                Предыдущий вопрос
-                            </a>
-                            <a href="#plans" class="nav-btn next">
-                                Следующий вопрос
-                                <i>→</i>
-                            </a>
+                            <a href="#audit-data" class="nav-btn prev"><i>{{ icons.back_icon() }}</i> Предыдущий вопрос</a>
+                            <a href="#plans" class="nav-btn next">Следующий вопрос <i> {{ icons.next_icon() }}</i></a>
                         </div>
                     </div>
                 </article>
 
                 <article class="answer-active-modern" id="plans">
-                    <header class="answer-header-modern">
+                    <div class="answer-header-modern">
                         <h1 class="answer-title-modern">Виды и статусы планов энергоэффективности</h1>
-                    </header>
-
+                    </div>
                     <div class="answer-body-modern">
                         <div class="answer-text">
-                            <p>В PlansEnergo каждый план проходит несколько этапов жизненного цикла, отражаемых через систему статусов. Понимание этих статусов помогает отслеживать прогресс и управлять планами эффективно.</p>
+                            <p>В PlansEnergo каждый план проходит несколько этапов жизненного цикла, отражаемых через систему статусов.</p>
                         </div>
-
                         <div class="answer-highlight">
-                            <div style="display: flex; gap: 20px; align-items: flex-start;">
-                                <div style="flex-shrink: 0;">
-                                    <div style="width: 56px; height: 56px; background: linear-gradient(135deg, #000000 0%, #2d3436 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
-                                        <span style="color: white; font-size: 24px;">🔄</span>
-                                    </div>
+                            <div style="display: flex; gap: 20px; align-items: center; flex-wrap: wrap;">
+                                <div style="width: 50px; height: 50px; background: var(--faq-primary); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                                    <span style="color: white; font-size: 24px;">🔄</span>
                                 </div>
-                                
                                 <div style="flex: 1;">
-                                    <h3 style="margin: 0 0 16px 0; color: #000; font-size: 18px; font-weight: 700;">
-                                        Жизненный цикл плана
-                                    </h3>
-                                    <p style="margin: 0; color: #2d3436; line-height: 1.6;">
-                                        Каждый план последовательно проходит все этапы: от создания до финального одобрения. Статусы позволяют отслеживать текущее положение плана в этом процессе.
-                                    </p>
+                                    <h3 style="margin: 0 0 8px;">Жизненный цикл плана</h3>
+                                    <p style="margin: 0;">Каждый план последовательно проходит все этапы: от создания до финального одобрения.</p>
                                 </div>
                             </div>
                         </div>
-
                         <div class="status-grid">
                             <h3>Все статусы планов</h3>
-                            
                             <div class="status-grid-container">
-                                <!-- Статус 1 -->
                                 <div class="status-card status-editing">
                                     <div class="status-header">
-                                        <div class="status-icon">
-                                            <span>📝</span>
-                                        </div>
-                                        <span class="status-badge">
-                                            В редакции
-                                        </span>
+                                        <div class="status-icon"><span>📝</span></div>
+                                        <span class="status-badge">В редакции</span>
                                     </div>
                                     <h4 class="status-title">В процессе редактирования</h4>
-                                    <p class="status-description">
-                                        План создан, но еще не отправлен на проверку. Респондент может вносить изменения и дополнять данные.
-                                    </p>
+                                    <p class="status-description">План создан, но еще не отправлен на проверку.</p>
                                 </div>
-                                
-                                <!-- Статус 2 -->
                                 <div class="status-card status-control">
                                     <div class="status-header">
-                                        <div class="status-icon">
-                                            <span>⏳</span>
-                                        </div>
-                                        <span class="status-badge">
-                                            Контроль пройден
-                                        </span>
+                                        <div class="status-icon"><span>⏳</span></div>
+                                        <span class="status-badge">Контроль пройден</span>
                                     </div>
                                     <h4 class="status-title">Проверка программой</h4>
-                                    <p class="status-description">
-                                        Редактируемый план проходит проверку на правильность заполненных данных.
-                                    </p>
+                                    <p class="status-description">Редактируемый план проходит проверку на правильность заполненных данных.</p>
                                 </div>
-                                
-                                <!-- Статус 3 -->
                                 <div class="status-card status-review">
                                     <div class="status-header">
-                                        <div class="status-icon">
-                                            <span>📤</span>
-                                        </div>
-                                        <span class="status-badge">
-                                            На рассмотрении
-                                        </span>
+                                        <div class="status-icon"><span>📤</span></div>
+                                        <span class="status-badge">На рассмотрении</span>
                                     </div>
                                     <h4 class="status-title">На проверке у аудитора</h4>
-                                    <p class="status-description">
-                                        План отправлен на официальную проверку. Аудитор изучает данные и выносит решение.
-                                    </p>
+                                    <p class="status-description">План отправлен на официальную проверку.</p>
                                 </div>
-                                
-                                <!-- Статус 4 -->
                                 <div class="status-card status-error">
                                     <div class="status-header">
-                                        <div class="status-icon">
-                                            <span>⚠️</span>
-                                        </div>
-                                        <span class="status-badge">
-                                            С ошибками
-                                        </span>
+                                        <div class="status-icon"><span>⚠️</span></div>
+                                        <span class="status-badge">С ошибками</span>
                                     </div>
                                     <h4 class="status-title">Требует доработки</h4>
-                                    <p class="status-description">
-                                        Аудитор обнаружил ошибки. План возвращен респонденту для исправления замечаний.
-                                    </p>
+                                    <p class="status-description">Аудитор обнаружил ошибки. План возвращен для исправления.</p>
                                 </div>
-                                
-                                <!-- Статус 5 -->
                                 <div class="status-card status-approved">
                                     <div class="status-header">
-                                        <div class="status-icon">
-                                            <span>✅</span>
-                                        </div>
-                                        <span class="status-badge">
-                                            Одобренные
-                                        </span>
+                                        <div class="status-icon"><span>✅</span></div>
+                                        <span class="status-badge">Одобренные</span>
                                     </div>
                                     <h4 class="status-title">Проверка пройдена</h4>
-                                    <p class="status-description">
-                                        План успешно прошел аудит и официально одобрен. Может быть использован для отчетности.
-                                    </p>
+                                    <p class="status-description">План успешно прошел аудит и официально одобрен.</p>
                                 </div>
                             </div>
                         </div>
-
-
                         <div class="plan-types">
                             <h3>Типы планов по объему потребления</h3>
-                            
                             <div class="plan-types-grid">
                                 <div class="plan-type-item">
                                     <div class="plan-type-header">
                                         <div class="plan-type-dot small"></div>
                                         <h4 class="plan-type-title">Для малых организаций</h4>
                                     </div>
-                                    <p class="plan-type-description">
-                                        <strong>До 25 тыс. тонн условного топлива</strong><br>
-                                        Упрощенная форма отчетности с базовыми показателями и минимальным набором требований.
-                                    </p>
+                                    <p class="plan-type-description"><strong>До 25 тыс. тонн условного топлива</strong><br>Упрощенная форма отчетности.</p>
                                 </div>
-                                
                                 <div class="plan-type-item">
                                     <div class="plan-type-header">
                                         <div class="plan-type-dot large"></div>
                                         <h4 class="plan-type-title">Для крупных организаций</h4>
                                     </div>
-                                    <p class="plan-type-description">
-                                        <strong>Более 25 тыс. тонн условного топлива</strong><br>
-                                        Расширенная форма с детальными расчетами, полным набором мероприятий и углубленной отчетностью.
-                                    </p>
+                                    <p class="plan-type-description"><strong>Более 25 тыс. тонн условного топлива</strong><br>Расширенная форма с детальными расчетами.</p>
                                 </div>
                             </div>
                         </div>
-
-           
                         <div class="tracking-status">
                             <h3>Как отслеживать статусы планов?</h3>
-                            <p>В системе предусмотрено несколько способов мониторинга:</p>
-                            
                             <div class="tracking-methods">
                                 <div class="tracking-method">
-                                    <div class="tracking-icon">
-                                        <span>📊</span>
-                                    </div>
+                                    <div class="tracking-icon"><span>📊</span></div>
                                     <div class="tracking-content">
                                         <h4>Панель управления</h4>
-                                        <p>
-                                            Обзор всех планов с цветовой индикацией статусов и быстрыми фильтрами
-                                        </p>
+                                        <p>Обзор всех планов с цветовой индикацией статусов</p>
                                     </div>
                                 </div>
-                                
                                 <div class="tracking-method">
-                                    <div class="tracking-icon">
-                                        <span>🔔</span>
-                                    </div>
+                                    <div class="tracking-icon"><span>🔔</span></div>
                                     <div class="tracking-content">
                                         <h4>Уведомления</h4>
-                                        <p>
-                                            Автоматические оповещения при изменении статуса плана
-                                        </p>
+                                        <p>Автоматические оповещения при изменении статуса плана</p>
                                     </div>
                                 </div>
-                                
                                 <div class="tracking-method">
-                                    <div class="tracking-icon">
-                                        <span>📋</span>
-                                    </div>
+                                    <div class="tracking-icon"><span>📋</span></div>
                                     <div class="tracking-content">
                                         <h4>История изменений</h4>
-                                        <p>
-                                            Подробный лог всех переходов между статусами с указанием даты и ответственного
-                                        </p>
+                                        <p>Подробный лог всех переходов между статусами</p>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="answer-navigation">
-                            <a href="" class="nav-btn prev">
-                                <i>←</i>
-                                Предыдущий вопрос
-                            </a>
+                            <a href="#export" class="nav-btn prev"><i>{{ icons.back_icon() }}</i> Предыдущий вопрос</a>
                             <div></div>
                         </div>
                     </div>
                 </article>
 
                 <article class="answer-active-modern" id="ecp-certificate">
-                    <header class="answer-header-modern">
+                    <div class="answer-header-modern">
                         <h1 class="answer-title-modern">Как пройти проверку сертификата ЭЦП</h1>
-                    </header>
-
+                    </div>
                     <div class="answer-body-modern">
                         <div class="answer-text">
-                            <p>Для отправки планов в системе PlansEnergo требуется использование электронной цифровой подписи (ЭЦП). Этот раздел поможет вам правильно настроить и использовать сертификат ЭЦП.</p>
+                            <p>Для отправки планов в системе PlansEnergo требуется использование электронной цифровой подписи (ЭЦП).</p>
                         </div>
-
                         <div class="answer-highlight">
                             <div class="highlight-icon">💡</div>
-                            <p><strong>Важное требование:</strong> Для осуществления функции <strong>"отправить план"</strong> должно быть установлено ПО <strong>"Менеджер сертификатов"</strong> от <i>Авест</i> с настроенным сертификатом электронной цифровой подписи (ЭЦП).</p>
+                            <p><strong>Важное требование:</strong> Для осуществления функции "отправить план" должно быть установлено ПО "Менеджер сертификатов" от Авест с настроенным сертификатом ЭЦП.</p>
                         </div>
-
                         <div class="features-grid">
                             <div class="feature-card">
                                 <div class="feature-icon">✅</div>
                                 <h4>Действительный сертификат</h4>
-                                <p>Срок действия сертификата на текущий момент является удовлетворительным</p>
+                                <p>Срок действия сертификата является удовлетворительным</p>
                             </div>
                             <div class="feature-card">
                                 <div class="feature-icon">❌</div>
                                 <h4>НЕдействительный сертификат</h4>
-                                <p>Срок действия сертификата уже закончился, требуется обновление</p>
+                                <p>Срок действия сертификата истек, требуется обновление</p>
                             </div>
                         </div>
-
                         <div class="steps-container">
                             <div class="step-item">
-                                <div class="step-number"></div>
+                                <div class="step-number">1</div>
                                 <div class="step-content">
                                     <h4>Откройте ПО "Менеджер сертификатов"</h4>
-                                    <p>Запустите программу "Менеджер сертификатов" от Авест. Вы увидите интерфейс с доступными сертификатами.</p>
-                                    <div class="image-gallery">
-                                        <div class="gallery-item" style = "max-width: 400px;">
-                                            <img src="/static/img/faq/28.jpg" alt="ПО Менеджер сертификатов" >
-                                            <div class="gallery-overlay">
-                                                <h5>ПО Менеджер сертификатов</h5>
-                                                <p>Главное окно программы</p>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <p>Запустите программу "Менеджер сертификатов" от Авест.</p>
                                 </div>
                             </div>
-
                             <div class="step-item">
-                                <div class="step-number"></div>
+                                <div class="step-number">2</div>
                                 <div class="step-content">
                                     <h4>Выберите действительный сертификат</h4>
-                                    <p>Выберите ваш <strong>"Действительный"</strong> сертификат из списка и нажмите кнопку "✓ Ок" для продолжения.</p>
-                                    <div class="image-gallery">
-                                        <div class="gallery-item">
-                                            <img src="/static/img/faq/29.jpg" alt="Выбор сертификата">
-                                            <div class="gallery-overlay">
-                                                <h5>Выбор сертификата</h5>
-                                                <p>Выберите действующий сертификат</p>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <p>Выберите "Действительный" сертификат из списка.</p>
                                 </div>
                             </div>
-
                             <div class="step-item">
-                                <div class="step-number"></div>
+                                <div class="step-number">3</div>
                                 <div class="step-content">
                                     <h4>Экспортируйте сертификат в файл</h4>
-                                    <p>В главном окне программы кликните правой кнопкой мыши по вашему сертификату и выберите <strong>"Экспорт сертификата в файл"</strong>.</p>
-                                    <div class="image-gallery">
-                                        <div class="gallery-item">
-                                            <img src="/static/img/faq/30.jpg" alt="Экспорт сертификата">
-                                            <div class="gallery-overlay">
-                                                <h5>Экспорт сертификата</h5>
-                                                <p>Контекстное меню экспорта</p>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <p>Кликните правой кнопкой по сертификату и выберите "Экспорт сертификата в файл".</p>
                                 </div>
                             </div>
-
                             <div class="step-item">
-                                <div class="step-number"></div>
-                                <div class="step-content">
-                                    <h4>Сохраните файл сертификата</h4>
-                                    <p>Выберите удобное место на вашем компьютере для сохранения файла сертификата. Запомните путь к файлу.</p>
-                                </div>
-                            </div>
-
-                            <div class="step-item">
-                                <div class="step-number"></div>
+                                <div class="step-number">4</div>
                                 <div class="step-content">
                                     <h4>Импортируйте сертификат в систему</h4>
-                                    <p>При отправке плана в PlansEnergo используйте полученный файл сертификата. Вы можете:</p>
-                                    <ul style="margin-top: 8px;">
-                                        <li><strong>Перетащить файл</strong> в контейнер с пунктирной обводкой</li>
-                                        <li><strong>Или кликнуть</strong> "нажмите для выбора" и выбрать файл вручную</li>
-                                    </ul>
-                                    <div class="image-gallery" style="margin-top: 16px;">
-                                        <div class="gallery-item" style = "max-width: 400px;">
-                                            <img src="/static/img/faq/31.jpg" alt="Импорт сертификата">
-                                            <div class="gallery-overlay">
-                                                <h5>Импорт сертификата</h5>
-                                                <p>Загрузка сертификата в систему</p>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <p>При отправке плана используйте полученный файл сертификата.</p>
                                 </div>
                             </div>
                         </div>
@@ -1013,255 +642,29 @@
                             <div class="checklist-container">
                                 <h4 class="checklist-header">Чеклист для работы с ЭЦП</h4>
                                 <p class="checklist-subtitle">Выполните все пункты</p>
-                                
                                 <label class="checklist-item">
                                     <input type="checkbox">
                                     <span>Убедитесь, что срок действия сертификата не истек</span>
                                 </label>
                                 <label class="checklist-item">
                                     <input type="checkbox">
-                                    <span>ПО "Менеджер сертификатов" должно быть корректно установлено</span>
+                                    <span>ПО "Менеджер сертификатов" корректно установлено</span>
                                 </label>
                                 <label class="checklist-item">
                                     <input type="checkbox">
                                     <span>Сохраните файл сертификата в надежном месте</span>
                                 </label>
-                                <label class="checklist-item">
-                                    <input type="checkbox">
-                                    <span>При возникновении ошибок проверьте правильность выбора сертификата</span>
-                                </label>
                             </div>
-                        </div>   
-
-
-
+                        </div>
                         <div class="answer-navigation">
-                            <a href="" class="nav-btn prev">
-                                <i>←</i>
-                                Предыдущий вопрос
-                            </a>
+                            <a href="#plans" class="nav-btn prev"><i>{{ icons.back_icon() }}</i> Предыдущий вопрос</a>
                             <div></div>
                         </div>
                     </div>
                 </article>
-
             </main>
         </div>
     </div>
 </div>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const questionLinks = document.querySelectorAll('.question-link-modern');
-    const categoryHeaders = document.querySelectorAll('.category-header-modern');
-    const answerSections = document.querySelectorAll('.answer-active-modern');
-    const defaultView = document.getElementById('default-view');
-    const searchInput = document.querySelector('.faq-search');
-    
-
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -100px 0px'
-    };
-    
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.style.opacity = '1';
-                entry.target.style.transform = 'translateY(0)';
-            }
-        });
-    }, observerOptions);
-    
-    document.querySelectorAll('.feature-card, .step-item, .gallery-item').forEach(el => {
-        el.style.opacity = '0';
-        el.style.transform = 'translateY(30px)';
-        el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-        observer.observe(el);
-    });
-    
-    categoryHeaders.forEach(header => {
-        header.addEventListener('click', function() {
-            const category = this.parentElement;
-            const isActive = category.classList.contains('active');
-            
-            document.querySelectorAll('.category-modern').forEach(cat => {
-                cat.classList.remove('active');
-            });
-            
-            if (!isActive) {
-                category.classList.add('active');
-            }
-        });
-    });
-    
-    questionLinks.forEach(link => {
-        link.addEventListener('click', function(e) {
-            e.preventDefault();
-            
-            const targetId = this.getAttribute('href').substring(1);
-
-            answerSections.forEach(section => {
-                section.classList.remove('show');
-            });
-            
-            defaultView.style.display = 'none';
-            
-            const targetSection = document.getElementById(targetId);
-            if (targetSection) {
-                targetSection.classList.add('show');
-                
-
-                targetSection.style.opacity = '0';
-                targetSection.style.transform = 'translateX(30px)';
-                
-                setTimeout(() => {
-                    targetSection.style.opacity = '1';
-                    targetSection.style.transform = 'translateX(0)';
-                }, 50);
-            }
-            
-            questionLinks.forEach(l => {
-                l.classList.remove('active');
-                l.style.transform = 'translateX(0)';
-            });
-            
-            this.classList.add('active');
-            this.style.transform = 'translateX(10px)';
-
-            const icon = this.querySelector('.question-icon');
-            icon.style.transform = 'scale(1.5) rotate(15deg)';
-            setTimeout(() => {
-                icon.style.transform = 'scale(1) rotate(0deg)';
-            }, 300);
-
-            const category = this.closest('.category-modern');
-            if (category && !category.classList.contains('active')) {
-                category.classList.add('active');
-            }
-            
-            history.pushState(null, null, `#${targetId}`);
-        });
-    });
-
-    searchInput.addEventListener('input', function() {
-        const searchTerm = this.value.toLowerCase();
-        let foundCount = 0;
-        
-        questionLinks.forEach(link => {
-            const text = link.textContent.toLowerCase();
-            const category = link.closest('.category-modern');
-            
-            if (text.includes(searchTerm) || searchTerm.length < 2) {
-                link.style.display = 'flex';
-                if (searchTerm.length >= 2 && text.includes(searchTerm)) {
-                    link.style.background = 'rgba(67, 97, 238, 0.1)';
-                    link.style.animation = 'pulse 1s ease';
-                    foundCount++;
-                    
-                    if (category) {
-                        category.classList.add('active');
-                    }
-                } else {
-                    link.style.background = '';
-                    link.style.animation = '';
-                }
-            } else {
-                link.style.display = 'none';
-            }
-        });
-        
-        if (searchTerm.length >= 2) {
-            const resultsInfo = document.createElement('div');
-            resultsInfo.className = 'search-results-info';
-            resultsInfo.style.padding = '10px 20px';
-            resultsInfo.style.background = 'rgba(67, 97, 238, 0.1)';
-            resultsInfo.style.borderRadius = '8px';
-            resultsInfo.style.marginTop = '10px';
-            resultsInfo.style.fontSize = '14px';
-            resultsInfo.innerHTML = `Найдено вопросов: <strong>${foundCount}</strong>`;
-            
-            const oldInfo = document.querySelector('.search-results-info');
-            if (oldInfo) oldInfo.remove();
-            
-            searchInput.parentNode.appendChild(resultsInfo);
-        } else {
-            const oldInfo = document.querySelector('.search-results-info');
-            if (oldInfo) oldInfo.remove();
-        }
-    });
-    
-    document.querySelectorAll('.nav-btn').forEach(btn => {
-        btn.addEventListener('click', function(e) {
-            e.preventDefault();
-            const targetId = this.getAttribute('href').substring(1);
-            const targetLink = document.querySelector(`.question-link-modern[href="#${targetId}"]`);
-            if (targetLink) {
-                targetLink.click();
-                
-                window.scrollTo({
-                    top: document.querySelector('.faq-content-modern').offsetTop - 100,
-                    behavior: 'smooth'
-                });
-            }
-        });
-    });
-
-    if (window.location.hash) {
-        const hash = window.location.hash.substring(1);
-        const targetLink = document.querySelector(`.question-link-modern[href="#${hash}"]`);
-        if (targetLink) {
-            setTimeout(() => {
-                targetLink.click();
-            }, 300);
-        }
-    }
-    
-    document.querySelectorAll('.feature-card').forEach(card => {
-        card.addEventListener('mouseenter', function() {
-            this.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
-        });
-    });
-    
-    document.querySelectorAll('.answer-text input[type="checkbox"]').forEach(checkbox => {
-        checkbox.addEventListener('change', function() {
-            const label = this.parentElement;
-            if (this.checked) {
-                label.style.opacity = '0.6';
-                label.style.textDecoration = 'line-through';
-                
-                label.style.transform = 'translateX(10px)';
-                setTimeout(() => {
-                    label.style.transform = 'translateX(0)';
-                }, 200);
-            } else {
-                label.style.opacity = '1';
-                label.style.textDecoration = 'none';
-            }
-        });
-    });
-    
-    const typeWriter = (element, text, speed = 50) => {
-        let i = 0;
-        element.innerHTML = '';
-        
-        const timer = setInterval(() => {
-            if (i < text.length) {
-                element.innerHTML += text.charAt(i);
-                i++;
-            } else {
-                clearInterval(timer);
-            }
-        }, speed);
-    };
-    
-    const firstAnswer = document.querySelector('.answer-active-modern.show');
-    if (firstAnswer) {
-        const title = firstAnswer.querySelector('.answer-title-modern');
-        const originalText = title.textContent;
-        typeWriter(title, originalText, 30);
-    }
-});
-</script>
-
+<script src="{{ url_for('static', filename='js/faq.js') }}"></script>
 {% endblock %}

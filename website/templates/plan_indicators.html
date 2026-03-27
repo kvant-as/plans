@@ -9,15 +9,15 @@
         <div class="menu-conteiner">
             <div class="element {% if is_disabled %}non{% endif %}" id="AddIndicatorModalButton">
                 {{ icons.icon_ios_add() }}
-                <a class="element-text">Добавить</a>  
+                <span class="element-text">Добавить</span>  
             </div>
             <div class="element {% if is_disabled %}non{% endif %}" id="tableDeleteButton">
                 {{ icons.icon_ios_delete() }} 
-                <a class="element-text">Удалить</a>  
+                <span class="element-text">Удалить</span> 
             </div>
             <div class="element {% if is_disabled %}non{% endif %}" id="tableEditButton">
                 {{ icons.icon_ios_edit() }}  
-                <a class="element-text">Редакт.</a>  
+                <span class="element-text">Редакт</span>
             </div>
             <form id="controlPlanForm" data-plan-type="{{ plan.plan_type }}" action="/api/change-plan-status/{{ plan.token }}" method="POST">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">

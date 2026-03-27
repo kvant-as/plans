@@ -15,9 +15,7 @@
                 {% if current_user.is_authenticated %}
                     <a href="/plans" class="main-btn main-btn-primary">
                         <span>Перейти к планам</span>
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                            <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
+                        {{ icons.icon_plans() }}
                     </a>
                 {% else %}
                     <a href="/login" class="main-btn main-btn-primary">

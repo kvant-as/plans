@@ -3557,28 +3557,20 @@ class CertificateUploadHandler {
     }
 
     bindEvents() {
-        // Drag and drop events
         this.dropArea.addEventListener('dragover', this.handleDragOver.bind(this));
         this.dropArea.addEventListener('dragleave', this.handleDragLeave.bind(this));
         this.dropArea.addEventListener('drop', this.handleDrop.bind(this));
-
-        // File input change
         this.fileInput.addEventListener('change', this.handleFileSelect.bind(this));
-        
-        // Убираем клик по всей области, оставляем только на label
         this.removeDropAreaClick();
     }
 
     removeDropAreaClick() {
-        // Удаляем обработчик клика со всей области drop-area
         this.dropArea.style.cursor = 'default';
-        
-        // Находим label внутри drop-area и добавляем ему курсор pointer
         const fileInputLabel = this.dropArea.querySelector('.file-input-label');
         if (fileInputLabel) {
             fileInputLabel.style.cursor = 'pointer';
             fileInputLabel.addEventListener('click', (e) => {
-                e.stopPropagation(); // Предотвращаем всплытие события
+                e.stopPropagation();
             });
         }
     }
@@ -4332,19 +4324,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     //cancel sent plan
-    if (document.getElementById('sentPlanButton')) {
-        initConfirmModal({
-            triggerId: 'cancelsentPlanButton',
-            formId: 'cancelsentPlanForm',
-            modalId: 'confirmModal2',
-            yesId: 'confirmYes',
-            noId: 'confirmNo',
-            textId: 'modal-text',
-            modalText: 'Вы действительно хотите отменить отправку?',
-            textSecondId: 'modal-text-second',
-            modalTextSecond: 'План сменит статус обратно на "В редакции".'
-        });
-    }
+    // if (document.getElementById('sentPlanButton')) {
+    //     initConfirmModal({
+    //         triggerId: 'cancelsentPlanButton',
+    //         formId: 'cancelsentPlanForm',
+    //         modalId: 'confirmModal2',
+    //         yesId: 'confirmYes',
+    //         noId: 'confirmNo',
+    //         textId: 'modal-text',
+    //         modalText: 'Вы действительно хотите отменить отправку?',
+    //         textSecondId: 'modal-text-second',
+    //         modalTextSecond: 'План сменит статус обратно на "В редакции".'
+    //     });
+    // }
 
     //sent audit message plan
     if (document.getElementById('sent_mesPlanButton')) {
