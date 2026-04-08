@@ -6,7 +6,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
     <link rel="shortcut icon" href="{{ url_for('static', filename='img/logo-white.svg')}}">
-    <title>{% block title %}{{ _('PlansEnergo - Система представления планов энергосберегающих мероприятий') }}{% endblock %}</title>
+    <title>{% block title %}{{ _('enPlans - Система представления планов энергосберегающих мероприятий') }}{% endblock %}</title>
   </head>
   <body>
     {% import 'macros/svg_icons.html' as icons %}
@@ -24,7 +24,7 @@
                         class="header-aside-logo">
                     </div>
                     <div class="header-aside-text">
-                        <a class="title">PlansEnergo</a>
+                        <a class="title">enPlans</a>
                         <a class="description">{{ _('Система представления планов энергосберегающих мероприятий') }}</a>
                     </div>
                 </div>

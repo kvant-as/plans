@@ -4230,7 +4230,7 @@ document.addEventListener('DOMContentLoaded', () => {
             yesId: 'confirmYes',
             noId: 'confirmNo',
             textId: 'modal-text',
-            modalText: 'Вы действительно хотите выйти из системы PlansEnergo?',
+            modalText: 'Вы действительно хотите выйти из системы enPlans?',
             textSecondId: 'modal-text-second',
             modalTextSecond: 'Это действие нельзя будет отменить. Убедитесь, что вы сохранили свою работу.'
         });
