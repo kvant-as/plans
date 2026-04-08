@@ -1,79 +1,105 @@
-{% extends "base.html" %}
-{% block title %}{{ _('Направления') }} - PlansEnergo{% endblock %}
-{% block content %}
+{% extends "base.html" %} {% block title %}{{ _('Направления') }} - enPlans{%
+endblock %} {% block content %}
 
 <div class="pers-page">
-    <div class="personal-plan-conteiner">
-        {% set is_disabled = plan.is_sent or plan.is_approved or current_user.is_auditor %}
+  <div class="personal-plan-conteiner">
+    {% set is_disabled = plan.is_sent or plan.is_approved or
+    current_user.is_auditor %}
 
-        <div class="menu-conteiner">
-            <div class="element {% if is_disabled %}non{% endif %}" id="AddDirectionModalButton">
-                {{ icons.icon_ios_add() }}
-                <span class="element-text">Добавить</span>  
-            </div>
-            <div class="element {% if is_disabled %}non{% endif %}" id="tableDeleteButton">
-                {{ icons.icon_ios_delete() }}
-                <span class="element-text">Удалить</span> 
-            </div>
-            <div class="element {% if is_disabled %}non{% endif %}" id="tableEditButton">
-                {{ icons.icon_ios_edit() }} 
-                <span class="element-text">Редакт</span>
-            </div>
-        </div>
-                    
-        <div class = "table-container">
-            <table class="main-table" id="directionTable">
-                <thead class="main-table-titels">
-                    <tr>
-                        <th class="resizable" style="min-width: 50px; border-left: none;">
-                            <a>№</a>
-                            <div class="resizer"></div>
-                        </th>
-                        <th class="resizable" style="">
-                            <a>{{ _('Код основных направлений энергосбережения в соостветствии с формой 4-энергосбережения (Госстандарт)') }}</a>
-                            <div class="resizer"></div>
-                        </th>
-                        <th class="resizable" style="">
-                            <a>{{ _('Наименование направлений в соответствии с формой 4-энергосбережение (Госстандарт)') }}</a>
-                            <div class="resizer"></div>
-                        </th>
-                        <th class="resizable" style="">
-                            <a>{{ _('Условно-годовой экономический эффект, т у.т.') }}</a>
-                            <div class="resizer"></div>
-                        </th>
-                        <th class="resizable" style="">
-                            <a>{{ _('Ожидаемая экономия ТЭР от внедрения мероприятий в') }} {{plan.year}} г., {{ _('т у. т.') }}</a>
-                            <div class="resizer"></div>
-                        </th>
-                        <th class="resizable" style = "border-right: none;">
-                            <a>{{ _('Местные ТЭР') }}</a>
-                            <div class="resizer"></div>
-                        </th>
-                    </tr>
-                </thead>
-                <tbody class = "rows">
-                    {% if econ_measures %}
-                        {% for row in econ_measures %}
-                        <tr class = "menu-row" data-id="{{ row.id }}">
-                            <td>{{ loop.index }}</td>
-                            <td>{{ row.direction.code }}</td>
-                            <td>{{ row.direction.name }}</td>
-                            <td>{{ row.year_econ }}</td>
-                            <td>{{ row.estim_econ }}</td>
-                            <td style="text-align: center;">
-                                <input type="checkbox" {% if row.direction.is_local %} checked {% endif %} onclick="return false;">
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    {% else %}
-                        <tr class="no-results-row">
-                            <td colspan="6">{{ _('Нет активных направлений') }}</td>
-                        </tr>
-                    {% endif %}
-                </tbody>
-            </table>
-        </div>
-           
+    <div class="menu-conteiner">
+      <div
+        class="element {% if is_disabled %}non{% endif %}"
+        id="AddDirectionModalButton"
+      >
+        {{ icons.icon_ios_add() }}
+        <span class="element-text">Добавить</span>
+      </div>
+      <div
+        class="element {% if is_disabled %}non{% endif %}"
+        id="tableDeleteButton"
+      >
+        {{ icons.icon_ios_delete() }}
+        <span class="element-text">Удалить</span>
+      </div>
+      <div
+        class="element {% if is_disabled %}non{% endif %}"
+        id="tableEditButton"
+      >
+        {{ icons.icon_ios_edit() }}
+        <span class="element-text">Редакт</span>
+      </div>
     </div>
+
+    <div class="table-container">
+      <table class="main-table" id="directionTable">
+        <thead class="main-table-titels">
+          <tr>
+            <th class="resizable" style="min-width: 50px; border-left: none">
+              <a>№</a>
+              <div class="resizer"></div>
+            </th>
+            <th class="resizable" style="">
+              <a
+                >{{ _('Код основных направлений энергосбережения в соостветствии
+                с формой 4-энергосбережения (Госстандарт)') }}</a
+              >
+              <div class="resizer"></div>
+            </th>
+            <th class="resizable" style="">
+              <a
+                >{{ _('Наименование направлений в соответствии с формой
+                4-энергосбережение (Госстандарт)') }}</a
+              >
+              <div class="resizer"></div>
+            </th>
+            <th class="resizable" style="">
+              <a>{{ _('Условно-годовой экономический эффект, т у.т.') }}</a>
+              <div class="resizer"></div>
+            </th>
+            <th class="resizable" style="">
+              <a
+                >{{ _('Ожидаемая экономия ТЭР от внедрения мероприятий в') }}
+                {{plan.year}} г., {{ _('т у. т.') }}</a
+              >
+              <div class="resizer"></div>
+            </th>
+            <th class="resizable" style="border-right: none">
+              <a>{{ _('Местные ТЭР') }}</a>
+              <div class="resizer"></div>
+            </th>
+          </tr>
+        </thead>
+        <tbody class="rows">
+          {% if econ_measures %} {% for row in econ_measures %}
+          <tr class="menu-row" data-id="{{ row.id }}">
+            <td>{{ loop.index }}</td>
+            <td>{{ row.direction.code }}</td>
+            <td>{{ row.direction.name }}</td>
+            <td>{{ row.year_econ }}</td>
+            <td>{{ row.estim_econ }}</td>
+            <td style="text-align: center">
+              <input
+                type="checkbox"
+                {%
+                if
+                row.direction.is_local
+                %}
+                checked
+                {%
+                endif
+                %}
+                onclick="return false;"
+              />
+            </td>
+          </tr>
+          {% endfor %} {% else %}
+          <tr class="no-results-row">
+            <td colspan="6">{{ _('Нет активных направлений') }}</td>
+          </tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+  </div>
 </div>
 {% endblock %}

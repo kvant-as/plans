@@ -1,53 +1,76 @@
-{% extends "base.html" %}
-{% block title %}{{ _('Подтверждение email') }} - PlansEnergo{% endblock %}
-{% block content %}
+{% extends "base.html" %} {% block title %}{{ _('Подтверждение email') }} -
+enPlans{% endblock %} {% block content %}
 
 <div class="auth-page">
-    <div class="auth-text-upper">
-        <div class="auth-title" onclick="window.location.href='/login'">
-            <img src="/static/img/logo.svg" alt="">
-            <a>PlansEnergo</a>
-        </div>
-        <p class="auth-subtitle">{{ _('Система представления планов энергосберегающих <br> мероприятий') }}</p>
+  <div class="auth-text-upper">
+    <div class="auth-title" onclick="window.location.href = '/login'">
+      <img src="/static/img/logo.svg" alt="" />
+      <a>enPlans</a>
     </div>
-    <div class="auth-container">
-        <div class="auth-container-title">{{ _('Подтверждение email') }}</div>
+    <p class="auth-subtitle">
+      {{ _('Система представления планов энергосберегающих <br />
+      мероприятий') }}
+    </p>
+  </div>
+  <div class="auth-container">
+    <div class="auth-container-title">{{ _('Подтверждение email') }}</div>
 
-
-        <div class="auth-choose" style = "justify-content: center;" role="tablist">
-            <a class="auth-tab active wave-effect" role="tab" style = "width: 100%;" aria-selected="true">{{ _('Ввод кода') }}</a>
-        </div>
-
-        <form class="auth-form" method="POST" action="{{ url_for('auth.code') }}">
-            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-            <div class="activation_code_container">
-                {% for i in range(5) %}
-                <input
-                    type="text"
-                    name="activation_code_{{ i }}"
-                    maxlength="1"
-                    class="activation_code_input"
-                    required
-                />
-                {% endfor %}
-            </div>
-
-            <button type="submit" class="main-btn main-btn-primary">
-                {{ icons.icon_confirm() }}
-                <span class="btn-text">{{ _('Проверить') }}</span>
-            </button>
-        </form>
-        
-        <div class="auth-footer">
-            <form method="POST" action="{{ url_for('auth.resend_code') }}" id="resend-form" style="display: inline;">
-                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                <button type="submit" id="resend-code-btn" class="forgot-password disabled" 
-                        style="border: none; background: none; color: inherit; padding: 0; text-decoration: underline; cursor: not-allowed; opacity: 0.5;">
-                    {{ _('Отправить ещё раз') }} (<span id="countdown">60</span>)
-                </button>
-            </form>
-        </div>
+    <div class="auth-choose" style="justify-content: center" role="tablist">
+      <a
+        class="auth-tab active wave-effect"
+        role="tab"
+        style="width: 100%"
+        aria-selected="true"
+        >{{ _('Ввод кода') }}</a
+      >
     </div>
+
+    <form class="auth-form" method="POST" action="{{ url_for('auth.code') }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+      <div class="activation_code_container">
+        {% for i in range(5) %}
+        <input
+          type="text"
+          name="activation_code_{{ i }}"
+          maxlength="1"
+          class="activation_code_input"
+          required
+        />
+        {% endfor %}
+      </div>
+
+      <button type="submit" class="main-btn main-btn-primary">
+        {{ icons.icon_confirm() }}
+        <span class="btn-text">{{ _('Проверить') }}</span>
+      </button>
+    </form>
+
+    <div class="auth-footer">
+      <form
+        method="POST"
+        action="{{ url_for('auth.resend_code') }}"
+        id="resend-form"
+        style="display: inline"
+      >
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+        <button
+          type="submit"
+          id="resend-code-btn"
+          class="forgot-password disabled"
+          style="
+            border: none;
+            background: none;
+            color: inherit;
+            padding: 0;
+            text-decoration: underline;
+            cursor: not-allowed;
+            opacity: 0.5;
+          "
+        >
+          {{ _('Отправить ещё раз') }} (<span id="countdown">60</span>)
+        </button>
+      </form>
+    </div>
+  </div>
 </div>
-{{ affects.bg_effect() }}
-{% endblock %}
+{{ affects.bg_effect() }} {% endblock %}

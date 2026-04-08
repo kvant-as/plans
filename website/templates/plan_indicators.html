@@ -1,193 +1,249 @@
-{% extends "base.html" %}
-{% block title %}{{ _('Показатели') }} - PlansEnergo{% endblock %}
-{% block content %}
+{% extends "base.html" %} {% block title %}{{ _('Показатели') }} - enPlans{%
+endblock %} {% block content %}
 
 <div class="pers-page-with-table">
-    <div class="personal-plan-conteiner" >
-        {% set is_disabled = plan.is_sent or plan.is_approved or current_user.is_auditor %}
+  <div class="personal-plan-conteiner">
+    {% set is_disabled = plan.is_sent or plan.is_approved or
+    current_user.is_auditor %}
 
-        <div class="menu-conteiner">
-            <div class="element {% if is_disabled %}non{% endif %}" id="AddIndicatorModalButton">
-                {{ icons.icon_ios_add() }}
-                <span class="element-text">Добавить</span>  
-            </div>
-            <div class="element {% if is_disabled %}non{% endif %}" id="tableDeleteButton">
-                {{ icons.icon_ios_delete() }} 
-                <span class="element-text">Удалить</span> 
-            </div>
-            <div class="element {% if is_disabled %}non{% endif %}" id="tableEditButton">
-                {{ icons.icon_ios_edit() }}  
-                <span class="element-text">Редакт</span>
-            </div>
-            <form id="controlPlanForm" data-plan-type="{{ plan.plan_type }}" action="/api/change-plan-status/{{ plan.token }}" method="POST">
-                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                <input type="hidden" name="status" value="control">
-                <button id="controlPlanButton" 
-                        data-plan-type="{{ plan.plan_type }}"
-                        type="submit" 
-                        class="element {% if is_disabled %}non{% endif %}">
-                    {{ icons.icon_ios_check() }} 
-                    <span class="element-text">Контроль</span>  
-                </button>
-            </form>
-        </div>  
-        <div class = "table-container">
-            <table class="main-table"  id="indicatorsTable">
-                <thead class="main-table-titels">
-                    <tr>
-                        <th rowspan="2" class="resizable" style="white-space: nowrap; border-left: none;">
-                            <a>Строка</a>
-                            <div class="resizer"></div>
-                        </th>
-                        <th rowspan="2" class="resizable" style="white-space: nowrap;">
-                            <a>№ п/п</a>
-                            <div class="resizer"></div>
-                        </th>
-                        <th rowspan="2" class="resizable" style="min-width: 600px;">
-                            <a>Основные показатели по использованию ТЭР</a>
-                            <div class="resizer"></div>
-                        </th>
-                        <th rowspan="2" class="resizable">
-                            <a>Ед. изм.</a>
-                            <div class="resizer"></div>
-                        </th>
-                        <th colspan="2" class="resizable" style="min-width: 200px;">
-                            <a>{{ plan.year - 1}} г. план</a>
-                            <div class="resizer"></div>
-                        </th>
-                        <th colspan="2" class="resizable" style="min-width: 200px;">
-                            <a>{{ plan.year }} г. план</a>
-                            <div class="resizer"></div>
-                        </th>
-                        <th colspan="2" class="resizable" style="min-width: 200px;">
-                            <a>{{ plan.year + 1}} г. прогноз</a>
-                            <div class="resizer"></div>
-                        </th>
-                        <th rowspan="2" class="resizable" style = "border-right: none;">
-                            <a>Изменение ТЭР прогнозного года к предыдущему</a>
-                            <div class="resizer"></div>
-                        </th>
-                    </tr>
-                    <tr>
-                        <th rowspan="1" class="resizable">
-                            в ед. изм.
-                            <div class="resizer"></div>
-                        </th>
-                        <th rowspan="1" class="resizable">
-                            в т у. т.
-                            <div class="resizer"></div>
-                        </th>
-                        <th rowspan="1" class="resizable">
-                            в ед. изм.
-                            <div class="resizer"></div>
-                        </th>
-                        <th rowspan="1" class="resizable">
-                            в т у. т.
-                            <div class="resizer"></div>
-                        </th>
-                        <th rowspan="1" class="resizable">
-                            в ед. изм.
-                            <div class="resizer"></div>
-                        </th>
-                        <th rowspan="1" class="resizable">
-                            в т у. т.
-                            <div class="resizer"></div>
-                        </th>
-                    </tr>
-                    <tr>
-                        <th class="resizable" style = "border-left: none;">0<div class="resizer"></div></th>
-                        <th class="resizable">1<div class="resizer"></div></th>
-                        <th class="resizable">2<div class="resizer"></div></th>
-                        <th class="resizable">3<div class="resizer"></div></th>
-                        <th class="resizable">4<div class="resizer"></div></th>
-                        <th class="resizable">5<div class="resizer"></div></th>
-                        <th class="resizable">6<div class="resizer"></div></th>
-                        <th class="resizable">7<div class="resizer"></div></th>
-                        <th class="resizable">8<div class="resizer"></div></th>
-                        <th class="resizable">9<div class="resizer"></div></th>
-                        <th class="resizable" style = "border-right: none;">10<div class="resizer"></div></th>
-                    </tr>
-                </thead>
-                <tbody class = "rows">
-                    {% set ns = namespace(last_group=none) %}
-                    {% for row in indicators %}
-                        {% set is_new_group = false %}
-                        {% if row.indicator.Group != ns.last_group %}
-                            {% set is_new_group = true %}
-                            {% set ns.last_group = row.indicator.Group %}
-                        {% endif %}
-                        
-                        <tr class="menu-row {% if is_new_group %}group-header{% endif %}" data-id="{{ row.id }}">
-                            <td>{{ loop.index }}</td>
-                            <td style="text-align: center;">
-                                {% if is_new_group %}
-                                    {{ row.indicator.Group|int if row.indicator.Group % 1 == 0 else row.indicator.Group }}
-                                {% endif %}
-                            </td>
-                            <td style="text-align: start;">
-                                {{ row.indicator.name }}
-                            </td>
-                            <td style="text-align: start;">
-                                {{ row.indicator.unit.name }}
-                            </td>
-                            <td>{{ (row.QYearPrev / row.indicator.CoeffToTut) | round(3) }}</td>
-                            <td>{{ row.QYearPrev }}</td>
-                            <td>{{ (row.QYearCurr / row.indicator.CoeffToTut) | round(3) }}</td>
-                            <td>{{ row.QYearCurr }}</td>
-                            <td>{{ (row.QYearNext / row.indicator.CoeffToTut) | round(3) }}</td>
-                            <td>{{ row.QYearNext }}</td>
-                            <td class="difference-cell" 
-                                style="{% if (row.QYearNext - row.QYearCurr) < 0 %}background-color: rgb(255, 96, 96, 0.705);{% elif (row.QYearNext - row.QYearCurr) > 0 %}background-color: rgb(96, 255, 122, 0.705);{% endif %}">
-                                {{ row.QYearNext - row.QYearCurr }}
-                            </td>
-                            <td style="display: none;">{{ row.indicator.code }}</td>
-                            <td style="display: none;" data-group="{{ row.indicator.Group }}">{{ row.indicator.Group }}</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>    
-            </table>
-        </div>
+    <div class="menu-conteiner">
+      <div
+        class="element {% if is_disabled %}non{% endif %}"
+        id="AddIndicatorModalButton"
+      >
+        {{ icons.icon_ios_add() }}
+        <span class="element-text">Добавить</span>
+      </div>
+      <div
+        class="element {% if is_disabled %}non{% endif %}"
+        id="tableDeleteButton"
+      >
+        {{ icons.icon_ios_delete() }}
+        <span class="element-text">Удалить</span>
+      </div>
+      <div
+        class="element {% if is_disabled %}non{% endif %}"
+        id="tableEditButton"
+      >
+        {{ icons.icon_ios_edit() }}
+        <span class="element-text">Редакт</span>
+      </div>
+      <form
+        id="controlPlanForm"
+        data-plan-type="{{ plan.plan_type }}"
+        action="/api/change-plan-status/{{ plan.token }}"
+        method="POST"
+      >
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+        <input type="hidden" name="status" value="control" />
+        <button
+          id="controlPlanButton"
+          data-plan-type="{{ plan.plan_type }}"
+          type="submit"
+          class="element {% if is_disabled %}non{% endif %}"
+        >
+          {{ icons.icon_ios_check() }}
+          <span class="element-text">Контроль</span>
+        </button>
+      </form>
     </div>
+    <div class="table-container">
+      <table class="main-table" id="indicatorsTable">
+        <thead class="main-table-titels">
+          <tr>
+            <th
+              rowspan="2"
+              class="resizable"
+              style="white-space: nowrap; border-left: none"
+            >
+              <a>Строка</a>
+              <div class="resizer"></div>
+            </th>
+            <th rowspan="2" class="resizable" style="white-space: nowrap">
+              <a>№ п/п</a>
+              <div class="resizer"></div>
+            </th>
+            <th rowspan="2" class="resizable" style="min-width: 600px">
+              <a>Основные показатели по использованию ТЭР</a>
+              <div class="resizer"></div>
+            </th>
+            <th rowspan="2" class="resizable">
+              <a>Ед. изм.</a>
+              <div class="resizer"></div>
+            </th>
+            <th colspan="2" class="resizable" style="min-width: 200px">
+              <a>{{ plan.year - 1}} г. план</a>
+              <div class="resizer"></div>
+            </th>
+            <th colspan="2" class="resizable" style="min-width: 200px">
+              <a>{{ plan.year }} г. план</a>
+              <div class="resizer"></div>
+            </th>
+            <th colspan="2" class="resizable" style="min-width: 200px">
+              <a>{{ plan.year + 1}} г. прогноз</a>
+              <div class="resizer"></div>
+            </th>
+            <th rowspan="2" class="resizable" style="border-right: none">
+              <a>Изменение ТЭР прогнозного года к предыдущему</a>
+              <div class="resizer"></div>
+            </th>
+          </tr>
+          <tr>
+            <th rowspan="1" class="resizable">
+              в ед. изм.
+              <div class="resizer"></div>
+            </th>
+            <th rowspan="1" class="resizable">
+              в т у. т.
+              <div class="resizer"></div>
+            </th>
+            <th rowspan="1" class="resizable">
+              в ед. изм.
+              <div class="resizer"></div>
+            </th>
+            <th rowspan="1" class="resizable">
+              в т у. т.
+              <div class="resizer"></div>
+            </th>
+            <th rowspan="1" class="resizable">
+              в ед. изм.
+              <div class="resizer"></div>
+            </th>
+            <th rowspan="1" class="resizable">
+              в т у. т.
+              <div class="resizer"></div>
+            </th>
+          </tr>
+          <tr>
+            <th class="resizable" style="border-left: none">
+              0
+              <div class="resizer"></div>
+            </th>
+            <th class="resizable">
+              1
+              <div class="resizer"></div>
+            </th>
+            <th class="resizable">
+              2
+              <div class="resizer"></div>
+            </th>
+            <th class="resizable">
+              3
+              <div class="resizer"></div>
+            </th>
+            <th class="resizable">
+              4
+              <div class="resizer"></div>
+            </th>
+            <th class="resizable">
+              5
+              <div class="resizer"></div>
+            </th>
+            <th class="resizable">
+              6
+              <div class="resizer"></div>
+            </th>
+            <th class="resizable">
+              7
+              <div class="resizer"></div>
+            </th>
+            <th class="resizable">
+              8
+              <div class="resizer"></div>
+            </th>
+            <th class="resizable">
+              9
+              <div class="resizer"></div>
+            </th>
+            <th class="resizable" style="border-right: none">
+              10
+              <div class="resizer"></div>
+            </th>
+          </tr>
+        </thead>
+        <tbody class="rows">
+          {% set ns = namespace(last_group=none) %} {% for row in indicators %}
+          {% set is_new_group = false %} {% if row.indicator.Group !=
+          ns.last_group %} {% set is_new_group = true %} {% set ns.last_group =
+          row.indicator.Group %} {% endif %}
+
+          <tr
+            class="menu-row {% if is_new_group %}group-header{% endif %}"
+            data-id="{{ row.id }}"
+          >
+            <td>{{ loop.index }}</td>
+            <td style="text-align: center">
+              {% if is_new_group %} {{ row.indicator.Group|int if
+              row.indicator.Group % 1 == 0 else row.indicator.Group }} {% endif
+              %}
+            </td>
+            <td style="text-align: start">{{ row.indicator.name }}</td>
+            <td style="text-align: start">{{ row.indicator.unit.name }}</td>
+            <td>{{ (row.QYearPrev / row.indicator.CoeffToTut) | round(3) }}</td>
+            <td>{{ row.QYearPrev }}</td>
+            <td>{{ (row.QYearCurr / row.indicator.CoeffToTut) | round(3) }}</td>
+            <td>{{ row.QYearCurr }}</td>
+            <td>{{ (row.QYearNext / row.indicator.CoeffToTut) | round(3) }}</td>
+            <td>{{ row.QYearNext }}</td>
+            <td
+              class="difference-cell"
+              style="{% if (row.QYearNext - row.QYearCurr) < 0 %}background-color: rgb(255, 96, 96, 0.705);{% elif (row.QYearNext - row.QYearCurr) > 0 %}background-color: rgb(96, 255, 122, 0.705);{% endif %}"
+            >
+              {{ row.QYearNext - row.QYearCurr }}
+            </td>
+            <td style="display: none">{{ row.indicator.code }}</td>
+            <td style="display: none" data-group="{{ row.indicator.Group }}">
+              {{ row.indicator.Group }}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
 </div>
 <script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const inputIds = ["QYearPrev-edit", "QYearCurr-edit", "QYearNext-edit"];
+    inputIds.forEach((inputId) => {
+      const inputElement = document.getElementById(inputId);
+      const predictionElement = inputElement.nextElementSibling;
+      function updatePredictionValue() {
+        const inputValue = parseFloat(inputElement.value) || 0;
+        const multiplier =
+          parseFloat(predictionElement.dataset.multiplier) || 1;
+        const result = inputValue * multiplier;
 
+        predictionElement.textContent = result.toFixed(3);
+      }
+      inputElement.addEventListener("input", updatePredictionValue);
+      updatePredictionValue();
+    });
 
-document.addEventListener('DOMContentLoaded', function() {
-    const inputIds = ['QYearPrev-edit', 'QYearCurr-edit', 'QYearNext-edit'];
-    inputIds.forEach(inputId => {
-        const inputElement = document.getElementById(inputId);
-        const predictionElement = inputElement.nextElementSibling;
-        function updatePredictionValue() {
-            const inputValue = parseFloat(inputElement.value) || 0;
-            const multiplier = parseFloat(predictionElement.dataset.multiplier) || 1;
-            const result = inputValue * multiplier;
-            
-            predictionElement.textContent = result.toFixed(3);
+    const multiplierValueElements =
+      document.querySelectorAll(".multiplier-value");
+    multiplierValueElements.forEach((element) => {
+      element.addEventListener("click", function () {
+        const fieldId = this.dataset.field;
+        const predictionElement = document.querySelector(
+          `#${fieldId}`,
+        ).nextElementSibling;
+
+        const newMultiplier = prompt(
+          "Введите новое значение множителя:",
+          predictionElement.dataset.multiplier,
+        );
+        if (newMultiplier !== null && !isNaN(parseFloat(newMultiplier))) {
+          predictionElement.dataset.multiplier = newMultiplier;
+          this.textContent = newMultiplier;
+
+          const inputElement = document.getElementById(fieldId);
+          const inputValue = parseFloat(inputElement.value) || 0;
+          const result = inputValue * parseFloat(newMultiplier);
+          predictionElement.textContent = result.toFixed(3);
         }
-        inputElement.addEventListener('input', updatePredictionValue);
-        updatePredictionValue();
+      });
     });
-
-    const multiplierValueElements = document.querySelectorAll('.multiplier-value');
-    multiplierValueElements.forEach(element => {
-        element.addEventListener('click', function() {
-
-            const fieldId = this.dataset.field;
-            const predictionElement = document.querySelector(`#${fieldId}`).nextElementSibling;
-            
-            const newMultiplier = prompt('Введите новое значение множителя:', predictionElement.dataset.multiplier);
-            if (newMultiplier !== null && !isNaN(parseFloat(newMultiplier))) {
-                predictionElement.dataset.multiplier = newMultiplier;
-                this.textContent = newMultiplier;
-            
-                const inputElement = document.getElementById(fieldId);
-                const inputValue = parseFloat(inputElement.value) || 0;
-                const result = inputValue * parseFloat(newMultiplier);
-                predictionElement.textContent = result.toFixed(3);
-            }
-        });
-    });
-
-});
+  });
 </script>
 {% endblock %}

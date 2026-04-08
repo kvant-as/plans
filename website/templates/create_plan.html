@@ -1,142 +1,191 @@
-{% extends "base.html" %}
-{% block title %}{{ _('Создание плана') }} - PlansEnergo{% endblock %}
-{% block content %}
+{% extends "base.html" %} {% block title %}{{ _('Создание плана') }} - enPlans{%
+endblock %} {% block content %}
 
 <div class="pers-page">
-    <div class="personal-acc-conteiner">
-        <a class="name">{{ _('Создание нового плана') }}</a>
-        {#
-        <div class="answer-highlight">
-            <div class="highlight-icon">💡</div>
-            <p>Выберите <strong>доступный</strong> год и заполните необходимые парамметры</p>
-        </div>#}
-        <form class="main-form" action="/create-plan" method="POST" id="plan-form">
-            <div class="row-app-group">
-                <div class="app-group">
-                    <label>{{ _('Год') }}</label>
-                    <div class="input-with-icon">
-                        {{ icons.icon_calendar() }}
-                        <input type="number" id="year" name="year" min="2024" max="2030" value="2026" 
-                            placeholder="2026" class="app-input"  required
-                            onchange="checkExistingPlan(this.value)">
-                    </div>
-                    <small id="year-error" class="error-message-small">
-                        {{ _('У вас уже есть план на этот год!') }}
-                    </small>
-                </div>
-                <div class="app-group">
-                    <label>{{ _('') }}</label>
-                    <div class="input-with-icon"> 
-                    </div>
-                </div>
-            </div>
-            <br>
-            <div class="row-app-group">
-                <div class="app-group">
-                    <label>{{ _('Показатель энергосбережения') }} (%)</label>
-                    <div class="input-with-icon">
-                        {{ icons.icon_eco() }}
-                        <input type="text" name="energy_saving" maxlength="15" value="0.000" required
-                            placeholder="0.000" class="app-numeric-input-negative"
-                            pattern="-?[0-9]+([\.,][0-9]+)?" title="{{ _('Введите числовое значение (например: 12.345)') }}">
-                    </div>
-                </div>
-                <div class="app-group">
-                    <label>{{ _('Доля местных ТЭР в КПТ') }} (%)</label>
-                    <div class="input-with-icon">
-                        {{ icons.icon_half() }}
-                        <input type="text" name="share_fuel" maxlength="15" value="0.000" required 
-                            placeholder="0.000" class="app-numeric-input"
-                            pattern="[0-9]+([\.,][0-9]+)?" title="{{ _('Введите числовое значение (например: 12.345)') }}">
-                    </div>
-                </div>
-            </div> 
-            <div class="row-app-group">
-                <div class="app-group">
-                    <label>{{ _('Задания по экономии ТЭР (т. у. т.)') }}</label>
-                    <div class="input-with-icon">
-                        {{ icons.icon_eco() }}
-                        <input type="text" name="saving_fuel" maxlength="15" value="0.000" required
-                            placeholder="0.000" class="app-numeric-input"
-                            pattern="[0-9]+([\.,][0-9]+)?" title="{{ _('Введите числовое значение (например: 12.345)') }}">
-                    </div>
-                </div>
-                <div class="app-group">
-                    <label>{{ _('Доля ВИЭ в КПТ') }} (%)</label>
-                    <div class="input-with-icon">
-                        {{ icons.icon_half() }}
-                        <input type="text" name="share_energy" maxlength="15" value="0.000" 
-                            placeholder="0.000" class="app-numeric-input" required
-                            pattern="[0-9]+([\.,][0-9]+)?"title="{{ _('Введите числовое значение (например: 12.345)') }}">
-                    </div>
-                </div>
-            </div>
-            <div class="button-area">
-                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                <button type="submit" id="submit-btn" class="main-btn main-btn-primary">
-                    {{ icons.icon_add() }}
-                    <span class="btn-text">{{ _('Создать план') }}</span>
-                </button>
-            </div>
-        </form>
+  <div class="personal-acc-conteiner">
+    <a class="name">{{ _('Создание нового плана') }}</a>
+    {#
+    <div class="answer-highlight">
+      <div class="highlight-icon">💡</div>
+      <p>
+        Выберите <strong>доступный</strong> год и заполните необходимые
+        парамметры
+      </p>
     </div>
+    #}
+    <form class="main-form" action="/create-plan" method="POST" id="plan-form">
+      <div class="row-app-group">
+        <div class="app-group">
+          <label>{{ _('Год') }}</label>
+          <div class="input-with-icon">
+            {{ icons.icon_calendar() }}
+            <input
+              type="number"
+              id="year"
+              name="year"
+              min="2024"
+              max="2030"
+              value="2026"
+              placeholder="2026"
+              class="app-input"
+              required
+              onchange="checkExistingPlan(this.value)"
+            />
+          </div>
+          <small id="year-error" class="error-message-small">
+            {{ _('У вас уже есть план на этот год!') }}
+          </small>
+        </div>
+        <div class="app-group">
+          <label>{{ _('') }}</label>
+          <div class="input-with-icon"></div>
+        </div>
+      </div>
+      <br />
+      <div class="row-app-group">
+        <div class="app-group">
+          <label>{{ _('Показатель энергосбережения') }} (%)</label>
+          <div class="input-with-icon">
+            {{ icons.icon_eco() }}
+            <input
+              type="text"
+              name="energy_saving"
+              maxlength="15"
+              value="0.000"
+              required
+              placeholder="0.000"
+              class="app-numeric-input-negative"
+              pattern="-?[0-9]+([\.,][0-9]+)?"
+              title="{{ _('Введите числовое значение (например: 12.345)') }}"
+            />
+          </div>
+        </div>
+        <div class="app-group">
+          <label>{{ _('Доля местных ТЭР в КПТ') }} (%)</label>
+          <div class="input-with-icon">
+            {{ icons.icon_half() }}
+            <input
+              type="text"
+              name="share_fuel"
+              maxlength="15"
+              value="0.000"
+              required
+              placeholder="0.000"
+              class="app-numeric-input"
+              pattern="[0-9]+([\.,][0-9]+)?"
+              title="{{ _('Введите числовое значение (например: 12.345)') }}"
+            />
+          </div>
+        </div>
+      </div>
+      <div class="row-app-group">
+        <div class="app-group">
+          <label>{{ _('Задания по экономии ТЭР (т. у. т.)') }}</label>
+          <div class="input-with-icon">
+            {{ icons.icon_eco() }}
+            <input
+              type="text"
+              name="saving_fuel"
+              maxlength="15"
+              value="0.000"
+              required
+              placeholder="0.000"
+              class="app-numeric-input"
+              pattern="[0-9]+([\.,][0-9]+)?"
+              title="{{ _('Введите числовое значение (например: 12.345)') }}"
+            />
+          </div>
+        </div>
+        <div class="app-group">
+          <label>{{ _('Доля ВИЭ в КПТ') }} (%)</label>
+          <div class="input-with-icon">
+            {{ icons.icon_half() }}
+            <input
+              type="text"
+              name="share_energy"
+              maxlength="15"
+              value="0.000"
+              placeholder="0.000"
+              class="app-numeric-input"
+              required
+              pattern="[0-9]+([\.,][0-9]+)?"
+              title="{{ _('Введите числовое значение (например: 12.345)') }}"
+            />
+          </div>
+        </div>
+      </div>
+      <div class="button-area">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+        <button type="submit" id="submit-btn" class="main-btn main-btn-primary">
+          {{ icons.icon_add() }}
+          <span class="btn-text">{{ _('Создать план') }}</span>
+        </button>
+      </div>
+    </form>
+  </div>
 </div>
 
 <script>
-function checkExistingPlan(year) {
+  function checkExistingPlan(year) {
     if (!year) return;
-    
-    fetch('/check-plan-year?year=' + year)
-        .then(response => response.json())
-        .then(data => {
-            const errorElement = document.getElementById('year-error');
-            const submitBtn = document.getElementById('submit-btn');
-            
-            if (data.exists) {
-                errorElement.style.display = 'block';
-                submitBtn.disabled = true;
-                submitBtn.style.opacity = '0.5';
-                submitBtn.style.cursor = 'not-allowed';
-            } else {
-                errorElement.style.display = 'none';
-                submitBtn.disabled = false;
-                submitBtn.style.opacity = '1';
-                submitBtn.style.cursor = 'pointer';
-            }
-        })
-        .catch(error => {
-            console.error('Ошибка при проверке плана:', error);
-        });
-}
 
-document.getElementById('plan-form').addEventListener('submit', function(event) {
-    const yearInput = document.getElementById('year');
-    const errorElement = document.getElementById('year-error');
-    
-    if (errorElement.style.display === 'block') {
-        event.preventDefault();
-        alert('{{ _("У вас уже есть план на этот год! Пожалуйста, выберите другой год.") }}');
-    }
-});
+    fetch("/check-plan-year?year=" + year)
+      .then((response) => response.json())
+      .then((data) => {
+        const errorElement = document.getElementById("year-error");
+        const submitBtn = document.getElementById("submit-btn");
 
-document.querySelectorAll('.app-numeric-input').forEach(input => {
-    input.addEventListener('input', function(e) {
-        this.value = this.value.replace(',', '.');
-        
-        if (this.value && isNaN(parseFloat(this.value))) {
-            this.setCustomValidity('{{ _("Пожалуйста, введите числовое значение") }}');
+        if (data.exists) {
+          errorElement.style.display = "block";
+          submitBtn.disabled = true;
+          submitBtn.style.opacity = "0.5";
+          submitBtn.style.cursor = "not-allowed";
         } else {
-            this.setCustomValidity('');
+          errorElement.style.display = "none";
+          submitBtn.disabled = false;
+          submitBtn.style.opacity = "1";
+          submitBtn.style.cursor = "pointer";
         }
-    });
-});
+      })
+      .catch((error) => {
+        console.error("Ошибка при проверке плана:", error);
+      });
+  }
 
-document.addEventListener('DOMContentLoaded', function() {
-    const yearInput = document.getElementById('year');
+  document
+    .getElementById("plan-form")
+    .addEventListener("submit", function (event) {
+      const yearInput = document.getElementById("year");
+      const errorElement = document.getElementById("year-error");
+
+      if (errorElement.style.display === "block") {
+        event.preventDefault();
+        alert(
+          '{{ _("У вас уже есть план на этот год! Пожалуйста, выберите другой год.") }}',
+        );
+      }
+    });
+
+  document.querySelectorAll(".app-numeric-input").forEach((input) => {
+    input.addEventListener("input", function (e) {
+      this.value = this.value.replace(",", ".");
+
+      if (this.value && isNaN(parseFloat(this.value))) {
+        this.setCustomValidity(
+          '{{ _("Пожалуйста, введите числовое значение") }}',
+        );
+      } else {
+        this.setCustomValidity("");
+      }
+    });
+  });
+
+  document.addEventListener("DOMContentLoaded", function () {
+    const yearInput = document.getElementById("year");
     if (yearInput.value) {
-        checkExistingPlan(yearInput.value);
+      checkExistingPlan(yearInput.value);
     }
-});
+  });
 </script>
 
 {% endblock %}

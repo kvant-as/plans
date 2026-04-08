@@ -1,57 +1,76 @@
-{% extends "base.html" %}
-{% block title %}{{ _('Вход') }} - PlansEnergo{% endblock %}
-{% block content %}
+{% extends "base.html" %} {% block title %}{{ _('Вход') }} - enPlans{% endblock
+%} {% block content %}
 
 <div class="auth-page">
-    <div class="auth-text-upper">
-        <div class="auth-title" onclick="window.location.href='/login'">
-            <img src="/static/img/logo.svg" alt="">
-            <a>PlansEnergo</a>
-        </div>
-        <p class="auth-subtitle">{{ _('Система представления планов энергосберегающих <br> мероприятий') }}</p>
+  <div class="auth-text-upper">
+    <div class="auth-title" onclick="window.location.href = '/login'">
+      <img src="/static/img/logo.svg" alt="" />
+      <a>enPlans</a>
     </div>
-    <div class="auth-container">
-        <div class="auth-container-title">{{ _('Вход в систему') }}</div>
+    <p class="auth-subtitle">
+      {{ _('Система представления планов энергосберегающих <br />
+      мероприятий') }}
+    </p>
+  </div>
+  <div class="auth-container">
+    <div class="auth-container-title">{{ _('Вход в систему') }}</div>
 
-        <div class="auth-choose" role="tablist">
-            <a class="auth-tab active" href="/login" role="tab" aria-selected="true">
-                {{ icons.icon_login2() }}
-                <span>{{ _('Вход') }}</span>
-            </a>
-            <a class="auth-tab" href="/sign" role="tab" aria-selected="false">
-                
-                {{ icons.icon_login() }}
-                {{ _('Регистрация') }}
-            </a>
-        </div>
-
-        <form class="auth-form" action = "/login" method="POST">
-            <div class="form-group">
-                <label for="email">{{ _('Email') }}</label>
-                <input type="email" name="email" value="" placeholder="Введите email" class="auth-input" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="password">{{ _('Пароль') }}</label>
-                <div class="password-input-wrapper">
-                    <input type="password" id="password" name="password" maxlength="10" placeholder="{{ _('Введите пароль') }}" class="auth-input" required>
-                    <button type="button" class="toggle-password" aria-label="Показать пароль">
-                        {{ icons.eye_open() }}
-                        {{ icons.eye_closed() }}
-                    </button>
-                </div>
-            </div>
-            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-            <button type="submit" class="main-btn main-btn-primary">
-                {{ icons.icon_login2() }}
-                <span class="btn-text">{{ _('Войти') }}</span>
-            </button>
-        </form>
-        
-        <div class="auth-footer">
-            <a href = "/forgot-password" class = "forgot-password">{{ _('Забыли пароль') }}?</a>
-        </div>
+    <div class="auth-choose" role="tablist">
+      <a class="auth-tab active" href="/login" role="tab" aria-selected="true">
+        {{ icons.icon_login2() }}
+        <span>{{ _('Вход') }}</span>
+      </a>
+      <a class="auth-tab" href="/sign" role="tab" aria-selected="false">
+        {{ icons.icon_login() }} {{ _('Регистрация') }}
+      </a>
     </div>
+
+    <form class="auth-form" action="/login" method="POST">
+      <div class="form-group">
+        <label for="email">{{ _('Email') }}</label>
+        <input
+          type="email"
+          name="email"
+          value=""
+          placeholder="Введите email"
+          class="auth-input"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="password">{{ _('Пароль') }}</label>
+        <div class="password-input-wrapper">
+          <input
+            type="password"
+            id="password"
+            name="password"
+            maxlength="10"
+            placeholder="{{ _('Введите пароль') }}"
+            class="auth-input"
+            required
+          />
+          <button
+            type="button"
+            class="toggle-password"
+            aria-label="Показать пароль"
+          >
+            {{ icons.eye_open() }} {{ icons.eye_closed() }}
+          </button>
+        </div>
+      </div>
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+      <button type="submit" class="main-btn main-btn-primary">
+        {{ icons.icon_login2() }}
+        <span class="btn-text">{{ _('Войти') }}</span>
+      </button>
+    </form>
+
+    <div class="auth-footer">
+      <a href="/forgot-password" class="forgot-password"
+        >{{ _('Забыли пароль') }}?</a
+      >
+    </div>
+  </div>
 </div>
-{{ affects.bg_effect() }}
-{% endblock %}
+{{ affects.bg_effect() }} {% endblock %}

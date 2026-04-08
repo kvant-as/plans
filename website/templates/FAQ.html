@@ -1,670 +1,873 @@
-{% extends "base.html" %}
-{% block title %}{{ _('Ответы на часто задаваемые вопросы') }} - PlansEnergo{% endblock %}
+{% extends "base.html" %} {% block title %}{{ _('Ответы на часто задаваемые
+вопросы') }} - enPlans{% endblock %} {% block content %}
 
-{% block content %}
-
-<link rel="stylesheet" href="{{ url_for('static', filename='css/faq.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/faq.css') }}" />
 
 <div class="faq-modern">
-    <div class="faq-content-wrapper">
-        <div class="faq-layout">
-            <aside class="faq-sidebar-modern">
-                <div class="search-container">
-                    <input type="text" class="faq-search" placeholder="Поиск по вопросам...">
-                </div>
-
-                <nav class="categories-modern">
-                    <div class="category-modern">
-                        <div class="category-header-modern">
-                            <h3>Основы работы</h3>
-                        </div>
-                        <div class="questions-list-modern">
-                            <a href="#what-is" class="question-link-modern">
-                                <span class="question-icon">📘</span>
-                                Что такое PlansEnergo?
-                            </a>
-                            <a href="#getting-started" class="question-link-modern">
-                                <span class="question-icon">🚀</span>
-                                Как начать работу?
-                            </a>
-                        </div>
-                    </div>
-
-                    <div class="category-modern">
-                        <div class="category-header-modern">
-                            <h3>Работа с планами</h3>
-                        </div>
-                        <div class="questions-list-modern">
-                            <a href="#create-plan" class="question-link-modern">
-                                <span class="question-icon">✨</span>
-                                Создание плана
-                            </a>
-                            <a href="#audit-data" class="question-link-modern">
-                                <span class="question-icon">📊</span>
-                                Аудит планов
-                            </a>
-                            <a href="#export" class="question-link-modern">
-                                <span class="question-icon">📤</span>
-                                Экспорт плана
-                            </a>
-                        </div>
-                    </div>
-                    
-                    <div class="category-modern">
-                        <div class="category-header-modern">
-                            <h3>Безопасность и подписи</h3>
-                        </div>
-                        <div class="questions-list-modern">
-                            <a href="#ecp-certificate" class="question-link-modern">
-                                <span class="question-icon">🔐</span>
-                                Сертификат ЭЦП
-                            </a>
-                        </div>
-                    </div>
-
-                    <div class="category-modern">
-                        <div class="category-header-modern">
-                            <h3>Планы и аналитика</h3>
-                        </div>
-                        <div class="questions-list-modern">
-                            <a href="#plans" class="question-link-modern">
-                                <span class="question-icon">📈</span>
-                                Виды планов
-                            </a>
-                        </div>
-                    </div>
-                </nav>
-            </aside>
-
-            <main class="faq-content-modern">
-                <div class="answer-placeholder" id="default-view">
-                    <h2>Выберите вопрос</h2>
-                    <p>Выберите вопрос из списка, чтобы увидеть подробный ответ.</p>
-                    <div style="margin-top: 30px; font-size: 14px; opacity: 0.6;">
-                        <em>Используйте поиск для быстрого доступа к нужной информации</em>
-                    </div>
-                </div>
-
-                <article class="answer-active-modern" id="what-is">
-                    <div class="answer-header-modern">
-                        <h1 class="answer-title-modern">Что такое PlansEnergo?</h1>
-                    </div>
-                    <div class="answer-body-modern">
-                        <div class="answer-text">
-                            <p><strong>PlansEnergo</strong> — это автоматизированный комплекс для создания, анализа и представления для согласования планов энергоэффективности организаций.</p>
-                        </div>
-                        <div class="answer-highlight">
-                            <div class="highlight-icon">💡</div>
-                            <p><strong>Ключевая особенность:</strong> PlansEnergo автоматизирует 95% рутинных расчетов, позволяя сосредоточиться на стратегических решениях.</p>
-                        </div>
-                        <div class="features-grid">
-                            <div class="feature-card">
-                                <div class="feature-icon">📊</div>
-                                <h4>Анализ данных</h4>
-                                <p>Автоматический анализ энергопотребления и выявление потенциала экономии</p>
-                            </div>
-                            <div class="feature-card">
-                                <div class="feature-icon">⚡</div>
-                                <h4>Расчет эффективности</h4>
-                                <p>Точный расчет экономических показателей и сроков окупаемости</p>
-                            </div>
-                            <div class="feature-card">
-                                <div class="feature-icon">📋</div>
-                                <h4>Формирование планов</h4>
-                                <p>Формирование планов энергосберегающих мероприятий</p>
-                            </div>
-                        </div>
-                        <div class="answer-text">
-                            <h3>Для кого предназначена система?</h3>
-                      
-                            <div class="features-grid">
-                                <div class="feature-card">
-                                    <div class="feature-icon">🏢</div>
-                                    <h4>Респондентов</h4>
-                                    <p>заполнение и управление энергосберегающими планами</p>
-                                </div>
-                                <div class="feature-card">
-                                    <div class="feature-icon">📑</div>
-                                    <h4>Аудиторов</h4>
-                                    <p>анализ планов и принятие решения</p>
-                                </div>
-                            </div>
-
-                        </div>
-
-
-                        <div class="answer-navigation">
-                            <div></div>
-                            <a href="#getting-started" class="nav-btn next">Следующий вопрос <i> {{ icons.next_icon() }}</i></a>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="answer-active-modern" id="getting-started">
-                    <div class="answer-header-modern">
-                        <h1 class="answer-title-modern">Как начать работу с системой?</h1>
-                    </div>
-                    <div class="answer-body-modern">
-                        <div class="answer-text">
-                            <p>Начать работу с PlansEnergo просто даже для новичков. Следуйте этому пошаговому руководству, и вы сможете создать свой первый план за 15 минут.</p>
-                        </div>
-                        <div class="steps-container">
-                            <div class="step-item">
-                                <div class="step-number">1</div>
-                                <div class="step-content">
-                                    <h4>Регистрация и настройка аккаунта</h4>
-                                    <p>Используйте электронную почту для регистрации. После подтверждения укажите личную информацию.</p>
-                                </div>
-                            </div>
-                            <div class="step-item">
-                                <div class="step-number">2</div>
-                                <div class="step-content">
-                                    <h4>Выбор организации</h4>
-                                    <p>Выберите организацию за которую вы будете отчитываться, это может быть: предприятие, министерство или регион.</p>
-                                </div>
-                            </div>
-                            <div class="step-item">
-                                <div class="step-number">3</div>
-                                <div class="step-content">
-                                    <h4>Создание первого плана</h4>
-                                    <p>Перейдите на страницу "Создать план", укажите год и заполните необходимые данные.</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="answer-highlight">
-                            <div class="highlight-icon">🎯</div>
-                            <p><strong>Совет для начала:</strong> Начните с просмотра демо, чтобы ознакомиться с интерфейсом и основными функциями без риска.</p>
-                        </div>
-                        <div class="video-container">
-                            <video controls poster="/static/img/faq/video-poster.png">
-                                <source src="/static/video/sign-demo.mp4" type="video/mp4">
-                                Ваш браузер не поддерживает видео.
-                            </video>
-                            <div class="video-caption">
-                                <h5>Быстрый старт с PlansEnergo</h5>
-                                <p>Посмотрите как начать работу с PlansEnergo</p>
-                            </div>
-                        </div>
-                        <div class="answer-text">
-                            <h3>Чеклист для начала работы:</h3>
-                            <div class="checklist-container">
-                                <h4 class="checklist-header">Проверьте готовность к работе</h4>
-                                <p class="checklist-subtitle">Выполните все пункты для полноценной работы в системе</p>
-                                <label class="checklist-item">
-                                    <input type="checkbox">
-                                    <span>Электронная почта подтверждена</span>
-                                </label>
-                                <label class="checklist-item">
-                                    <input type="checkbox">
-                                    <span>Заполнены личные данные</span>
-                                </label>
-                                <label class="checklist-item">
-                                    <input type="checkbox">
-                                    <span>Выбрана организация</span>
-                                </label>
-                                <label class="checklist-item">
-                                    <input type="checkbox">
-                                    <span>Ознакомление с руководством пользователя или же с FAQ</span>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="answer-navigation">
-                            <a href="#what-is" class="nav-btn prev"><i>{{ icons.back_icon() }}</i> Предыдущий вопрос</a>
-                            <div></div>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="answer-active-modern" id="create-plan">
-                    <div class="answer-header-modern">
-                        <h1 class="answer-title-modern">Создание плана энергоэффективности</h1>
-                    </div>
-                    <div class="answer-body-modern">
-                        <div class="answer-text">
-                            <p>Создание плана энергоэффективности в PlansEnergo — это простой пошаговый процесс, который занимает всего несколько минут. Система проведет вас через все необходимые этапы.</p>
-                        </div>
-                        <div class="steps-container">
-                            <div class="step-item">
-                                <div class="step-number">1</div>
-                                <div class="step-content">
-                                    <h4>Переход к созданию плана</h4>
-                                    <p>В главном меню выберите <strong>"Создать"</strong> или нажмите соответствующую кнопку на панели управления на странице <strong>Планы</strong>.</p>
-                                </div>
-                            </div>
-                            <div class="step-item">
-                                <div class="step-number">2</div>
-                                <div class="step-content">
-                                    <h4>Выбор типа плана</h4>
-                                    <p>Определите категорию организации по объему энергопотребления:</p>
-                                    
-                                    <div class="plan-type-cards">
-                                        <div class="plan-type-card">
-                                            <div class="plan-type-icon">📋</div>
-                                            <h5 class="plan-type-title">До 25 тыс. т. у. т.</h5>
-                                            <p class="plan-type-description">Упрощенный формат отчетности для организаций с меньшим потреблением</p>
-                                        </div>
-                                        
-                                        <div class="plan-type-card">
-                                            <div class="plan-type-icon">📊</div>
-                                            <h5 class="plan-type-title">Более 25 тыс. т. у. т.</h5>
-                                            <p class="plan-type-description">Расширенный формат с детальными расчетами для крупных потребителей</p>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="plan-type-info">
-                                        <p><strong>Выбор влияет на:</strong> структуру экспорта, требования к данным, детализацию отчетности и процесс аудита.</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="step-item">
-                                <div class="step-number">3</div>
-                                <div class="step-content">
-                                    <h4>Выбор базовых параметров</h4>
-                                    <p>Укажите обязательные параметры: год, показатель энергосбережения, задания по экономии ТЭР, долю местных ТЭР и ВИЭ.</p>
-                                </div>
-                            </div>
-                            <div class="step-item">
-                                <div class="step-number">4</div>
-                                <div class="step-content">
-                                    <h4>Заполнение данных</h4>
-                                    <p>Внесите информацию о энергопотреблении, заполнив таблицы направлений, мероприятий и показателей.</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="video-container">
-                            <video controls poster="/static/img/faq/video-poster.png">
-                                <source src="/static/video/work-demo.mp4" type="video/mp4">
-                                Ваш браузер не поддерживает видео.
-                            </video>
-                            <div class="video-caption">
-                                <h5>Создание плана</h5>
-                                <p>Посмотрите как создать и заполнить план в PlansEnergo</p>
-                            </div>
-                        </div>
-                        <div class="answer-highlight">
-                            <div class="highlight-icon">💾</div>
-                            <p><strong>Сохранение данных:</strong> Все изменения фиксируются в системе автоматически после нажатия кнопок "Применить изменения" или "Добавить".</p>
-                        </div>
-                        <div class="plan-after-creation">
-                            <h3>Что происходит после создания плана?</h3>
-                            <div class="plan-features">
-                                <div class="plan-feature-item">
-                                    <span class="plan-feature-check">✓</span>
-                                    <span class="plan-feature-text">Контроль плана с последующей отправкой на проверку</span>
-                                </div>
-                                <div class="plan-feature-item">
-                                    <span class="plan-feature-check">✓</span>
-                                    <span class="plan-feature-text">Просмотр статистики</span>
-                                </div>
-                                <div class="plan-feature-item">
-                                    <span class="plan-feature-check">✓</span>
-                                    <span class="plan-feature-text">Экспорт плана</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="answer-navigation">
-                            <a href="#audit-data" class="nav-btn next">Следующий вопрос <i> {{ icons.next_icon() }}</i></a>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="answer-active-modern" id="audit-data">
-                    <div class="answer-header-modern">
-                        <h1 class="answer-title-modern">Аудит планов энергоэффективности</h1>
-                    </div>
-                    <div class="answer-body-modern">
-                        <div class="answer-text">
-                            <p>Аудит планов в PlansEnergo выполняется специально назначенными аудиторами — региональными управлениями по надзору за энергоэффективностью.</p>
-                        </div>
-                        <div class="answer-highlight">
-                            <h3>Роль аудиторов в системе</h3>
-                            <div class="white-cont-ul">
-                                <p>Кто осуществляет проверку?</p>
-                                <span>Официальные представители региональных управлений по надзору за энергоэффективностью Республики Беларусь</span>
-                            </div>
-                            <div class="white-cont-ul">
-                                <p>Их полномочия и доступы</p>
-                                <span>Полный доступ ко всем таблицам, расчетам и исходным данным плана для проведения официальной проверки</span>
-                            </div>
-                        </div>
-                        <div class="steps-container">
-                            <div class="step-item">
-                                <div class="step-number">1</div>
-                                <div class="step-content">
-                                    <h4>Доступ к плану на проверку</h4>
-                                    <p>Аудитор получает план в статусе "Не просмотренные" в своем интерфейсе.</p>
-                                </div>
-                            </div>
-                            <div class="step-item">
-                                <div class="step-number">2</div>
-                                <div class="step-content">
-                                    <h4>Проверка данных</h4>
-                                    <p>Аудитор последовательно проверяет основные показатели, таблицы данных, мероприятия по экономии и местным ТЭР.</p>
-                                </div>
-                            </div>
-                            <div class="step-item">
-                                <div class="step-number">3</div>
-                                <div class="step-content">
-                                    <h4>Вынесение вердикта</h4>
-                                    <p>По результатам проверки аудитор выбирает один из вариантов:</p>
-                                    <div class="options-container">
-                                        <div class="option-card error">
-                                            <span class="option-indicator"></span>
-                                            <div class="option-content">
-                                                <div class="option-title">Есть ошибки</div>
-                                                <div class="option-description">Указываются конкретные ошибки, план возвращается на доработку</div>
-                                            </div>
-                                        </div>
-                                        <div class="option-card success">
-                                            <span class="option-indicator"></span>
-                                            <div class="option-content">
-                                                <div class="option-title">Одобрить</div>
-                                                <div class="option-description">План соответствует требованиям, переводится в статус "Одобрен"</div>
-                                            </div>
-                                        </div>
-                                        <div class="option-card cancel">
-                                            <span class="option-indicator"></span>
-                                            <div class="option-content">
-                                                <div class="option-title">Отменить</div>
-                                                <div class="option-description">План переходит в изначальное состояние для аудитора "Не просмотренный"</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="video-container">
-                            <video controls poster="/static/img/faq/video-poster.png">
-                                <source src="/static/video/audit-report.mp4" type="video/mp4">
-                                Ваш браузер не поддерживает видео.
-                            </video>
-                            <div class="video-caption">
-                                <h5>Проверка планов</h5>
-                                <p>Посмотрите как проверять планы</p>
-                            </div>
-                        </div>
-                        <div class="after-inspection">
-                            <h3>Что происходит после проверки?</h3>
-                            <div class="inspection-outcomes">
-                                <div class="outcomes-grid">
-                                    <div class="outcome-item outcome-error">
-                                        <div class="outcome-icon"><span>✗</span></div>
-                                        <h4 class="outcome-title">Если есть ошибки</h4>
-                                        <p class="outcome-description">План возвращается респонденту с комментариями. Статус меняется на "Требует доработки"</p>
-                                    </div>
-                                    <div class="outcome-item outcome-approved">
-                                        <div class="outcome-icon"><span>✓</span></div>
-                                        <h4 class="outcome-title">Если одобрено</h4>
-                                        <p class="outcome-description">План переводится в статус "Одобрен" и считается официально принятым</p>
-                                    </div>
-                                    <div class="outcome-item outcome-canceled">
-                                        <div class="outcome-icon"><span>↩️</span></div>
-                                        <h4 class="outcome-title">Если отменено</h4>
-                                        <p class="outcome-description">Статус плана возвращается к изначальному для аудитора</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="answer-navigation">
-                            <a href="#create-plan" class="nav-btn prev"><i>{{ icons.back_icon() }}</i> Предыдущий вопрос</a>
-                            <a href="#export" class="nav-btn next">Следующий вопрос <i> {{ icons.next_icon() }}</i></a>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="answer-active-modern" id="export">
-                    <div class="answer-header-modern">
-                        <h1 class="answer-title-modern">Экспорт плана</h1>
-                    </div>
-                    <div class="answer-body-modern">
-                        <div class="answer-text">
-                            <p>PlansEnergo предоставляет несколько форматов экспорта для различных целей: от аналитики в Excel до официальных проектов плана для подачи.</p>
-                        </div>
-                        <div class="steps-container">
-                            <div class="step-item">
-                                <div class="step-number">1</div>
-                                <div class="step-content">
-                                    <h4>Переход к экспорту</h4>
-                                    <p>В меню плана выберите "Экспорт" или перейдите в раздел "Экспорт данных" в главном меню.</p>
-                                </div>
-                            </div>
-                            <div class="step-item">
-                                <div class="step-number">2</div>
-                                <div class="step-content">
-                                    <h4>Настройка параметров экспорта</h4>
-                                    <p>Выберите формат файла (.xlsx, .pdf, .xml), используйте фильтры по статусу и году, отметьте нужные планы.</p>
-                                </div>
-                            </div>
-                            <div class="step-item">
-                                <div class="step-number">3</div>
-                                <div class="step-content">
-                                    <h4>Формирование и скачивание</h4>
-                                    <p>Нажмите кнопку "Экспортировать". Система автоматически сформирует файл и предложит его скачать.</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="features-grid">
-                            <div class="feature-card">
-                                <div class="feature-icon">📈</div>
-                                <h4>Проект плана (.xlsx)</h4>
-                                <p>Для анализа и работы с данными. Полные таблицы планов и мероприятий.</p>
-                            </div>
-                            <div class="feature-card">
-                                <div class="feature-icon">📄</div>
-                                <h4>Проект плана (.pdf)</h4>
-                                <p>Для официальной подачи. Форматированный проект плана, готов к печати.</p>
-                            </div>
-                            <div class="feature-card">
-                                <div class="feature-icon">⚙️</div>
-                                <h4>Проект плана (.xml)</h4>
-                                <p>Для интеграции с программами. Структурированные данные, машинно-читаемый формат.</p>
-                            </div>
-                        </div>
-                        <div class="answer-navigation">
-                            <a href="#audit-data" class="nav-btn prev"><i>{{ icons.back_icon() }}</i> Предыдущий вопрос</a>
-                            <a href="#plans" class="nav-btn next">Следующий вопрос <i> {{ icons.next_icon() }}</i></a>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="answer-active-modern" id="plans">
-                    <div class="answer-header-modern">
-                        <h1 class="answer-title-modern">Виды и статусы планов энергоэффективности</h1>
-                    </div>
-                    <div class="answer-body-modern">
-                        <div class="answer-text">
-                            <p>В PlansEnergo каждый план проходит несколько этапов жизненного цикла, отражаемых через систему статусов.</p>
-                        </div>
-                        <div class="answer-highlight">
-                            <div style="display: flex; gap: 20px; align-items: center; flex-wrap: wrap;">
-                                <div style="width: 50px; height: 50px; background: var(--faq-primary); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
-                                    <span style="color: white; font-size: 24px;">🔄</span>
-                                </div>
-                                <div style="flex: 1;">
-                                    <h3 style="margin: 0 0 8px;">Жизненный цикл плана</h3>
-                                    <p style="margin: 0;">Каждый план последовательно проходит все этапы: от создания до финального одобрения.</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="status-grid">
-                            <h3>Все статусы планов</h3>
-                            <div class="status-grid-container">
-                                <div class="status-card status-editing">
-                                    <div class="status-header">
-                                        <div class="status-icon"><span>📝</span></div>
-                                        <span class="status-badge">В редакции</span>
-                                    </div>
-                                    <h4 class="status-title">В процессе редактирования</h4>
-                                    <p class="status-description">План создан, но еще не отправлен на проверку.</p>
-                                </div>
-                                <div class="status-card status-control">
-                                    <div class="status-header">
-                                        <div class="status-icon"><span>⏳</span></div>
-                                        <span class="status-badge">Контроль пройден</span>
-                                    </div>
-                                    <h4 class="status-title">Проверка программой</h4>
-                                    <p class="status-description">Редактируемый план проходит проверку на правильность заполненных данных.</p>
-                                </div>
-                                <div class="status-card status-review">
-                                    <div class="status-header">
-                                        <div class="status-icon"><span>📤</span></div>
-                                        <span class="status-badge">На рассмотрении</span>
-                                    </div>
-                                    <h4 class="status-title">На проверке у аудитора</h4>
-                                    <p class="status-description">План отправлен на официальную проверку.</p>
-                                </div>
-                                <div class="status-card status-error">
-                                    <div class="status-header">
-                                        <div class="status-icon"><span>⚠️</span></div>
-                                        <span class="status-badge">С ошибками</span>
-                                    </div>
-                                    <h4 class="status-title">Требует доработки</h4>
-                                    <p class="status-description">Аудитор обнаружил ошибки. План возвращен для исправления.</p>
-                                </div>
-                                <div class="status-card status-approved">
-                                    <div class="status-header">
-                                        <div class="status-icon"><span>✅</span></div>
-                                        <span class="status-badge">Одобренные</span>
-                                    </div>
-                                    <h4 class="status-title">Проверка пройдена</h4>
-                                    <p class="status-description">План успешно прошел аудит и официально одобрен.</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="plan-types">
-                            <h3>Типы планов по объему потребления</h3>
-                            <div class="plan-types-grid">
-                                <div class="plan-type-item">
-                                    <div class="plan-type-header">
-                                        <div class="plan-type-dot small"></div>
-                                        <h4 class="plan-type-title">Для малых организаций</h4>
-                                    </div>
-                                    <p class="plan-type-description"><strong>До 25 тыс. тонн условного топлива</strong><br>Упрощенная форма отчетности.</p>
-                                </div>
-                                <div class="plan-type-item">
-                                    <div class="plan-type-header">
-                                        <div class="plan-type-dot large"></div>
-                                        <h4 class="plan-type-title">Для крупных организаций</h4>
-                                    </div>
-                                    <p class="plan-type-description"><strong>Более 25 тыс. тонн условного топлива</strong><br>Расширенная форма с детальными расчетами.</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="tracking-status">
-                            <h3>Как отслеживать статусы планов?</h3>
-                            <div class="tracking-methods">
-                                <div class="tracking-method">
-                                    <div class="tracking-icon"><span>📊</span></div>
-                                    <div class="tracking-content">
-                                        <h4>Панель управления</h4>
-                                        <p>Обзор всех планов с цветовой индикацией статусов</p>
-                                    </div>
-                                </div>
-                                <div class="tracking-method">
-                                    <div class="tracking-icon"><span>🔔</span></div>
-                                    <div class="tracking-content">
-                                        <h4>Уведомления</h4>
-                                        <p>Автоматические оповещения при изменении статуса плана</p>
-                                    </div>
-                                </div>
-                                <div class="tracking-method">
-                                    <div class="tracking-icon"><span>📋</span></div>
-                                    <div class="tracking-content">
-                                        <h4>История изменений</h4>
-                                        <p>Подробный лог всех переходов между статусами</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="answer-navigation">
-                            <a href="#export" class="nav-btn prev"><i>{{ icons.back_icon() }}</i> Предыдущий вопрос</a>
-                            <div></div>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="answer-active-modern" id="ecp-certificate">
-                    <div class="answer-header-modern">
-                        <h1 class="answer-title-modern">Как пройти проверку сертификата ЭЦП</h1>
-                    </div>
-                    <div class="answer-body-modern">
-                        <div class="answer-text">
-                            <p>Для отправки планов в системе PlansEnergo требуется использование электронной цифровой подписи (ЭЦП).</p>
-                        </div>
-                        <div class="answer-highlight">
-                            <div class="highlight-icon">💡</div>
-                            <p><strong>Важное требование:</strong> Для осуществления функции "отправить план" должно быть установлено ПО "Менеджер сертификатов" от Авест с настроенным сертификатом ЭЦП.</p>
-                        </div>
-                        <div class="features-grid">
-                            <div class="feature-card">
-                                <div class="feature-icon">✅</div>
-                                <h4>Действительный сертификат</h4>
-                                <p>Срок действия сертификата является удовлетворительным</p>
-                            </div>
-                            <div class="feature-card">
-                                <div class="feature-icon">❌</div>
-                                <h4>НЕдействительный сертификат</h4>
-                                <p>Срок действия сертификата истек, требуется обновление</p>
-                            </div>
-                        </div>
-                        <div class="steps-container">
-                            <div class="step-item">
-                                <div class="step-number">1</div>
-                                <div class="step-content">
-                                    <h4>Откройте ПО "Менеджер сертификатов"</h4>
-                                    <p>Запустите программу "Менеджер сертификатов" от Авест.</p>
-                                </div>
-                            </div>
-                            <div class="step-item">
-                                <div class="step-number">2</div>
-                                <div class="step-content">
-                                    <h4>Выберите действительный сертификат</h4>
-                                    <p>Выберите "Действительный" сертификат из списка.</p>
-                                </div>
-                            </div>
-                            <div class="step-item">
-                                <div class="step-number">3</div>
-                                <div class="step-content">
-                                    <h4>Экспортируйте сертификат в файл</h4>
-                                    <p>Кликните правой кнопкой по сертификату и выберите "Экспорт сертификата в файл".</p>
-                                </div>
-                            </div>
-                            <div class="step-item">
-                                <div class="step-number">4</div>
-                                <div class="step-content">
-                                    <h4>Импортируйте сертификат в систему</h4>
-                                    <p>При отправке плана используйте полученный файл сертификата.</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="answer-text">
-                            <div class="checklist-container">
-                                <h4 class="checklist-header">Чеклист для работы с ЭЦП</h4>
-                                <p class="checklist-subtitle">Выполните все пункты</p>
-                                <label class="checklist-item">
-                                    <input type="checkbox">
-                                    <span>Убедитесь, что срок действия сертификата не истек</span>
-                                </label>
-                                <label class="checklist-item">
-                                    <input type="checkbox">
-                                    <span>ПО "Менеджер сертификатов" корректно установлено</span>
-                                </label>
-                                <label class="checklist-item">
-                                    <input type="checkbox">
-                                    <span>Сохраните файл сертификата в надежном месте</span>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="answer-navigation">
-                            <a href="#plans" class="nav-btn prev"><i>{{ icons.back_icon() }}</i> Предыдущий вопрос</a>
-                            <div></div>
-                        </div>
-                    </div>
-                </article>
-            </main>
+  <div class="faq-content-wrapper">
+    <div class="faq-layout">
+      <aside class="faq-sidebar-modern">
+        <div class="search-container">
+          <input
+            type="text"
+            class="faq-search"
+            placeholder="Поиск по вопросам..."
+          />
         </div>
+
+        <nav class="categories-modern">
+          <div class="category-modern">
+            <div class="category-header-modern">
+              <h3>Основы работы</h3>
+            </div>
+            <div class="questions-list-modern">
+              <a href="#what-is" class="question-link-modern">
+                <span class="question-icon">📘</span>
+                Что такое enPlans?
+              </a>
+              <a href="#getting-started" class="question-link-modern">
+                <span class="question-icon">🚀</span>
+                Как начать работу?
+              </a>
+            </div>
+          </div>
+
+          <div class="category-modern">
+            <div class="category-header-modern">
+              <h3>Работа с планами</h3>
+            </div>
+            <div class="questions-list-modern">
+              <a href="#create-plan" class="question-link-modern">
+                <span class="question-icon">✨</span>
+                Создание плана
+              </a>
+              <a href="#audit-data" class="question-link-modern">
+                <span class="question-icon">📊</span>
+                Аудит планов
+              </a>
+              <a href="#export" class="question-link-modern">
+                <span class="question-icon">📤</span>
+                Экспорт плана
+              </a>
+            </div>
+          </div>
+
+          <div class="category-modern">
+            <div class="category-header-modern">
+              <h3>Безопасность и подписи</h3>
+            </div>
+            <div class="questions-list-modern">
+              <a href="#ecp-certificate" class="question-link-modern">
+                <span class="question-icon">🔐</span>
+                Сертификат ЭЦП
+              </a>
+            </div>
+          </div>
+
+          <div class="category-modern">
+            <div class="category-header-modern">
+              <h3>Планы и аналитика</h3>
+            </div>
+            <div class="questions-list-modern">
+              <a href="#plans" class="question-link-modern">
+                <span class="question-icon">📈</span>
+                Виды планов
+              </a>
+            </div>
+          </div>
+        </nav>
+      </aside>
+
+      <main class="faq-content-modern">
+        <div class="answer-placeholder" id="default-view">
+          <h2>Выберите вопрос</h2>
+          <p>Выберите вопрос из списка, чтобы увидеть подробный ответ.</p>
+          <div style="margin-top: 30px; font-size: 14px; opacity: 0.6">
+            <em>Используйте поиск для быстрого доступа к нужной информации</em>
+          </div>
+        </div>
+
+        <article class="answer-active-modern" id="what-is">
+          <div class="answer-header-modern">
+            <h1 class="answer-title-modern">Что такое enPlans?</h1>
+          </div>
+          <div class="answer-body-modern">
+            <div class="answer-text">
+              <p>
+                <strong>enPlans</strong> — это автоматизированный комплекс для
+                создания, анализа и представления для согласования планов
+                энергоэффективности организаций.
+              </p>
+            </div>
+            <div class="answer-highlight">
+              <div class="highlight-icon">💡</div>
+              <p>
+                <strong>Ключевая особенность:</strong> enPlans автоматизирует
+                95% рутинных расчетов, позволяя сосредоточиться на
+                стратегических решениях.
+              </p>
+            </div>
+            <div class="features-grid">
+              <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h4>Анализ данных</h4>
+                <p>
+                  Автоматический анализ энергопотребления и выявление потенциала
+                  экономии
+                </p>
+              </div>
+              <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <h4>Расчет эффективности</h4>
+                <p>
+                  Точный расчет экономических показателей и сроков окупаемости
+                </p>
+              </div>
+              <div class="feature-card">
+                <div class="feature-icon">📋</div>
+                <h4>Формирование планов</h4>
+                <p>Формирование планов энергосберегающих мероприятий</p>
+              </div>
+            </div>
+            <div class="answer-text">
+              <h3>Для кого предназначена система?</h3>
+
+              <div class="features-grid">
+                <div class="feature-card">
+                  <div class="feature-icon">🏢</div>
+                  <h4>Респондентов</h4>
+                  <p>заполнение и управление энергосберегающими планами</p>
+                </div>
+                <div class="feature-card">
+                  <div class="feature-icon">📑</div>
+                  <h4>Аудиторов</h4>
+                  <p>анализ планов и принятие решения</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="answer-navigation">
+              <div></div>
+              <a href="#getting-started" class="nav-btn next"
+                >Следующий вопрос <i> {{ icons.next_icon() }}</i></a
+              >
+            </div>
+          </div>
+        </article>
+
+        <article class="answer-active-modern" id="getting-started">
+          <div class="answer-header-modern">
+            <h1 class="answer-title-modern">Как начать работу с системой?</h1>
+          </div>
+          <div class="answer-body-modern">
+            <div class="answer-text">
+              <p>
+                Начать работу с enPlans просто даже для новичков. Следуйте этому
+                пошаговому руководству, и вы сможете создать свой первый план за
+                15 минут.
+              </p>
+            </div>
+            <div class="steps-container">
+              <div class="step-item">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                  <h4>Регистрация и настройка аккаунта</h4>
+                  <p>
+                    Используйте электронную почту для регистрации. После
+                    подтверждения укажите личную информацию.
+                  </p>
+                </div>
+              </div>
+              <div class="step-item">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                  <h4>Выбор организации</h4>
+                  <p>
+                    Выберите организацию за которую вы будете отчитываться, это
+                    может быть: предприятие, министерство или регион.
+                  </p>
+                </div>
+              </div>
+              <div class="step-item">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                  <h4>Создание первого плана</h4>
+                  <p>
+                    Перейдите на страницу "Создать план", укажите год и
+                    заполните необходимые данные.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="answer-highlight">
+              <div class="highlight-icon">🎯</div>
+              <p>
+                <strong>Совет для начала:</strong> Начните с просмотра демо,
+                чтобы ознакомиться с интерфейсом и основными функциями без
+                риска.
+              </p>
+            </div>
+            <div class="video-container">
+              <video controls poster="/static/img/faq/video-poster.png">
+                <source src="/static/video/sign-demo.mp4" type="video/mp4" />
+                Ваш браузер не поддерживает видео.
+              </video>
+              <div class="video-caption">
+                <h5>Быстрый старт с enPlans</h5>
+                <p>Посмотрите как начать работу с enPlans</p>
+              </div>
+            </div>
+            <div class="answer-text">
+              <h3>Чеклист для начала работы:</h3>
+              <div class="checklist-container">
+                <h4 class="checklist-header">Проверьте готовность к работе</h4>
+                <p class="checklist-subtitle">
+                  Выполните все пункты для полноценной работы в системе
+                </p>
+                <label class="checklist-item">
+                  <input type="checkbox" />
+                  <span>Электронная почта подтверждена</span>
+                </label>
+                <label class="checklist-item">
+                  <input type="checkbox" />
+                  <span>Заполнены личные данные</span>
+                </label>
+                <label class="checklist-item">
+                  <input type="checkbox" />
+                  <span>Выбрана организация</span>
+                </label>
+                <label class="checklist-item">
+                  <input type="checkbox" />
+                  <span
+                    >Ознакомление с руководством пользователя или же с FAQ</span
+                  >
+                </label>
+              </div>
+            </div>
+            <div class="answer-navigation">
+              <a href="#what-is" class="nav-btn prev"
+                ><i>{{ icons.back_icon() }}</i> Предыдущий вопрос</a
+              >
+              <div></div>
+            </div>
+          </div>
+        </article>
+
+        <article class="answer-active-modern" id="create-plan">
+          <div class="answer-header-modern">
+            <h1 class="answer-title-modern">
+              Создание плана энергоэффективности
+            </h1>
+          </div>
+          <div class="answer-body-modern">
+            <div class="answer-text">
+              <p>
+                Создание плана энергоэффективности в enPlans — это простой
+                пошаговый процесс, который занимает всего несколько минут.
+                Система проведет вас через все необходимые этапы.
+              </p>
+            </div>
+            <div class="steps-container">
+              <div class="step-item">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                  <h4>Переход к созданию плана</h4>
+                  <p>
+                    В главном меню выберите <strong>"Создать"</strong> или
+                    нажмите соответствующую кнопку на панели управления на
+                    странице <strong>Планы</strong>.
+                  </p>
+                </div>
+              </div>
+              <div class="step-item">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                  <h4>Выбор типа плана</h4>
+                  <p>
+                    Определите категорию организации по объему
+                    энергопотребления:
+                  </p>
+
+                  <div class="plan-type-cards">
+                    <div class="plan-type-card">
+                      <div class="plan-type-icon">📋</div>
+                      <h5 class="plan-type-title">До 25 тыс. т. у. т.</h5>
+                      <p class="plan-type-description">
+                        Упрощенный формат отчетности для организаций с меньшим
+                        потреблением
+                      </p>
+                    </div>
+
+                    <div class="plan-type-card">
+                      <div class="plan-type-icon">📊</div>
+                      <h5 class="plan-type-title">Более 25 тыс. т. у. т.</h5>
+                      <p class="plan-type-description">
+                        Расширенный формат с детальными расчетами для крупных
+                        потребителей
+                      </p>
+                    </div>
+                  </div>
+
+                  <div class="plan-type-info">
+                    <p>
+                      <strong>Выбор влияет на:</strong> структуру экспорта,
+                      требования к данным, детализацию отчетности и процесс
+                      аудита.
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div class="step-item">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                  <h4>Выбор базовых параметров</h4>
+                  <p>
+                    Укажите обязательные параметры: год, показатель
+                    энергосбережения, задания по экономии ТЭР, долю местных ТЭР
+                    и ВИЭ.
+                  </p>
+                </div>
+              </div>
+              <div class="step-item">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                  <h4>Заполнение данных</h4>
+                  <p>
+                    Внесите информацию о энергопотреблении, заполнив таблицы
+                    направлений, мероприятий и показателей.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="video-container">
+              <video controls poster="/static/img/faq/video-poster.png">
+                <source src="/static/video/work-demo.mp4" type="video/mp4" />
+                Ваш браузер не поддерживает видео.
+              </video>
+              <div class="video-caption">
+                <h5>Создание плана</h5>
+                <p>Посмотрите как создать и заполнить план в enPlans</p>
+              </div>
+            </div>
+            <div class="answer-highlight">
+              <div class="highlight-icon">💾</div>
+              <p>
+                <strong>Сохранение данных:</strong> Все изменения фиксируются в
+                системе автоматически после нажатия кнопок "Применить изменения"
+                или "Добавить".
+              </p>
+            </div>
+            <div class="plan-after-creation">
+              <h3>Что происходит после создания плана?</h3>
+              <div class="plan-features">
+                <div class="plan-feature-item">
+                  <span class="plan-feature-check">✓</span>
+                  <span class="plan-feature-text"
+                    >Контроль плана с последующей отправкой на проверку</span
+                  >
+                </div>
+                <div class="plan-feature-item">
+                  <span class="plan-feature-check">✓</span>
+                  <span class="plan-feature-text">Просмотр статистики</span>
+                </div>
+                <div class="plan-feature-item">
+                  <span class="plan-feature-check">✓</span>
+                  <span class="plan-feature-text">Экспорт плана</span>
+                </div>
+              </div>
+            </div>
+            <div class="answer-navigation">
+              <a href="#audit-data" class="nav-btn next"
+                >Следующий вопрос <i> {{ icons.next_icon() }}</i></a
+              >
+            </div>
+          </div>
+        </article>
+
+        <article class="answer-active-modern" id="audit-data">
+          <div class="answer-header-modern">
+            <h1 class="answer-title-modern">
+              Аудит планов энергоэффективности
+            </h1>
+          </div>
+          <div class="answer-body-modern">
+            <div class="answer-text">
+              <p>
+                Аудит планов в enPlans выполняется специально назначенными
+                аудиторами — региональными управлениями по надзору за
+                энергоэффективностью.
+              </p>
+            </div>
+            <div class="answer-highlight">
+              <h3>Роль аудиторов в системе</h3>
+              <div class="white-cont-ul">
+                <p>Кто осуществляет проверку?</p>
+                <span
+                  >Официальные представители региональных управлений по надзору
+                  за энергоэффективностью Республики Беларусь</span
+                >
+              </div>
+              <div class="white-cont-ul">
+                <p>Их полномочия и доступы</p>
+                <span
+                  >Полный доступ ко всем таблицам, расчетам и исходным данным
+                  плана для проведения официальной проверки</span
+                >
+              </div>
+            </div>
+            <div class="steps-container">
+              <div class="step-item">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                  <h4>Доступ к плану на проверку</h4>
+                  <p>
+                    Аудитор получает план в статусе "Не просмотренные" в своем
+                    интерфейсе.
+                  </p>
+                </div>
+              </div>
+              <div class="step-item">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                  <h4>Проверка данных</h4>
+                  <p>
+                    Аудитор последовательно проверяет основные показатели,
+                    таблицы данных, мероприятия по экономии и местным ТЭР.
+                  </p>
+                </div>
+              </div>
+              <div class="step-item">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                  <h4>Вынесение вердикта</h4>
+                  <p>
+                    По результатам проверки аудитор выбирает один из вариантов:
+                  </p>
+                  <div class="options-container">
+                    <div class="option-card error">
+                      <span class="option-indicator"></span>
+                      <div class="option-content">
+                        <div class="option-title">Есть ошибки</div>
+                        <div class="option-description">
+                          Указываются конкретные ошибки, план возвращается на
+                          доработку
+                        </div>
+                      </div>
+                    </div>
+                    <div class="option-card success">
+                      <span class="option-indicator"></span>
+                      <div class="option-content">
+                        <div class="option-title">Одобрить</div>
+                        <div class="option-description">
+                          План соответствует требованиям, переводится в статус
+                          "Одобрен"
+                        </div>
+                      </div>
+                    </div>
+                    <div class="option-card cancel">
+                      <span class="option-indicator"></span>
+                      <div class="option-content">
+                        <div class="option-title">Отменить</div>
+                        <div class="option-description">
+                          План переходит в изначальное состояние для аудитора
+                          "Не просмотренный"
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="video-container">
+              <video controls poster="/static/img/faq/video-poster.png">
+                <source src="/static/video/audit-report.mp4" type="video/mp4" />
+                Ваш браузер не поддерживает видео.
+              </video>
+              <div class="video-caption">
+                <h5>Проверка планов</h5>
+                <p>Посмотрите как проверять планы</p>
+              </div>
+            </div>
+            <div class="after-inspection">
+              <h3>Что происходит после проверки?</h3>
+              <div class="inspection-outcomes">
+                <div class="outcomes-grid">
+                  <div class="outcome-item outcome-error">
+                    <div class="outcome-icon"><span>✗</span></div>
+                    <h4 class="outcome-title">Если есть ошибки</h4>
+                    <p class="outcome-description">
+                      План возвращается респонденту с комментариями. Статус
+                      меняется на "Требует доработки"
+                    </p>
+                  </div>
+                  <div class="outcome-item outcome-approved">
+                    <div class="outcome-icon"><span>✓</span></div>
+                    <h4 class="outcome-title">Если одобрено</h4>
+                    <p class="outcome-description">
+                      План переводится в статус "Одобрен" и считается официально
+                      принятым
+                    </p>
+                  </div>
+                  <div class="outcome-item outcome-canceled">
+                    <div class="outcome-icon"><span>↩️</span></div>
+                    <h4 class="outcome-title">Если отменено</h4>
+                    <p class="outcome-description">
+                      Статус плана возвращается к изначальному для аудитора
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="answer-navigation">
+              <a href="#create-plan" class="nav-btn prev"
+                ><i>{{ icons.back_icon() }}</i> Предыдущий вопрос</a
+              >
+              <a href="#export" class="nav-btn next"
+                >Следующий вопрос <i> {{ icons.next_icon() }}</i></a
+              >
+            </div>
+          </div>
+        </article>
+
+        <article class="answer-active-modern" id="export">
+          <div class="answer-header-modern">
+            <h1 class="answer-title-modern">Экспорт плана</h1>
+          </div>
+          <div class="answer-body-modern">
+            <div class="answer-text">
+              <p>
+                enPlans предоставляет несколько форматов экспорта для различных
+                целей: от аналитики в Excel до официальных проектов плана для
+                подачи.
+              </p>
+            </div>
+            <div class="steps-container">
+              <div class="step-item">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                  <h4>Переход к экспорту</h4>
+                  <p>
+                    В меню плана выберите "Экспорт" или перейдите в раздел
+                    "Экспорт данных" в главном меню.
+                  </p>
+                </div>
+              </div>
+              <div class="step-item">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                  <h4>Настройка параметров экспорта</h4>
+                  <p>
+                    Выберите формат файла (.xlsx, .pdf, .xml), используйте
+                    фильтры по статусу и году, отметьте нужные планы.
+                  </p>
+                </div>
+              </div>
+              <div class="step-item">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                  <h4>Формирование и скачивание</h4>
+                  <p>
+                    Нажмите кнопку "Экспортировать". Система автоматически
+                    сформирует файл и предложит его скачать.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="features-grid">
+              <div class="feature-card">
+                <div class="feature-icon">📈</div>
+                <h4>Проект плана (.xlsx)</h4>
+                <p>
+                  Для анализа и работы с данными. Полные таблицы планов и
+                  мероприятий.
+                </p>
+              </div>
+              <div class="feature-card">
+                <div class="feature-icon">📄</div>
+                <h4>Проект плана (.pdf)</h4>
+                <p>
+                  Для официальной подачи. Форматированный проект плана, готов к
+                  печати.
+                </p>
+              </div>
+              <div class="feature-card">
+                <div class="feature-icon">⚙️</div>
+                <h4>Проект плана (.xml)</h4>
+                <p>
+                  Для интеграции с программами. Структурированные данные,
+                  машинно-читаемый формат.
+                </p>
+              </div>
+            </div>
+            <div class="answer-navigation">
+              <a href="#audit-data" class="nav-btn prev"
+                ><i>{{ icons.back_icon() }}</i> Предыдущий вопрос</a
+              >
+              <a href="#plans" class="nav-btn next"
+                >Следующий вопрос <i> {{ icons.next_icon() }}</i></a
+              >
+            </div>
+          </div>
+        </article>
+
+        <article class="answer-active-modern" id="plans">
+          <div class="answer-header-modern">
+            <h1 class="answer-title-modern">
+              Виды и статусы планов энергоэффективности
+            </h1>
+          </div>
+          <div class="answer-body-modern">
+            <div class="answer-text">
+              <p>
+                В enPlans каждый план проходит несколько этапов жизненного
+                цикла, отражаемых через систему статусов.
+              </p>
+            </div>
+            <div class="answer-highlight">
+              <div
+                style="
+                  display: flex;
+                  gap: 20px;
+                  align-items: center;
+                  flex-wrap: wrap;
+                "
+              >
+                <div
+                  style="
+                    width: 50px;
+                    height: 50px;
+                    background: var(--faq-primary);
+                    border-radius: 12px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                  "
+                >
+                  <span style="color: white; font-size: 24px">🔄</span>
+                </div>
+                <div style="flex: 1">
+                  <h3 style="margin: 0 0 8px">Жизненный цикл плана</h3>
+                  <p style="margin: 0">
+                    Каждый план последовательно проходит все этапы: от создания
+                    до финального одобрения.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="status-grid">
+              <h3>Все статусы планов</h3>
+              <div class="status-grid-container">
+                <div class="status-card status-editing">
+                  <div class="status-header">
+                    <div class="status-icon"><span>📝</span></div>
+                    <span class="status-badge">В редакции</span>
+                  </div>
+                  <h4 class="status-title">В процессе редактирования</h4>
+                  <p class="status-description">
+                    План создан, но еще не отправлен на проверку.
+                  </p>
+                </div>
+                <div class="status-card status-control">
+                  <div class="status-header">
+                    <div class="status-icon"><span>⏳</span></div>
+                    <span class="status-badge">Контроль пройден</span>
+                  </div>
+                  <h4 class="status-title">Проверка программой</h4>
+                  <p class="status-description">
+                    Редактируемый план проходит проверку на правильность
+                    заполненных данных.
+                  </p>
+                </div>
+                <div class="status-card status-review">
+                  <div class="status-header">
+                    <div class="status-icon"><span>📤</span></div>
+                    <span class="status-badge">На рассмотрении</span>
+                  </div>
+                  <h4 class="status-title">На проверке у аудитора</h4>
+                  <p class="status-description">
+                    План отправлен на официальную проверку.
+                  </p>
+                </div>
+                <div class="status-card status-error">
+                  <div class="status-header">
+                    <div class="status-icon"><span>⚠️</span></div>
+                    <span class="status-badge">С ошибками</span>
+                  </div>
+                  <h4 class="status-title">Требует доработки</h4>
+                  <p class="status-description">
+                    Аудитор обнаружил ошибки. План возвращен для исправления.
+                  </p>
+                </div>
+                <div class="status-card status-approved">
+                  <div class="status-header">
+                    <div class="status-icon"><span>✅</span></div>
+                    <span class="status-badge">Одобренные</span>
+                  </div>
+                  <h4 class="status-title">Проверка пройдена</h4>
+                  <p class="status-description">
+                    План успешно прошел аудит и официально одобрен.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="plan-types">
+              <h3>Типы планов по объему потребления</h3>
+              <div class="plan-types-grid">
+                <div class="plan-type-item">
+                  <div class="plan-type-header">
+                    <div class="plan-type-dot small"></div>
+                    <h4 class="plan-type-title">Для малых организаций</h4>
+                  </div>
+                  <p class="plan-type-description">
+                    <strong>До 25 тыс. тонн условного топлива</strong
+                    ><br />Упрощенная форма отчетности.
+                  </p>
+                </div>
+                <div class="plan-type-item">
+                  <div class="plan-type-header">
+                    <div class="plan-type-dot large"></div>
+                    <h4 class="plan-type-title">Для крупных организаций</h4>
+                  </div>
+                  <p class="plan-type-description">
+                    <strong>Более 25 тыс. тонн условного топлива</strong
+                    ><br />Расширенная форма с детальными расчетами.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="tracking-status">
+              <h3>Как отслеживать статусы планов?</h3>
+              <div class="tracking-methods">
+                <div class="tracking-method">
+                  <div class="tracking-icon"><span>📊</span></div>
+                  <div class="tracking-content">
+                    <h4>Панель управления</h4>
+                    <p>Обзор всех планов с цветовой индикацией статусов</p>
+                  </div>
+                </div>
+                <div class="tracking-method">
+                  <div class="tracking-icon"><span>🔔</span></div>
+                  <div class="tracking-content">
+                    <h4>Уведомления</h4>
+                    <p>Автоматические оповещения при изменении статуса плана</p>
+                  </div>
+                </div>
+                <div class="tracking-method">
+                  <div class="tracking-icon"><span>📋</span></div>
+                  <div class="tracking-content">
+                    <h4>История изменений</h4>
+                    <p>Подробный лог всех переходов между статусами</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="answer-navigation">
+              <a href="#export" class="nav-btn prev"
+                ><i>{{ icons.back_icon() }}</i> Предыдущий вопрос</a
+              >
+              <div></div>
+            </div>
+          </div>
+        </article>
+
+        <article class="answer-active-modern" id="ecp-certificate">
+          <div class="answer-header-modern">
+            <h1 class="answer-title-modern">
+              Как пройти проверку сертификата ЭЦП
+            </h1>
+          </div>
+          <div class="answer-body-modern">
+            <div class="answer-text">
+              <p>
+                Для отправки планов в системе enPlans требуется использование
+                электронной цифровой подписи (ЭЦП).
+              </p>
+            </div>
+            <div class="answer-highlight">
+              <div class="highlight-icon">💡</div>
+              <p>
+                <strong>Важное требование:</strong> Для осуществления функции
+                "отправить план" должно быть установлено ПО "Менеджер
+                сертификатов" от Авест с настроенным сертификатом ЭЦП.
+              </p>
+            </div>
+            <div class="features-grid">
+              <div class="feature-card">
+                <div class="feature-icon">✅</div>
+                <h4>Действительный сертификат</h4>
+                <p>Срок действия сертификата является удовлетворительным</p>
+              </div>
+              <div class="feature-card">
+                <div class="feature-icon">❌</div>
+                <h4>НЕдействительный сертификат</h4>
+                <p>Срок действия сертификата истек, требуется обновление</p>
+              </div>
+            </div>
+            <div class="steps-container">
+              <div class="step-item">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                  <h4>Откройте ПО "Менеджер сертификатов"</h4>
+                  <p>Запустите программу "Менеджер сертификатов" от Авест.</p>
+                </div>
+              </div>
+              <div class="step-item">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                  <h4>Выберите действительный сертификат</h4>
+                  <p>Выберите "Действительный" сертификат из списка.</p>
+                </div>
+              </div>
+              <div class="step-item">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                  <h4>Экспортируйте сертификат в файл</h4>
+                  <p>
+                    Кликните правой кнопкой по сертификату и выберите "Экспорт
+                    сертификата в файл".
+                  </p>
+                </div>
+              </div>
+              <div class="step-item">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                  <h4>Импортируйте сертификат в систему</h4>
+                  <p>
+                    При отправке плана используйте полученный файл сертификата.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="answer-text">
+              <div class="checklist-container">
+                <h4 class="checklist-header">Чеклист для работы с ЭЦП</h4>
+                <p class="checklist-subtitle">Выполните все пункты</p>
+                <label class="checklist-item">
+                  <input type="checkbox" />
+                  <span>Убедитесь, что срок действия сертификата не истек</span>
+                </label>
+                <label class="checklist-item">
+                  <input type="checkbox" />
+                  <span>ПО "Менеджер сертификатов" корректно установлено</span>
+                </label>
+                <label class="checklist-item">
+                  <input type="checkbox" />
+                  <span>Сохраните файл сертификата в надежном месте</span>
+                </label>
+              </div>
+            </div>
+            <div class="answer-navigation">
+              <a href="#plans" class="nav-btn prev"
+                ><i>{{ icons.back_icon() }}</i> Предыдущий вопрос</a
+              >
+              <div></div>
+            </div>
+          </div>
+        </article>
+      </main>
     </div>
+  </div>
 </div>
 <script src="{{ url_for('static', filename='js/faq.js') }}"></script>
 {% endblock %}

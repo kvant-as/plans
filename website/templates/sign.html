@@ -1,61 +1,93 @@
-{% extends "base.html" %}
-{% block title %}{{ _('Регистрация') }} - PlansEnergo{% endblock %}
-{% block content %}
+{% extends "base.html" %} {% block title %}{{ _('Регистрация') }} - enPlans{%
+endblock %} {% block content %}
 
 <div class="auth-page">
-    <div class="auth-text-upper">
-        <div class="auth-title" onclick="window.location.href='/login'">
-   <img src="/static/img/logo.svg" alt="">
-   <a>PlansEnergo</a>
-</div>
-        <p class="auth-subtitle">{{ _('Система представления планов энергосберегающих <br> мероприятий') }}</p>
+  <div class="auth-text-upper">
+    <div class="auth-title" onclick="window.location.href = '/login'">
+      <img src="/static/img/logo.svg" alt="" />
+      <a>enPlans</a>
     </div>
-    <div class="auth-container">
-        <div class="auth-container-title">{{ _('Регистрация в системе') }}</div>
+    <p class="auth-subtitle">
+      {{ _('Система представления планов энергосберегающих <br />
+      мероприятий') }}
+    </p>
+  </div>
+  <div class="auth-container">
+    <div class="auth-container-title">{{ _('Регистрация в системе') }}</div>
 
-        <div class="auth-choose" role="tablist">
-            <a class="auth-tab" href="/login" role="tab" aria-selected="true">
-                {{ icons.icon_login2() }}
-                <span>{{ _('Вход') }}</span></a>
-            <a class="auth-tab active" href="/sign" role="tab" aria-selected="false">
-                {{ icons.icon_login() }}
-                <span>{{ _('Регистрация') }}</span>
-            </a>
+    <div class="auth-choose" role="tablist">
+      <a class="auth-tab" href="/login" role="tab" aria-selected="true">
+        {{ icons.icon_login2() }}
+        <span>{{ _('Вход') }}</span></a
+      >
+      <a class="auth-tab active" href="/sign" role="tab" aria-selected="false">
+        {{ icons.icon_login() }}
+        <span>{{ _('Регистрация') }}</span>
+      </a>
+    </div>
+
+    <form class="auth-form" method="POST" action="/sign">
+      <div class="form-group">
+        <label for="email">{{ _('Email') }}</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          value=""
+          placeholder="Введите email"
+          class="auth-input"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="password">{{ _('Пароль') }}</label>
+        <div class="password-input-wrapper">
+          <input
+            type="password"
+            name="password1"
+            id="password"
+            maxlength="10"
+            placeholder="Введите пароль"
+            class="auth-input"
+            required
+          />
+          <button
+            type="button"
+            class="toggle-password"
+            aria-label="Показать пароль"
+          >
+            {{ icons.eye_open() }} {{ icons.eye_closed() }}
+          </button>
         </div>
-
-        <form class="auth-form" method = "POST" action = "/sign">
-            <div class="form-group">
-                <label for="email">{{ _('Email') }}</label>
-                <input type="email" id="email" name = "email" value="" placeholder="Введите email" class="auth-input" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="password">{{ _('Пароль') }}</label>
-                <div class="password-input-wrapper">
-                    <input type="password" name = "password1" id="password" maxlength="10" placeholder="Введите пароль" class="auth-input" required>
-                    <button type="button" class="toggle-password" aria-label="Показать пароль">
-                        {{ icons.eye_open() }}
-                        {{ icons.eye_closed() }}
-                    </button>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="password">{{ _('Подтвердить пароль') }}</label>
-                <div class="password-input-wrapper">
-                    <input type="password" name = "password2" id="password" maxlength="10" placeholder="Введите пароль" class="auth-input" required>
-                    <button type="button" class="toggle-password" aria-label="Показать пароль">
-                        {{ icons.eye_open() }}
-                        {{ icons.eye_closed() }}
-                    </button>
-                </div>
-            </div>
-            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-            <button type="submit" class="main-btn main-btn-primary">
-                {{ icons.icon_login() }}
-                <span class="btn-text">{{ _('Зарегистрироваться') }}</span>
-            </button>
-        </form>
-    </div>
+      </div>
+      <div class="form-group">
+        <label for="password">{{ _('Подтвердить пароль') }}</label>
+        <div class="password-input-wrapper">
+          <input
+            type="password"
+            name="password2"
+            id="password"
+            maxlength="10"
+            placeholder="Введите пароль"
+            class="auth-input"
+            required
+          />
+          <button
+            type="button"
+            class="toggle-password"
+            aria-label="Показать пароль"
+          >
+            {{ icons.eye_open() }} {{ icons.eye_closed() }}
+          </button>
+        </div>
+      </div>
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+      <button type="submit" class="main-btn main-btn-primary">
+        {{ icons.icon_login() }}
+        <span class="btn-text">{{ _('Зарегистрироваться') }}</span>
+      </button>
+    </form>
+  </div>
 </div>
-{{ affects.bg_effect() }}
-{% endblock %}
+{{ affects.bg_effect() }} {% endblock %}
