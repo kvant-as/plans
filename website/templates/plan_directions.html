@@ -5,30 +5,52 @@ endblock %} {% block content %}
   <div class="personal-plan-conteiner">
     {% set is_disabled = plan.is_sent or plan.is_approved or
     current_user.is_auditor %}
-
-    <div class="menu-conteiner">
-      <div
-        class="element {% if is_disabled %}non{% endif %}"
-        id="AddDirectionModalButton"
-      >
-        {{ icons.icon_ios_add() }}
-        <span class="element-text">Добавить</span>
+    <div class = "plan-menu">
+      <div class="menu-conteiner">
+        <div class = "menu-conteiner-btns">
+          <div
+            class="element {% if is_disabled %}non{% endif %}"
+            id="AddDirectionModalButton"
+          >
+            <img src="{{ url_for('static', filename='img/icon-add.svg') }}">
+            <span class="element-text">Добавить</span>
+          </div>
+          <div
+            class="element {% if is_disabled %}non{% endif %}"
+            id="tableDeleteButton"
+          >
+            <img src="{{ url_for('static', filename='img/icon-del.svg') }}">
+            <span class="element-text">Удалить</span>
+          </div>
+          <div
+            class="element {% if is_disabled %}non{% endif %}"
+            id="tableEditButton"
+          >
+            <img src="{{ url_for('static', filename='img/icon-edit.svg') }}">
+            <span class="element-text">Редактировать</span>
+          </div>
+        </div>
+        <div class = "menu-conteiner-title">
+          <span>Направление</span>
+        </div>
       </div>
-      <div
-        class="element {% if is_disabled %}non{% endif %}"
-        id="tableDeleteButton"
-      >
-        {{ icons.icon_ios_delete() }}
-        <span class="element-text">Удалить</span>
-      </div>
-      <div
-        class="element {% if is_disabled %}non{% endif %}"
-        id="tableEditButton"
-      >
-        {{ icons.icon_ios_edit() }}
-        <span class="element-text">Редакт</span>
+      <div class="menu-conteiner">
+        <div class = "menu-conteiner-btns">
+          <div class="element" id="">
+            <img src="{{ url_for('static', filename='img/icon-excele.svg') }}">
+            <span class="element-text">Экспорт</span>
+          </div>
+          <div class="element" id="">
+            <img src="{{ url_for('static', filename='img/icon-excele.svg') }}">
+            <span class="element-text">Квитанции</span>
+          </div>
+        </div>
+        <div class = "menu-conteiner-title">
+          <span>План</span>
+        </div>
       </div>
     </div>
+   
 
     <div class="table-container">
       <table class="main-table" id="directionTable">
