@@ -1828,16 +1828,16 @@ footer {
 }
 
 .auth-tab.active {
-  color: #3b82f6;
   font-weight: 600;
-  background: #ffffff;
+  background-color: white;
+  color: var(--green-light);
 }
 
 .auth-tab.active svg {
-  color: #3b82f6; 
+  color: var(--green-light);
 }
 
-.auth-tab.wave-effect::before {
+/* .auth-tab.wave-effect::before {
   content: '';
   position: absolute;
   top: 0;
@@ -1856,7 +1856,7 @@ footer {
   transform: translateX(-100%) skewX(-15deg);
   z-index: -1;
   filter: blur(1px);
-}
+} */
 
 @keyframes modernWave {
   0% {
@@ -4071,6 +4071,20 @@ input[type="checkbox"]:focus {
   height: 20px;
 }
 
+
+.sent-message-btn span {
+  display: none;
+  font-size: 13px;
+  font-weight: 400;
+  color: white;
+  white-space: nowrap;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}
+
+.sent-message-btn:hover span {
+  display: inline;
+}
+
 .sent-message-btn:hover{
   border-color: var(--primary);
   transform: translateX(-2px);
@@ -4480,6 +4494,8 @@ input[type="checkbox"]:focus {
 .menu-conteiner .element.non:hover {
   transform: none;
   box-shadow: none;
+  background-color: none;
+  border-color: none;
 }
 
 .menu-conteiner .element:hover{

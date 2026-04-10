@@ -3926,7 +3926,7 @@ window.TicketInfo = TicketInfo;
 
 function initCertificateUpload() {
     document.addEventListener('DOMContentLoaded', function() {
-        const sentModal = document.getElementById('sentmodalecp');
+        const sentModal = document.getElementById('sentmodal');
         if (sentModal) {
             new CertificateUploadHandler();
             
@@ -4314,12 +4314,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // }    
 
     const sentPlanButton = document.getElementById('sentPlanButton');
-    const sentmodalecp = document.getElementById('sentmodalecp');
-    if (sentmodalecp) {
+    const sentmodal = document.getElementById('sentmodal');
+    if (sentmodal) {
         handleModal(
-            sentmodalecp, 
+            sentmodal, 
             sentPlanButton, 
-            sentmodalecp.querySelector('.close')
+            sentmodal.querySelector('.close')
         );
     }
 

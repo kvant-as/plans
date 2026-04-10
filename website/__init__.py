@@ -68,8 +68,9 @@ def create_app():
         FLASK_ADMIN_SWATCH='cosmo',
         BABEL_DEFAULT_LOCALE='ru',
         SEND_FILE_MAX_AGE_DEFAULT=0,
-        LOG_LEVEL='INFO',
         SESSION_COOKIE_NAME=os.getenv('SESSION_COOKIE_NAME'),
+
+        LOG_LEVEL=os.getenv('LOG_LEVEL'),
 
         AI_API_URL=os.getenv('AI_API_URL'),
         AI_X_API_KEY=os.getenv('AI_X_API_KEY'),

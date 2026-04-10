@@ -611,7 +611,7 @@ def plan_review(token):
                         hide_header=False,
                         plan_header=True,
                         plan_back_header=True,
-                        sentmodalecp=True,
+                        sentmodal=current_plan.is_control,
                         active_plan_tab='review')
     
 # @views.route('/plans/plan-review/<int:id>', methods=['GET'])
@@ -674,7 +674,7 @@ def plan_directions(token):
                         active_plan_tab='directions',
                         add_direction_modal=True,
                         confirmModal=True,
-                        sentmodalecp=True,
+                        sentmodal=current_plan.is_control,
                         edit_direction_modal=True,
                         context_menu=True
                          )
@@ -827,7 +827,7 @@ def plan_events(token):
                         add_event_modal=True,
                         confirmModal=True,
                         edit_event_modal=True,
-                        sentmodalecp=True,
+                        sentmodal=current_plan.is_control,
                         context_menu=True
                          )
     
@@ -1022,7 +1022,7 @@ def plan_indicators(token):
                         add_indicator_modal=True,
                         edit_indicator_modal=True,
                         confirmModal = True,
-                        sentmodalecp=True,
+                        sentmodal=current_plan.is_control,
                         context_menu = True
                          )
 
@@ -1235,11 +1235,18 @@ def create_ticket(token):
         flash('План не найден.', 'error')
         return redirect(request.referrer)
     
-    current_plan.afch = True
     note = request.form.get('note')
     
+    if not note or not note.strip():
+        current_app.logger.error("Epty message")
+        flash('Сообщение не может быть пустым.', 'error')
+        return redirect(request.referrer)
+    
+    current_plan.afch = True
+    current_plan.audit_time = TimeByMinsk()
+    
     new_ticket = Ticket(
-        note=note,
+        note=note.strip(),
         luck=False,
         plan_id=current_plan.id,
         user_id=current_user.id,
@@ -1247,8 +1254,6 @@ def create_ticket(token):
     )
 
     db.session.add(new_ticket)
-    
-    current_plan.audit_time = TimeByMinsk()
     db.session.commit()
     
     flash('Сообщение отправлено.', 'success')

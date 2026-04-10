@@ -65,7 +65,7 @@
 }
 
 .categories-modern {
-  background: var(--faq-card-bg);
+  background-color: white !important;
   border-radius: 16px;
   border: 1px solid var(--faq-border);
   overflow: hidden;
@@ -83,6 +83,7 @@
   padding: 18px 20px;
   cursor: pointer;
   transition: all 0.3s ease;
+  background: rgb(255, 255, 255) !important  ;
 }
 
 .category-header-modern:hover {
@@ -144,6 +145,7 @@
   border: 1px solid var(--faq-border);
   overflow: hidden;
   box-shadow: var(--faq-shadow);
+  max-height: fit-content;
 }
 
 .answer-placeholder {

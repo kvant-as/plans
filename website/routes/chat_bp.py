@@ -36,8 +36,8 @@ def end_chat(chat_id):
             )
             if external_response.status_code == 200:
                 bot_response_data = external_response.json()
-                current_app.logger.info(f"External API response: Yes")
-                # current_app.logger.info(f"External API response: {bot_response_data}")
+                current_app.logger.debug(f"External API response: Yes")
+                # current_app.logger.debug(f"External API response: {bot_response_data}")
             else:
                 current_app.logger.warning(f"External API returned status {external_response.status_code}: {external_response.text}")
         except requests.exceptions.RequestException as e:
@@ -73,7 +73,7 @@ def send_message():
         data = request.get_json()
         content = data.get('content').strip()
         if not content:
-            current_app.logger.info(f"Send message failed: missing field - content: {content}")
+            current_app.logger.debug(f"Send message failed: missing field - content: {content}")
             return jsonify({
                 'success': False,
                 'error': 'Missing required field'
@@ -86,7 +86,7 @@ def send_message():
             )
             db.session.add(chat)
             db.session.flush()
-            current_app.logger.info(f"Created new chat")
+            current_app.logger.debug(f"Created new chat")
 
         message = ChatMessage(
             chat_id=chat.id,
@@ -116,7 +116,7 @@ def send_message():
             if external_response.status_code == 200:
                 bot_response_data = external_response.json()
                 bot_message = bot_response_data.get('response')
-                current_app.logger.info(f"External API response: {bot_response_data}")
+                current_app.logger.debug(f"External API response: {bot_response_data}")
             else:
                 bot_message = "error: Ошибка соединения"
                 current_app.logger.warning(f"External API returned status {external_response.status_code}: {external_response.text}")
@@ -131,7 +131,7 @@ def send_message():
         db.session.add(message_answ)
         chat.updated_at = TimeByMinsk()
         db.session.commit()
-        current_app.logger.info(f"Message sent to chat {chat.id}")
+        current_app.logger.debug(f"Message sent to chat {chat.id}")
         return jsonify({
             'success': True,
             'chat_id': chat.id,

@@ -9,8 +9,9 @@
 .env
 
 # Logs
-*.log
 logs/
+*.log
+*.logs
 
 database_export.xlsx
 website/__pycache__

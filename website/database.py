@@ -27,7 +27,7 @@ def filling_database(db):
     if is_db_empty():
         from .models import User, Organization, Unit, Direction, Indicator, Ministry, Region
         from sqlalchemy.exc import IntegrityError
-        current_app.logger.info('Filling is in progress...')
+        current_app.logger.debug('Filling is in progress...')
 
         ### ORGANIZATION DATA ###
         website_path = os.path.dirname(os.path.abspath(__file__))
