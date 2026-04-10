@@ -266,6 +266,7 @@ const Notifications = {
     }
 };
 
+
 // activation code
 const activationCode = {
   init: function() {

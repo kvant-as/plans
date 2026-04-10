@@ -674,6 +674,7 @@ def plan_directions(token):
                         active_plan_tab='directions',
                         add_direction_modal=True,
                         confirmModal=True,
+                        sentmodalecp=True,
                         edit_direction_modal=True,
                         context_menu=True
                          )
@@ -826,6 +827,7 @@ def plan_events(token):
                         add_event_modal=True,
                         confirmModal=True,
                         edit_event_modal=True,
+                        sentmodalecp=True,
                         context_menu=True
                          )
     
@@ -1020,6 +1022,7 @@ def plan_indicators(token):
                         add_indicator_modal=True,
                         edit_indicator_modal=True,
                         confirmModal = True,
+                        sentmodalecp=True,
                         context_menu = True
                          )
 

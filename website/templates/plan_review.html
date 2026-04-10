@@ -319,7 +319,7 @@
         </div>
         {%endif%} {% if current_user.is_auditor != true %}
         <hr />
-        <a class="sername">{{ _('Результаты проверки') }}</a>
+        <a class="sername" id = "tickets_link">{{ _('Результаты проверки') }}</a>
         <div class="tickets-conteiner">
           {% if plan.tickets %} {% for ticket in plan.tickets %}
           <div
