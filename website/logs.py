@@ -35,7 +35,6 @@ class ExcludeInfoFilter(logging.Filter):
     def filter(self, record):
         return record.levelname != 'INFO'
 
-
 def setup_logging(app):
     log_dir = "logs"
     if not os.path.exists(log_dir):
@@ -43,7 +42,7 @@ def setup_logging(app):
 
     log_file = os.path.join(log_dir, "py-app.log")
     
-    exclude_info = app.config.get('LOG_EXCLUDE_INFO', False)
+    exclude_info = app.config.get('EXCLUDE_INFO_LOGS', False)
     
     json_formatter = logs()
     console_formatter = logging.Formatter(
@@ -67,6 +66,9 @@ def setup_logging(app):
     if exclude_info:
         file_handler.addFilter(ExcludeInfoFilter())
         console_handler.addFilter(ExcludeInfoFilter())
+        app.logger.debug("INFO logs are EXCLUDED")
+    else:
+        app.logger.debug("ALL logs are shown (including INFO)")
 
     root_logger = logging.getLogger()
     root_logger.setLevel(logging.DEBUG)

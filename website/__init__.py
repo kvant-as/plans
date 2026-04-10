@@ -70,7 +70,7 @@ def create_app():
         SEND_FILE_MAX_AGE_DEFAULT=0,
         SESSION_COOKIE_NAME=os.getenv('SESSION_COOKIE_NAME'),
 
-        LOG_LEVEL=os.getenv('LOG_LEVEL'),
+        EXCLUDE_INFO_LOGS=os.getenv('EXCLUDE_INFO_LOGS'),
 
         AI_API_URL=os.getenv('AI_API_URL'),
         AI_X_API_KEY=os.getenv('AI_X_API_KEY'),
