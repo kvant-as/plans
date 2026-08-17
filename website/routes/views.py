@@ -2,6 +2,8 @@ from flask import (
     Blueprint, abort, current_app, logging, render_template, redirect, send_file, url_for, flash, request, jsonify, session, g
 )
 
+import logging
+
 import uuid
 import threading
 
@@ -118,7 +120,7 @@ def edit_user_org():
             # current_user.oblispolkom_gorispolkom_id = None
             # current_user.region_id = None
             
-            flash(f'Организация изменена на: {selected_item.name}', 'success')
+            flash(f'Организация изменена на: {selected_item.full_name}', 'success')
             
         # elif item_type == 'higher_organization':
         #     selected_item = HigherOrganization.query.filter_by(id=item_id).first()

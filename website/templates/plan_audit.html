@@ -192,8 +192,12 @@ can_audit %}
     <hr />
     <h1 class="name">{{ _('Предприятие') }}</h1>
 
-    {% set org = none %} {% if plan.organization %} {% set org =
-    plan.organization.name %} {% endif %} {% if org %}
+    {% set org = none %} 
+    {% if plan.organization %} 
+      {% set org = plan.organization.full_name %} 
+    {% endif %} 
+    
+    {% if org %}
     <div class="app-group">
       <label>{{ _('Наименование') }}</label>
       <div class="input-with-icon">

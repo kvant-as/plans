@@ -420,7 +420,7 @@ class MinistryView(SecureModelView):
 
 
 class NewsView(SecureModelView):
-    column_list = ['id', 'title', 'is_published', 'published_at', 'views_count', 'created_time']
+    column_list = ['id', 'title', 'is_published', 'published_at', 'views_count', 'is_enplans', 'is_erespondentn', 'created_time']
     column_default_sort = ('id', True)
     column_sortable_list = ('id', 'title', 'is_published', 'published_at', 'views_count', 'created_time')
     can_delete = True

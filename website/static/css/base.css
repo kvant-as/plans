@@ -348,7 +348,7 @@ body {
   margin: 0;
   z-index: 1000;
   height: 60px;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   width: var(--default-width);
   max-width: 1900px;
   padding: 0 var(--default-padding-x);
@@ -358,9 +358,9 @@ body {
 
 }
 
-.fixed-header * {
+/* .fixed-header * {
   transition: all var(--animation-speed) var(--animation-easing);
-}
+} */
 
 .fixed-header.bubble {
   background: var(--bubble-bg-color);
@@ -371,7 +371,7 @@ body {
   width: var(--bubble-width);
   border-radius: var(--bubble-border-radius);
   top: var(--bubble-top);
-  max-width: 1250px;
+
   box-sizing: border-box;
 }
 
@@ -435,7 +435,7 @@ body {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  max-width: 2000px;
+  /* max-width: 2000px; */
 }
 
 .header-aside {
