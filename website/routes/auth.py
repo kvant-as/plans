@@ -34,7 +34,7 @@ def user_without_param():
             has_required_fields = (
                 current_user.last_name and
                 current_user.first_name and
-                current_user.phone
+                current_user.telephone
             )
             
             has_entity = (
@@ -59,7 +59,7 @@ def user_with_all_params():
             all_required_filled = (
                 current_user.last_name and
                 current_user.first_name and
-                current_user.phone
+                current_user.telephone
             )
             
             if not all_required_filled:
@@ -97,7 +97,7 @@ def login():
                 if (
                     not user.last_name or
                     not user.first_name or
-                    not user.phone
+                    not user.telephone
                 ):  
                     flash("Необходимо заполнить обязательные парамметры", "error")
                     return redirect(url_for('auth.param'))
@@ -165,25 +165,25 @@ def param():
         first_name = request.form.get('first_name')
         last_name = request.form.get('last_name')
         patronymic_name = request.form.get('patronymic_name')
-        phone = request.form.get('phone')
+        telephone = request.form.get('telephone')
         post = request.form.get('post')
         organization_id = request.form.get('organization_id')
         user_type = request.form.get('entity_type')
         from ..user import add_param
-        return add_param(first_name, last_name, patronymic_name, phone, organization_id, user_type, post)
+        return add_param(first_name, last_name, patronymic_name, telephone, organization_id, user_type, post)
     
 @auth.route('/edit-param', methods=['POST'])
 def edit_param():
     first_name = request.form.get('first_name')
     last_name = request.form.get('last_name')
     patronymic_name = request.form.get('patronymic_name')
-    phone = request.form.get('phone')
+    telephone = request.form.get('telephone')
     post = request.form.get('post')
 
     current_user.first_name = first_name
     current_user.last_name = last_name
     current_user.patronymic_name = patronymic_name
-    current_user.phone = phone
+    current_user.telephone = telephone
     current_user.post = post
     db.session.commit()
 

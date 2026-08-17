@@ -674,7 +674,7 @@ const formSteps = {
     const step2 = document.querySelector('.auth-step-2');
     const nextBtn = document.getElementById('next-btn');
     const prevBtn = document.getElementById('prev-btn');
-    const requiredFields = ['#name', '#secondname', '#phone'];
+    const requiredFields = ['#name', '#secondname', '#telephone'];
 
     if (!step1 || !step2 || !nextBtn) return;
 
@@ -1847,7 +1847,7 @@ class MultiStepForm {
     }
 
     setupStep1Validation() {
-        const requiredFields = ['#name', '#secondname', '#phone'];
+        const requiredFields = ['#name', '#secondname', '#telephone'];
         requiredFields.forEach(selector => {
             const input = document.querySelector(selector);
             if (input) {
@@ -1871,7 +1871,7 @@ class MultiStepForm {
     }
 
     validateStep1() {
-        const requiredFields = ['secondname', 'name', 'phone'];
+        const requiredFields = ['secondname', 'name', 'telephone'];
         return requiredFields.every(fieldId => {
             const input = document.getElementById(fieldId);
             return input && input.value.trim() !== '';
@@ -2122,7 +2122,7 @@ class MultiStepForm {
     }
 }
 
-class TicketInfo {
+class PlanTicketInfo {
     constructor(options = {}) {
         this.options = {
             animationDuration: 300,
@@ -2219,8 +2219,8 @@ class TicketInfo {
                     <div class="ticket-info-item">
                         <span class="ticket-info-label">Телефон</span>
                         <span class="ticket-info-value">
-                            <a href="tel:${data.user_phone}" class="ticket-info-link">
-                                ${data.user_phone || '---'}
+                            <a href="tel:${data.user_telephone}" class="ticket-info-link">
+                                ${data.user_telephone || '---'}
                             </a>
                         </span>
                     </div>
@@ -2378,7 +2378,7 @@ class TicketInfo {
     }
 }
 
-window.TicketInfo = TicketInfo;
+window.PlanTicketInfo = PlanTicketInfo;
 
 function initSections() {
     const sections = document.querySelectorAll('.user-info-section:not([data-initialized])');
@@ -2516,7 +2516,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (document.querySelectorAll('.tickets-container')) {
-        window.TicketInfo = TicketInfo;
+        window.PlanTicketInfo = PlanTicketInfo;
     }
     
     initSections();

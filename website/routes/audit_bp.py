@@ -13,7 +13,8 @@ import os
 
 from website.routes.views import owner_only
 from website.sessions import session_required
-from website.models import Plan, Ticket, PlanApprovalPath, TimeByMinsk
+from ..time import TimeByMinsk
+from website.models import Plan, PlanTicket, PlanApprovalPath
 from website import db
 from .auth import user_with_all_params
         
@@ -37,7 +38,7 @@ def print_tickets(token):
             flash('План не найден', 'error')
             return redirect(request.referrer)
         
-        tickets = Ticket.query.filter_by(plan_id=current_plan.id).order_by(Ticket.begin_time.asc()).all()
+        tickets = PlanTicket.query.filter_by(plan_id=current_plan.id).order_by(PlanTicket.begin_time.asc()).all()
         
         if not tickets:
             flash('Нет квитанций для печати', 'error')
@@ -207,7 +208,7 @@ def create_ticket(token):
     
     current_plan.afch = True
     
-    new_ticket = Ticket(
+    new_ticket = PlanTicket(
         note=note.strip(),
         luck=False,
         plan_id=current_plan.id,

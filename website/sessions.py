@@ -5,7 +5,7 @@ from functools import wraps
 from datetime import datetime, timedelta
 from user_agents import parse
 import requests
-from .models import TimeByMinsk
+from .time import TimeByMinsk
 
 JWT_ALGORITHM = 'HS256'
 SESSION_COOKIE_NAME = 'session_token'

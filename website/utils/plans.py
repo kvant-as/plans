@@ -5,7 +5,9 @@ from venv import logger
 from flask_login import current_user
 
 from .. import db
-from ..models import Direction, Organization, Plan, PlanColumnConfig, Ticket, Indicator, Event, IndicatorUsage, Notification,PlanApprovalPath, TimeByMinsk
+from ..models import Direction, Organization, Plan, PlanColumnConfig, PlanTicket, Indicator, Event, IndicatorUsage, Notification, PlanApprovalPath
+
+from ..time import TimeByMinsk
 
 from sqlalchemy import func, or_
 
@@ -154,7 +156,7 @@ def get_column_configs_for_plan(plan):
 
 def update_ChangeTimePlan(id):
     def owner_ticket(plan):
-        new_ticket = Ticket(
+        new_ticket = PlanTicket(
             note='Внесение изменений пользователем.',
             luck = True,
             is_system = True,

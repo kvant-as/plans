@@ -1,7 +1,7 @@
 from datetime import timedelta
 from flask import current_app
 from flask_login import current_user
-from ..models import db, Plan, Ticket, Notification, PlanApprovalPath, Organization, TimeByMinsk
+from ..models import db, Plan, PlanTicket, Notification, PlanApprovalPath, Organization, TimeByMinsk
   
 def handle_draft_status(plan):
     try:
@@ -238,7 +238,7 @@ def handle_sent_without_check_status(plan, current_user):
                 current_path.is_viewed = False
                 current_path.viewed_at = None
                 
-                ticket = Ticket(
+                ticket = PlanTicket(
                     note="Проверка отменена. План возвращен на этап рассмотрения.",
                     luck=True,
                     is_system=True,
@@ -258,7 +258,7 @@ def handle_sent_without_check_status(plan, current_user):
                 {'is_viewed': False, 'viewed_at': None}
             )
             
-            ticket = Ticket(
+            ticket = PlanTicket(
                 note="Отмена изменений. Все шаги согласования сброшены, план возвращен в изначальный статус.",
                 luck=True,
                 is_system=True,
@@ -295,7 +295,7 @@ def handle_error_status(plan):
         plan.is_approved = False
         plan.afch = False
 
-        ticket = Ticket(
+        ticket = PlanTicket(
             note="В плане нашли ошибки, статус изменен на Есть ошибки.",
             luck=True,
             plan_id=plan.id,
@@ -360,7 +360,7 @@ def handle_approved_status(plan, current_user):
             plan.is_sent = False
             plan.is_error = False
             
-            ticket = Ticket(
+            ticket = PlanTicket(
                 note="План согласован и утвержден",
                 luck=True,
                 is_system=True,
@@ -379,7 +379,7 @@ def handle_approved_status(plan, current_user):
             
             message = "План полностью согласован и утвержден"
         else:
-            ticket = Ticket(
+            ticket = PlanTicket(
                 note="План был согласован и передан в следующую стадию проверки.",
                 luck=True,
                 user_id=current_user.id,

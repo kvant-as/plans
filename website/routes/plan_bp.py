@@ -16,7 +16,7 @@ from website.user import send_email
 from website.utils.event import process_event_data, create_event_record, update_double_effect_payback
 
 from .. import db
-from ..models import Direction, Indicator, IndicatorUsage, Notification, Plan, PlanApprovalPath, PlanColumnConfig, Ticket, Event, Organization
+from ..models import Direction, Indicator, IndicatorUsage, Notification, Plan, PlanApprovalPath, PlanColumnConfig, PlanTicket, Event, Organization
 
 import logging
 from sqlalchemy.exc import SQLAlchemyError

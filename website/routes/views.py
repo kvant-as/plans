@@ -16,7 +16,7 @@ from website.utils.currency_rates import fetch_usd_rate_from_any_source
 from website.utils.plans import get_column_configs_for_plan, to_decimal_1, to_decimal_2, update_ChangeTimePlan
 from website.sessions import session_required
 
-from ..models import News, PlanColumnConfig, User, Organization, Plan, Ticket, Indicator, IndicatorUsage
+from ..models import News, PlanColumnConfig, User, Organization, Plan, PlanTicket, Indicator, IndicatorUsage
 from .. import db
 
 from functools import wraps
@@ -609,7 +609,7 @@ def stats():
 @views.route('/api/ticket/<int:ticket_id>/details')
 @login_required
 def get_ticket_details(ticket_id):
-    ticket = Ticket.query.get_or_404(ticket_id)
+    ticket = PlanTicket.query.get_or_404(ticket_id)
     
     plan = ticket.plan
     if not plan:
@@ -629,7 +629,7 @@ def get_ticket_details(ticket_id):
         user_data = {
             'user_fio': user_fio,
             'user_email': user.email.strip() if user.email and user.email.strip() else 'Не указано',
-            'user_phone': user.phone.strip() if user.phone and user.phone.strip() else 'Не указано'
+            'user_telephone': user.telephone.strip() if user.telephone and user.telephone.strip() else 'Не указано'
         }
     
     return jsonify({

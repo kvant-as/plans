@@ -86,7 +86,7 @@ def api_news():
         query = query.filter(News.published_at <= current_time, News.published_at.isnot(None))
 
     if sort_by == 'date':
-        query = query.order_by(News.published_at.desc().nullslast(), News.created_at.desc())
+        query = query.order_by(News.published_at.desc().nullslast(), News.created_time.desc())
     elif sort_by == 'views':
         query = query.order_by(News.views_count.desc().nullslast(), News.published_at.desc().nullslast())
     
@@ -99,8 +99,8 @@ def api_news():
             'title': n.title,
             'content': n.content,
             'image_url': n.image_url,
-            'published_at': n.published_at.isoformat() if n.published_at else n.created_at.isoformat(),
-            'created_at': n.created_at.isoformat(),
+            'published_at': n.published_at.isoformat() if n.published_at else n.created_time.isoformat(),
+            'created_at': n.created_time.isoformat(),
             'views_count': n.views_count or 0,
             'is_published': n.published_at is not None and n.published_at <= current_time
         } for n in pagination.items],
@@ -158,7 +158,7 @@ def get_organizations_api():
         if search_query:
             query = query.filter(
                 db.or_(
-                    Organization.name.ilike(f"%{search_query}%"),
+                    Organization.full_name.ilike(f"%{search_query}%"),
                     Organization.okpo.ilike(f"%{search_query}%"),
                     Organization.ynp.ilike(f"%{search_query}%")
                 )
@@ -171,7 +171,7 @@ def get_organizations_api():
             "organizations": [
                 {
                     "id": org.id,
-                    "name": org.name,
+                    "name": org.full_name,
                     "okpo": org.okpo or "",
                     "ynp": org.ynp or "",
                 }

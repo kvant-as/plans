@@ -15,6 +15,7 @@ from flask_talisman import Talisman
 from website.logs import setup_logging
 
 from .database import create_database
+from common_models.src import db
 
 load_dotenv()
 
@@ -44,7 +45,7 @@ babel = Babel(
     timezone_selector=get_timezone
 )
 
-db = SQLAlchemy()
+# db = SQLAlchemy()
 socketio = SocketIO()
 bcrypt = Bcrypt()
 login_manager = LoginManager()
