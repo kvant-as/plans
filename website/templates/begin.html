@@ -51,7 +51,7 @@
       <div class="news-card-large">
         <div class="news-card-large-content">
           <h2>{{ latest_news.title }}</h2>
-          <p>{{ latest_news.content[:200] }}{% if latest_news.content|length > 200 %}...{% endif %}</p>
+          <p>{{ latest_news.text[:200] }}{% if latest_news.text|length > 200 %}...{% endif %}</p>
           <div class="news-meta">
             <span class="news-date">
               {{ latest_news.published_at | ru_date }}
@@ -64,9 +64,9 @@
             </a>
           </div>
         </div>
-        {% if latest_news.image_url %}
+        {% if latest_news.img_name %}
         <div class="news-card-large-image">
-          <img src="{{ url_for('static', filename='img/news/' + latest_news.image_url) }}" alt="{{ latest_news.title }}">
+          <img src="{{ url_for('static', filename='img/news/' + latest_news.img_name) }}" alt="{{ latest_news.title }}">
         </div>
         {% endif %}
       </div>

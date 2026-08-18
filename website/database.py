@@ -1,10 +1,4 @@
-import os
-from dbfread import DBF
 from flask import current_app
-import pandas as pd
-from werkzeug.security import generate_password_hash
-
-from website.time import TimeByMinsk
 
 def create_database(app, db):
     with app.app_context():
@@ -14,118 +8,100 @@ def create_database(app, db):
         filling_database(db)
 
 
-def is_db_empty():
-    from .models import User
-    return all([
-        User.query.count() == 0,
-    ])
+# def is_db_empty():
+#     from .models import User
+#     return all([
+#         User.query.count() == 0,
+#     ])
 
 
-def read_dbf(file_path, columns):
-    data = []
-    for record in DBF(file_path):
-        row = {col: record[col] for col in columns}
-        data.append(row)
-    return data
+# def read_dbf(file_path, columns):
+#     data = []
+#     for record in DBF(file_path):
+#         row = {col: record[col] for col in columns}
+#         data.append(row)
+#     return data
 
 
-def import_stat_files(db):
-    from .models import StatPlan
-    from website.utils.stat_import import save_parsed_report, find_organization_by_okpo, OrganizationNotFoundError
-    from website.utils.stat_parse import parse_stat_file, extract_okpo_from_filename
+# def import_stat_files(db):
+#     from .models import StatPlan
+#     from website.utils.stat_import import save_parsed_report, find_organization_by_okpo, OrganizationNotFoundError
+#     from website.utils.stat_parse import parse_stat_file, extract_okpo_from_filename
     
-    stats_dir = os.path.join('website', 'static', 'files', 'stats')
+#     stats_dir = os.path.join('website', 'static', 'files', 'stats')
     
-    if not os.path.exists(stats_dir):
-        current_app.logger.warning(f'Папка со статистикой не найдена: {stats_dir}')
-        return
+#     if not os.path.exists(stats_dir):
+#         current_app.logger.warning(f'Папка со статистикой не найдена: {stats_dir}')
+#         return
     
-    existing_reports = StatPlan.query.count()
-    if existing_reports > 0:
-        current_app.logger.info(f'В БД уже есть {existing_reports} отчётов. Пропускаем импорт статистики.')
-        return
+#     existing_reports = StatPlan.query.count()
+#     if existing_reports > 0:
+#         current_app.logger.info(f'В БД уже есть {existing_reports} отчётов. Пропускаем импорт статистики.')
+#         return
     
-    stat_files = []
-    for filename in os.listdir(stats_dir):
-        if filename.lower().endswith(('.xlsx', '.xls')) and not filename.startswith('~$'):
-            file_path = os.path.join(stats_dir, filename)
-            stat_files.append((file_path, filename))
+#     stat_files = []
+#     for filename in os.listdir(stats_dir):
+#         if filename.lower().endswith(('.xlsx', '.xls')) and not filename.startswith('~$'):
+#             file_path = os.path.join(stats_dir, filename)
+#             stat_files.append((file_path, filename))
     
-    if not stat_files:
-        current_app.logger.warning('Нет файлов статистики для импорта')
-        return
+#     if not stat_files:
+#         current_app.logger.warning('Нет файлов статистики для импорта')
+#         return
     
-    current_app.logger.info(f'Найдено {len(stat_files)} файлов статистики для импорта')
+#     current_app.logger.info(f'Найдено {len(stat_files)} файлов статистики для импорта')
     
-    imported_count = 0
-    error_count = 0
+#     imported_count = 0
+#     error_count = 0
     
-    for file_path, filename in stat_files:
-        try:
-            current_app.logger.info(f'Импорт файла: {filename}')
+#     for file_path, filename in stat_files:
+#         try:
+#             current_app.logger.info(f'Импорт файла: {filename}')
             
-            parsed = parse_stat_file(file_path, filename)
+#             parsed = parse_stat_file(file_path, filename)
             
-            okpo = extract_okpo_from_filename(filename)
-            org = find_organization_by_okpo(okpo)
+#             okpo = extract_okpo_from_filename(filename)
+#             org = find_organization_by_okpo(okpo)
             
-            if org is None:
-                current_app.logger.warning(
-                    f'Организация с ОКПО "{okpo}" не найдена. '
-                    f'Файл: {filename}'
-                )
-                error_count += 1
-                continue
+#             if org is None:
+#                 current_app.logger.warning(
+#                     f'Организация с ОКПО "{okpo}" не найдена. '
+#                     f'Файл: {filename}'
+#                 )
+#                 error_count += 1
+#                 continue
 
-            report = save_parsed_report(
-                parsed=parsed,
-                organization_id=org.id,
-                db=db,
-                uploaded_by_id=None,
-                replace=True
-            )
+#             report = save_parsed_report(
+#                 parsed=parsed,
+#                 organization_id=org.id,
+#                 db=db,
+#                 uploaded_by_id=None,
+#                 replace=True
+#             )
             
-            imported_count += 1
-            current_app.logger.info(
-                f'Успешно импортирован отчёт {parsed.type} для организации {org.name}'
-            )
+#             imported_count += 1
+#             current_app.logger.info(
+#                 f'Успешно импортирован отчёт {parsed.type} для организации {org.name}'
+#             )
             
-        except OrganizationNotFoundError as e:
-            current_app.logger.warning(f'Ошибка: {str(e)}. Файл: {filename}')
-            error_count += 1
-            db.session.rollback()
-        except Exception as e:
-            current_app.logger.error(f'Ошибка при импорте файла {filename}: {str(e)}')
-            error_count += 1
-            db.session.rollback()
+#         except OrganizationNotFoundError as e:
+#             current_app.logger.warning(f'Ошибка: {str(e)}. Файл: {filename}')
+#             error_count += 1
+#             db.session.rollback()
+#         except Exception as e:
+#             current_app.logger.error(f'Ошибка при импорте файла {filename}: {str(e)}')
+#             error_count += 1
+#             db.session.rollback()
     
-    current_app.logger.info(
-        f'Импорт статистики завершён: импортировано {imported_count} отчётов, '
-        f'ошибок: {error_count}'
-    )
+#     current_app.logger.info(
+#         f'Импорт статистики завершён: импортировано {imported_count} отчётов, '
+#         f'ошибок: {error_count}'
+#     )
 
 def filling_database(db):
     # if is_db_empty():
     #     from .models import User, Organization, Unit, Direction, Indicator, Region, News
     #     current_app.logger.debug('Filling is in progress...')
-
-    #     ### REGION DATA ###
-    #     region_data = [
-    #         (1, 'Брестская область'),
-    #         (2, 'Витебская область'),
-    #         (3, 'Гомельская область'),
-    #         (4, 'Гродненская область'),
-    #         (5, 'г. Минск'),
-    #         (6, 'Минская область'),
-    #         (7, 'Могилевская область'),
-    #     ]
-
-    #     for number, name in region_data:
-    #         new_region = Region(number=number, name=name)
-    #         db.session.add(new_region)
-
-    #     db.session.commit()
-    #     ### ----------- ###
 
     #     ### ORGANIZATION DATA ###
     #     def load_organizations_from_excel():
@@ -265,10 +241,10 @@ def filling_database(db):
 
     #     def assign_region_management_to_organizations():
     #         try:
-    #             search_pattern = '%управление по надзору за рациональным использованием топливно-энергетических ресурсов%'
+    #             search_pattern = '%управление по надзору за рациональным использованием ТЭР%'
                 
     #             organizations = Organization.query.filter(
-    #                 Organization.name.ilike(search_pattern),
+    #                 organization.full_name.ilike(search_pattern),
     #                 Organization.is_region_management == False
     #             ).all()
                 
@@ -591,7 +567,7 @@ def filling_database(db):
     #         'EnPlans - инструмент для управления энергосбережением. Начинаем тестирование системы, которая автоматизирует создание планов мероприятий, контроль их исполнения и подготовку аналитики по энергоэффективности организаций. Перед началом работы ознакомьтесь с руководством пользователя в разделе Помощь.', 
     #         'update_v2.png', 
     #         True, 
-    #         TimeByMinsk(), 
+    #         current_utc_time(), 
     #         1),
     #     ]
 

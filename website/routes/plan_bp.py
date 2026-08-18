@@ -6,7 +6,7 @@ from flask_login import (
     current_user, login_required 
 )
 
-from website.time import TimeByMinsk
+from common_models.src import current_utc_time
 from website.utils.plans import check_and_create_period_directions, generate_unique_display_code, other_data_indicatorUpdate, to_decimal_1, to_decimal_2, to_decimal_3, update_ChangeTimePlan
 from website.routes.auth import user_with_all_params
 from website.routes.views import owner_only

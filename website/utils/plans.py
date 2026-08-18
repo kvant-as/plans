@@ -7,7 +7,7 @@ from flask_login import current_user
 from .. import db
 from ..models import Direction, Organization, Plan, PlanColumnConfig, PlanTicket, Indicator, Event, IndicatorUsage, Notification, PlanApprovalPath
 
-from ..time import TimeByMinsk
+from common_models.src import current_utc_time
 
 from sqlalchemy import func, or_
 
@@ -130,7 +130,7 @@ def generate_unique_display_code(base_code, plan_id, direction_id):
 
 def get_column_configs_for_plan(plan):
     plan_year = plan.year
-    current_year = TimeByMinsk().year
+    current_year = current_utc_time().year
     
     if plan_year > current_year:
         labels = ['прогноз', 'прогноз', 'прогноз']
@@ -161,7 +161,7 @@ def update_ChangeTimePlan(id):
             luck = True,
             is_system = True,
             plan_id=plan.id,
-            begin_time=TimeByMinsk()
+            begin_time=current_utc_time()
         )
 
         db.session.add(new_ticket)
@@ -173,7 +173,7 @@ def update_ChangeTimePlan(id):
     if not plan:
         return 
     
-    plan.change_time = TimeByMinsk()
+    plan.change_time = current_utc_time()
     plan.is_draft = True   
     plan.is_control = False  
     plan.is_sent = False      
@@ -247,7 +247,7 @@ def get_filtered_plans(user, status_filter="all", year_filter="all", search_name
             base_query = base_query.join(Organization, Plan.org_id == Organization.id)
             
             if search_name:
-                base_query = base_query.filter(Organization.name.ilike(f'%{search_name}%'))
+                base_query = base_query.filter(organization.full_name.ilike(f'%{search_name}%'))
             
             if search_ynp:
                 base_query = base_query.filter(Organization.ynp.ilike(f'%{search_ynp}%'))

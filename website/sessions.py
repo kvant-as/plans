@@ -5,7 +5,7 @@ from functools import wraps
 from datetime import datetime, timedelta
 from user_agents import parse
 import requests
-from .time import TimeByMinsk
+from common_models.src import current_utc_time
 
 JWT_ALGORITHM = 'HS256'
 SESSION_COOKIE_NAME = 'session_token'
@@ -21,7 +21,7 @@ def create_session_token(user):
     user_agent = parse(ua_string)
     
     ip = request.remote_addr or '127.0.0.1'
-    now = TimeByMinsk()
+    now = current_utc_time()
     
     payload = {
         'user_id': user.id,
@@ -90,7 +90,7 @@ def update_session_activity(token):
             options={"verify_exp": False}
         )
         
-        payload['last_active'] = TimeByMinsk().isoformat()
+        payload['last_active'] = current_utc_time().isoformat()
         
         new_token = jwt.encode(
             payload,
@@ -134,7 +134,7 @@ def session_required(view_func):
             return force_logout()
         
         last_active = datetime.fromisoformat(session_data['last_active'])
-        current_time = TimeByMinsk()
+        current_time = current_utc_time()
         
         if hasattr(current_time, 'tzinfo') and current_time.tzinfo is not None:
             current_time = current_time.replace(tzinfo=None)
@@ -147,7 +147,7 @@ def session_required(view_func):
         if time_diff > session_timeout:
             return force_logout()
         
-        user.last_active = TimeByMinsk()
+        user.last_active = current_utc_time()
         db.session.commit()
 
         new_token = update_session_activity(token)

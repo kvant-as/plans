@@ -11,7 +11,7 @@ from website.models import (
     Notification, StatPlan, StatPlanValue, Chat, ChatMessage
 )
 
-from ..time import TimeByMinsk
+from common_models.src import current_utc_time
 
 from sqlalchemy.exc import SQLAlchemyError
 
@@ -97,7 +97,7 @@ class MyMainView(AdminIndexView):
         try:
             user_data = User.query.count()
             organization_data = Organization.query.count()
-            now = TimeByMinsk()
+            now = current_utc_time()
             threshold = now - timedelta(minutes=3)
             active_users = User.query.filter(User.last_active >= threshold).count()
             week_ago = now - timedelta(days=7)
@@ -236,7 +236,7 @@ class UserView(SecureModelView):
     export_max_rows = 500
     export_types = ['csv']
     form_columns = ['email', 'last_name', 'first_name', 'patronymic_name', 
-                    'post', 'telephone', 'organization', 'password', 
+                    'post', 'telephone', 'organization', 
                     'is_admin', 'is_auditor']
     form_args = {
         'email': {
@@ -268,23 +268,13 @@ class UserView(SecureModelView):
             'label': 'Телефон',
             'validators': [Length(max=20)],
             'description': 'Введите номер телефона'
-        },
-        'password': {
-            'label': 'Пароль',
-            'validators': [Length(min=4)],
-            'description': 'Введите новый пароль (оставьте пустым, чтобы не менять)'
-        }
-    }
-    form_widget_args = {
-        'password': {
-            'placeholder': 'Оставьте пустым, чтобы не менять пароль'
         }
     }
     form_extra_fields = {
-        'confirm_password': PasswordField(
-            'Подтверждение пароля',
-            validators=[Length(min=4)],
-            description='Повторите пароль для подтверждения'
+        'password': PasswordField(
+            'Пароль',
+            validators=[DataRequired(), Length(min=6)],
+            description='Введите пароль для нового пользователя'
         )
     }
     column_exclude_list = ['password', 'reset_password_token', 'reset_password_expires']
@@ -299,52 +289,45 @@ class UserView(SecureModelView):
     }
 
     def on_model_change(self, form, model, is_created):
-        password = form.password.data
-        confirm_password = form.confirm_password.data if hasattr(form, 'confirm_password') else None
         if is_created:
+            password = form.password.data
             if not password:
                 flash('При создании пользователя необходимо указать пароль!', 'error')
                 raise ValueError('Пароль обязателен при создании пользователя')
             model.password = generate_password_hash(password)
-        elif password:
-            if confirm_password and password != confirm_password:
-                flash('Пароли не совпадают!', 'error')
-                raise ValueError('Пароли не совпадают')
-            model.password = generate_password_hash(password)
 
         model.last_active = datetime.utcnow()
+        
         if model.is_admin or model.is_auditor:
             model.organization_id = None
 
-    def on_form_prefill(self, form, id):
-        user = User.query.get(id)
-        form.password.data = ''
-        if hasattr(form, 'confirm_password'):
-            form.confirm_password.data = ''
-        form._old_password = user.password if user else ''
-
     def get_edit_form(self):
         form = super().get_edit_form()
-        form.password.validators = [Length(min=6)]
-        form.password.description = 'Введите новый пароль (оставьте пустым, чтобы не менять)'
+        if hasattr(form, 'password'):
+            form.password = None
         return form
 
     def get_create_form(self):
         form = super().get_create_form()
-        form.password.validators = [DataRequired(), Length(min=6)]
-        form.password.description = 'Введите пароль для нового пользователя'
+        if not hasattr(form, 'password'):
+            from wtforms import PasswordField
+            form.password = PasswordField(
+                'Пароль',
+                validators=[DataRequired(), Length(min=6)],
+                description='Введите пароль для нового пользователя'
+            )
         return form
 
 
 class OrganizationView(SecureModelView):
-    column_list = ['id', 'full_name', 'okpo', 'ynp', 'is_active', 'users']
+    column_list = ['id', 'full_name', 'okpo', 'ynp', 'region', 'ministry', 'is_active', 'is_regular', 'is_coordinator', 'is_approver', 'is_region_management', 'users']
     column_default_sort = ('id', True)
-    column_sortable_list = ('id', 'full_name', 'okpo', 'is_active')
+    column_sortable_list = ('id', 'full_name', 'is_active', 'is_regular', 'is_coordinator', 'is_approver', 'is_region_management')
     can_delete = True
     can_create = True
     can_edit = True
     can_export = True
-    form_columns = ['full_name', 'okpo', 'ynp', 'is_active']
+    form_columns = ['full_name', 'okpo', 'ynp', 'region_id', 'ministry_id', 'is_active', 'is_regular', 'is_coordinator', 'is_approver', 'is_region_management']
     form_args = {
         'full_name': {
             'label': 'Полное наименование',
@@ -361,18 +344,78 @@ class OrganizationView(SecureModelView):
             'validators': [Length(max=20)],
             'description': 'Учетный номер плательщика'
         },
+        'region_id': {
+            'label': 'Регион',
+            'validators': [DataRequired()],
+            'description': 'Выберите регион организации'
+        },
+        'ministry_id': {
+            'label': 'Министерство',
+            'validators': [],
+            'description': 'Выберите министерство (необязательно)'
+        },
         'is_active': {
             'label': 'Активна',
             'description': 'Активна ли организация'
+        },
+        'is_regular': {
+            'label': 'Регулярная',
+            'description': 'Является ли организация регулярной'
+        },
+        'is_coordinator': {
+            'label': 'Координатор',
+            'description': 'Является ли организация координатором'
+        },
+        'is_approver': {
+            'label': 'Утверждающая',
+            'description': 'Является ли организация утверждающей'
+        },
+        'is_region_management': {
+            'label': 'Региональное управление',
+            'description': 'Является ли организация региональным управлением'
         }
     }
     column_searchable_list = ['full_name', 'okpo', 'ynp']
-    column_filters = ['id', 'is_active']
+    column_filters = ['id', 'is_active', 'region_id', 'ministry_id', 'is_regular', 'is_coordinator', 'is_approver', 'is_region_management']
     column_formatters = {
         'is_active': lambda v, c, m, p: '✅' if m.is_active else '❌',
-        'users': lambda v, c, m, p: f'{len(m.users)} пользователей' if m.users else 'Нет пользователей'
+        'is_regular': lambda v, c, m, p: '✅' if m.is_regular else '❌',
+        'is_coordinator': lambda v, c, m, p: '✅' if m.is_coordinator else '❌',
+        'is_approver': lambda v, c, m, p: '✅' if m.is_approver else '❌',
+        'is_region_management': lambda v, c, m, p: '✅' if m.is_region_management else '❌',
+        'users': lambda v, c, m, p: f'{len(m.users)} пользователей' if m.users else 'Нет пользователей',
+        'region': lambda v, c, m, p: m.region.name if m.region else 'Не назначен',
+        'ministry': lambda v, c, m, p: m.ministry.name if m.ministry else 'Не назначено'
     }
 
+    def get_form(self):
+        form = super().get_form()
+        from wtforms import SelectField
+        from website.models import Region, Ministry
+        
+        regions = Region.query.order_by(Region.name).all()
+        region_choices = [(r.id, r.name) for r in regions]
+        
+        ministries = Ministry.query.order_by(Ministry.name).all()
+        ministry_choices = [(r.id, r.name) for r in ministries]
+        ministry_choices.insert(0, ('', 'Не выбрано'))
+        
+        form.region_id = SelectField(
+            'Регион',
+            validators=[DataRequired()],
+            choices=region_choices,
+            description='Выберите регион организации'
+        )
+        
+        form.ministry_id = SelectField(
+            'Министерство',
+            validators=[],
+            choices=ministry_choices,
+            description='Выберите министерство (необязательно)',
+            default=''
+        )
+        
+        return form
 
 class RegionView(SecureModelView):
     column_list = ['id', 'number', 'name']

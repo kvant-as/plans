@@ -13,7 +13,7 @@ from flask_login import (
     current_user, login_required
 )
 
-from ..time import TimeByMinsk
+from common_models.src import current_utc_time
 from website.utils.currency_rates import fetch_usd_rate_from_any_source
 from website.utils.plans import get_column_configs_for_plan, to_decimal_1, to_decimal_2, update_ChangeTimePlan
 from website.sessions import session_required
@@ -464,7 +464,7 @@ def create_plan():
         flash('Новый план создан', 'success')
         return redirect(url_for('views.plans'))
     
-    current_time = TimeByMinsk()
+    current_time = current_utc_time()
     next_year = current_time.year + 1
 
     return render_template('create_plan.html', hide_header=False, next_year=next_year)
@@ -636,7 +636,7 @@ def get_ticket_details(ticket_id):
     
     return jsonify({
         'id': ticket.id,
-        'organization': ticket.user.organization.name if ticket.user and ticket.user.organization else 'Система',
+        'organization': ticket.user.organization.full_name if ticket.user and ticket.user.organization else 'Система',
         'luck': ticket.luck,
         'note': ticket.note or '',
         'time': ticket.begin_time.strftime('%H:%M') if ticket.begin_time else '--:--',
@@ -659,7 +659,7 @@ def begin_page():
     plan_data = Plan.query.count()
     
     latest_news = News.query.filter(
-        News.published_at <= TimeByMinsk(),
+        News.published_at <= current_utc_time(),
         News.published_at.isnot(None)
     ).order_by(News.published_at.desc()).first()
     

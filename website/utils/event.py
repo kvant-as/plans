@@ -2,7 +2,7 @@ import logging
 from flask import current_app
 from .currency_rates import get_usd_rate_with_fallback, update_plan_rates
 from .plans import to_decimal_2, to_decimal_1, generate_unique_display_code
-from ..time import TimeByMinsk
+from common_models.src import current_utc_time
 from website.models import Direction, Organization, Plan, PlanTicket, Indicator, Event, IndicatorUsage, Notification
 from .. import db
 

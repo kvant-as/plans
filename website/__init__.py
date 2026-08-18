@@ -3,12 +3,11 @@ from dotenv import load_dotenv
 
 from flask import Flask, flash, render_template, session, request, g, redirect, url_for
 from flask_babel import Babel
-from flask_sqlalchemy import SQLAlchemy
 from flask_socketio import SocketIO
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, current_user
 from flask_migrate import Migrate
-from flask_babel import format_date, format_datetime
+from flask_babel import format_date
 from flask_wtf.csrf import CSRFProtect
 from flask_talisman import Talisman
 
@@ -45,7 +44,6 @@ babel = Babel(
     timezone_selector=get_timezone
 )
 
-# db = SQLAlchemy()
 socketio = SocketIO()
 bcrypt = Bcrypt()
 login_manager = LoginManager()
@@ -54,7 +52,7 @@ csrf = CSRFProtect()
 
 def create_app():
     app = Flask(__name__, static_url_path='/static')
-    from itsdangerous import URLSafeSerializer, BadSignature
+    from itsdangerous import URLSafeSerializer
     s = URLSafeSerializer(os.getenv('SECRET_KEY'))
     app.config.update(
         SECRET_KEY=os.getenv('SECRET_KEY'),
@@ -69,12 +67,9 @@ def create_app():
         BABEL_DEFAULT_LOCALE='ru',
         SEND_FILE_MAX_AGE_DEFAULT=0,
         SESSION_COOKIE_NAME=os.getenv('SESSION_COOKIE_NAME'),
-
         EXCLUDE_INFO_LOGS=os.getenv('EXCLUDE_INFO_LOGS'),
-
         AI_API_URL=os.getenv('AI_API_URL'),
         AI_X_API_KEY=os.getenv('AI_X_API_KEY'),
-        
         LOG_LEVEL='DEBUG'
     )
 
@@ -102,6 +97,7 @@ def create_app():
     from .routes.api_bp import api_bp
     from .routes.audit_bp import audit_bp
     from .routes.stat_bp import bp as stat_bp
+    from .routes.db_bp import db_bp
     
     app.register_blueprint(views, url_prefix='/')
     app.register_blueprint(auth, url_prefix='/')
@@ -110,6 +106,7 @@ def create_app():
     app.register_blueprint(api_bp, url_prefix='/api')
     app.register_blueprint(audit_bp, url_prefix='/')
     app.register_blueprint(stat_bp, url_prefix='/stat-reports')
+    app.register_blueprint(db_bp, url_prefix='/database')
     
     with app.app_context():
         from .routes.admin import AdminSetup

@@ -13,7 +13,7 @@ import os
 
 from website.routes.views import owner_only
 from website.sessions import session_required
-from ..time import TimeByMinsk
+from common_models.src import current_utc_time
 from website.models import Plan, PlanTicket, PlanApprovalPath
 from website import db
 from .auth import user_with_all_params
@@ -107,7 +107,7 @@ def print_tickets(token):
                 if ticket.is_system:
                     sender = 'Система'
                 elif ticket.user:
-                    sender = ticket.user.organization.name if ticket.user.organization.name else 'Неизвестно'
+                    sender = ticket.user.organization.full_name if ticket.user.organization.full_name else 'Неизвестно'
                 else:
                     sender = 'Неизвестно'
                 
@@ -214,7 +214,7 @@ def create_ticket(token):
         plan_id=current_plan.id,
         user_id=current_user.id,
         is_system=(current_user.id == current_plan.user_id),
-        begin_time=TimeByMinsk()
+        begin_time=current_utc_time()
     )
 
     db.session.add(new_ticket)

@@ -4,7 +4,7 @@ import requests
 
 from ..models import Chat, ChatMessage
 
-from ..time import TimeByMinsk
+from common_models.src import current_utc_time
 from .. import db
 
 chat_bp = Blueprint('chat_bp', __name__, url_prefix='/api/chat')
@@ -138,7 +138,7 @@ def send_message():
             is_user=False
         )
         db.session.add(message_answ)
-        chat.updated_at = TimeByMinsk()
+        chat.updated_at = current_utc_time()
         db.session.commit()
         current_app.logger.debug(f"Message sent to chat {chat.id}")
         return jsonify({

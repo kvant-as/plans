@@ -400,7 +400,7 @@ progress_width = (completed_steps / total_steps * 100) if total_steps > 0 else 0
         <div class="message-header">
           {% set sender_name %} {% if ticket.is_system %} {{ _('Система') }} {%
           else %} {% if ticket.user and ticket.user.organization %} {{
-          ticket.user.organization.name }} {% else %} {{ _('Система') }} {%
+          ticket.user.organization.full_name }} {% else %} {{ _('Система') }} {%
           endif %} {% endif %} {% endset %}
 
           <span class="message-sender" title="{{ sender_name|striptags }}">
@@ -455,7 +455,7 @@ show_checkboxes %}
   <div
     class="plan-cont {% if plan.is_draft %}plan-cont-redac {% elif plan.is_error %}plan-cont-eror {% elif plan.is_control %}plan-cont-control {% elif plan.is_sent and current_user and current_user.is_auditor and plan.approval_paths|selectattr('organization_id', 'equalto', current_user.organization_id)|selectattr('is_viewed', 'equalto', True)|list|length > 0 %}plan-cont-sogl {% elif plan.is_sent %}plan-cont-sent {% elif plan.is_approved %}plan-cont-sub {% endif %}"
     data-plan="choose"
-    data-name="{{ (plan.organization.name if plan.organization else '') | lower | e }}"
+    data-name="{{ (plan.organization.full_name if plan.organization else '') | lower | e }}"
     data-okpo="{{ (plan.organization.okpo if plan.organization else '') | lower | e }}"
   >
     {% if compact_view %}
@@ -465,8 +465,8 @@ show_checkboxes %}
           <span class="plan-info" style="font-weight: 600"
             >{{ _('План на') }} {{ plan.year }} {{ _('год') }}</span
           >
-          {% if plan.organization.name %}
-          <span class="structure-plan"></span>{{ plan.organization.name |
+          {% if plan.organization.full_name %}
+          <span class="structure-plan"></span>{{ plan.organization.full_name |
           truncate(35, True, '...') }} {% else %} {{ _('План на') }} {% endif %}
         </a>
         {{ status_plan(plan, current_user) }}
@@ -494,8 +494,8 @@ show_checkboxes %}
         plan.user_id != current_user.id %}
         <div class="plan-info">
           <div>
-            {% if plan.organization.name %}
-            <span class="structure-plan"></span>{{ plan.organization.name
+            {% if plan.organization.full_name %}
+            <span class="structure-plan"></span>{{ plan.organization.full_name
             |truncate(35, True, '...') }} {% else %} {{ _('План на') }} {%
             endif%}
           </div>
@@ -645,7 +645,7 @@ selected_status='all', selected_year='all') %}
     {{ icons.icon_search() }}
     <input
       type="text"
-      placeholder="{{ _('Предприятие') }}"
+      placeholder="{{ _('Наименование предприятия') }}"
       class="app-input"
       id="search-name"
       value="{{ request.args.get('search_name', '') }}"

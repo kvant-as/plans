@@ -1,7 +1,7 @@
 from datetime import timedelta
 from flask import current_app
 from flask_login import current_user
-from ..models import db, Plan, PlanTicket, Notification, PlanApprovalPath, Organization, TimeByMinsk
+from ..models import db, Plan, PlanTicket, Notification, PlanApprovalPath, Organization, current_utc_time
   
 def handle_draft_status(plan):
     try:
@@ -11,7 +11,7 @@ def handle_draft_status(plan):
         plan.is_error = False
         plan.is_approved = False
         
-        plan.change_time = TimeByMinsk()
+        plan.change_time = current_utc_time()
         
         db.session.commit()
         
@@ -167,7 +167,7 @@ def handle_sent_status(plan, coordinator_ids=None, approver_id=None):
             step_order=step_order,
             organization_id=region_org.id,
             step_type='region',
-            created_at=TimeByMinsk()
+            created_at=current_utc_time()
         )
         db.session.add(region_path)
         step_order += 1
@@ -179,7 +179,7 @@ def handle_sent_status(plan, coordinator_ids=None, approver_id=None):
                     step_order=step_order,
                     organization_id=int(coord_id.strip()),
                     step_type='coordinator',
-                    created_at=TimeByMinsk()
+                    created_at=current_utc_time()
                 )
                 db.session.add(coord_path)
                 step_order += 1
@@ -190,11 +190,11 @@ def handle_sent_status(plan, coordinator_ids=None, approver_id=None):
                 step_order=step_order,
                 organization_id=int(approver_id),
                 step_type='approver',
-                created_at=TimeByMinsk()
+                created_at=current_utc_time()
             )
             db.session.add(approver_path)
         
-        plan.sent_time = TimeByMinsk()
+        plan.sent_time = current_utc_time()
         plan.is_sent = True
         plan.is_draft = False
         plan.is_control = False
@@ -243,14 +243,14 @@ def handle_sent_without_check_status(plan, current_user):
                     luck=True,
                     is_system=True,
                     plan_id=plan.id,
-                    begin_time=TimeByMinsk()
+                    begin_time=current_utc_time()
                 )
                 db.session.add(ticket)
                 
                 notification = Notification(
                     user_id=plan.user_id,
                     message=f"План {plan.year} возвращен на этап согласования",
-                    created_at=TimeByMinsk()
+                    created_at=current_utc_time()
                 )
                 db.session.add(notification)
         else:
@@ -263,14 +263,14 @@ def handle_sent_without_check_status(plan, current_user):
                 luck=True,
                 is_system=True,
                 plan_id=plan.id,
-                begin_time=TimeByMinsk()
+                begin_time=current_utc_time()
             ) 
             db.session.add(ticket)
             
             notification = Notification(
                 user_id=plan.user_id,
                 message=f"План {plan.year} возвращен в статус рассмотрения.",
-                created_at=TimeByMinsk()
+                created_at=current_utc_time()
             )
             db.session.add(notification)
         
@@ -287,7 +287,7 @@ def handle_error_status(plan):
         if not plan.afch:
             return {'error': 'Сначала необходимо отправить сообщение с замечаниями'}
         
-        plan.audit_time = TimeByMinsk()
+        plan.audit_time = current_utc_time()
         plan.is_error = True
         plan.is_draft = False
         plan.is_control = False
@@ -300,14 +300,14 @@ def handle_error_status(plan):
             luck=True,
             plan_id=plan.id,
             user_id=current_user.id,
-            begin_time=TimeByMinsk(),
+            begin_time=current_utc_time(),
         )
         db.session.add(ticket)
 
         notification = Notification(
             user_id=plan.user_id,
             message=f"В плане на {plan.year} год нашли ошибки.",
-            created_at=TimeByMinsk()
+            created_at=current_utc_time()
         )
         db.session.add(notification)
         db.session.commit()
@@ -343,9 +343,9 @@ def handle_approved_status(plan, current_user):
             return {'error': 'Предыдущий этап еще не пройден'}
         
         current_path.is_viewed = True
-        current_path.viewed_at = TimeByMinsk()
+        current_path.viewed_at = current_utc_time()
         
-        plan.audit_time = TimeByMinsk()
+        plan.audit_time = current_utc_time()
         plan.afch = False
         
         next_path = PlanApprovalPath.query.filter_by(
@@ -366,14 +366,14 @@ def handle_approved_status(plan, current_user):
                 is_system=True,
                 user_id=current_user.id,
                 plan_id=plan.id,
-                begin_time=TimeByMinsk()
+                begin_time=current_utc_time()
             )
             db.session.add(ticket)
             
             notification = Notification(
                 user_id=plan.user_id,
                 message=f"План на {plan.year} был утвержден",
-                created_at=TimeByMinsk()
+                created_at=current_utc_time()
             )
             db.session.add(notification)
             
@@ -384,7 +384,7 @@ def handle_approved_status(plan, current_user):
                 luck=True,
                 user_id=current_user.id,
                 plan_id=plan.id,
-                begin_time=TimeByMinsk()
+                begin_time=current_utc_time()
             )
             db.session.add(ticket)
             

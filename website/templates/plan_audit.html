@@ -326,7 +326,7 @@ can_audit %}
           type="text"
           id="secondname"
           maxlength="15"
-          value="{{ plan.user.post if plan.user else '' }}"
+          value="{{ plan.user.post or '' }}"
           placeholder="{{ _('Должность') }}"
           class="app-input"
         />

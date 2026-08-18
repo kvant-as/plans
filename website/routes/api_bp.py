@@ -6,7 +6,7 @@ from flask_login import current_user, login_required
 from website.routes.auth import user_with_all_params
 from website.routes.views import owner_only
 from website.sessions import session_required
-from website.time import TimeByMinsk
+from common_models.src import current_utc_time
 from website.utils.plans import get_filtered_plans
 
 from ..models import Direction, Indicator, IndicatorUsage, News, Notification, Organization, Region, Event, StatPlan, StatPlanValue
@@ -79,8 +79,8 @@ def api_news():
     filter_type = request.args.get('filter', 'published')
     sort_by = request.args.get('sort', 'date')
     
-    current_time = TimeByMinsk()
-    query = News.query
+    current_time = current_utc_time()
+    query = News.query.filter(News.is_enplans == True)
     
     if filter_type == 'published':
         query = query.filter(News.published_at <= current_time, News.published_at.isnot(None))
@@ -97,8 +97,8 @@ def api_news():
         'news': [{
             'id': n.id,
             'title': n.title,
-            'content': n.content,
-            'image_url': n.image_url,
+            'content': n.text,
+            'image_url': n.img_name,
             'published_at': n.published_at.isoformat() if n.published_at else n.created_time.isoformat(),
             'created_at': n.created_time.isoformat(),
             'views_count': n.views_count or 0,
@@ -107,12 +107,12 @@ def api_news():
         'total': pagination.total,
         'pages': pagination.pages,
         'current_page': page,
-        'total_views': db.session.query(db.func.sum(News.views_count)).scalar() or 0
+        'total_views': db.session.query(db.func.sum(News.views_count)).filter(News.is_enplans == True).scalar() or 0
     })
 
 @api_bp.route('/news/<int:id>', methods=['GET'])
 def api_news_post(id):
-    current_time = TimeByMinsk()
+    current_time = current_utc_time()
     post = News.query.get(id)
     if not post:
         return jsonify({'success': False, 'error': 'Новость не найдена'}), 404
@@ -125,7 +125,7 @@ def api_news_post(id):
         'news': {
             'id': post.id,
             'title': post.title,
-            'content': post.content,
+            'content': post.text,
             'image_url': post.image_url,
             'published_at': post.published_at.isoformat() if post.published_at else post.created_at.isoformat(),
             'created_at': post.created_at.isoformat(),
@@ -555,7 +555,6 @@ def get_stat_data(organization_id):
                 'message': 'Статистические данные не найдены'
             }), 404
 
-        # Маппинг кодов плана к строкам и колонкам в статистике
         mapping = {
             # 12-тэк
             '1000': {'report': '12-tek', 'row': '110', 'col': '1'},

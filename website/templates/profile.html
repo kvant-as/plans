@@ -14,8 +14,8 @@
         {% if current_user.post %}  
           <a class="employee-position">{{ current_user.post}}</a>
         {% endif%}
-        <a class="employee-company" title="{% if current_user.organization %} {{ current_user.organization.name}} {% endif%}">
-          {% if current_user.organization %} {{ current_user.organization.name}} {% endif%}
+        <a class="employee-company" title="{% if current_user.organization %} {{ current_user.organization.full_name}} {% endif%}">
+          {% if current_user.organization %} {{ current_user.organization.full_name}} {% endif%}
         </a>
       </div>
     </div>
@@ -117,7 +117,7 @@
         {{ icons.icon_profile() }}
         <input
           type="text"
-          value="{{ current_user.post }}"
+          value="{{ current_user.post or '' }}"
           placeholder="{{ _('Должность пользователя') }}"
           class="app-input"
         />
@@ -164,7 +164,7 @@
           {{ icons.icon_org() }}
           <input
             type="text"
-            value="{{ current_user.organization.name }}"
+            value="{{ current_user.organization.full_name }}"
             class="app-input"
           />
         </div>
@@ -189,7 +189,7 @@
             {{ icons.icon_ynp() }}
             <input
               type="text"
-              value="{{ current_user.organization.ynp|default('Пусто', true) }}"
+              value="{{ current_user.organization.ynp|default('Нет данных', true) }}"
               class="app-input"
             />
           </div>

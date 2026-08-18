@@ -92,14 +92,14 @@ def login():
 
         if email and password:
             user = User.query.filter(func.lower(User.email) == func.lower(email)).first()
-            if user and check_password_hash(user.password, password):
+            if user and user.password and check_password_hash(user.password, password):
                 login_user(user)
                 if (
                     not user.last_name or
                     not user.first_name or
                     not user.telephone
                 ):  
-                    flash("Необходимо заполнить обязательные парамметры", "error")
+                    flash("Необходимо заполнить обязательные параметры", "error")
                     return redirect(url_for('auth.param'))
                 flash('Авторизация прошла успешно', 'success')
                 return redirect(url_for('views.profile'))
