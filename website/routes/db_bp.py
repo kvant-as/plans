@@ -1,16 +1,16 @@
 import logging
 import os
-from dbfread import DBF
 from flask import current_app, Blueprint, jsonify
 import pandas as pd
 from werkzeug.security import generate_password_hash
-from flask_wtf.csrf import CSRFProtect
 
 from common_models.src import current_utc_time
 from website import csrf
+from website.logs import get_logger
 
 db_bp = Blueprint('db_bp', __name__, url_prefix='/database/')
-logger = logging.getLogger(__name__)
+
+logger = get_logger()
 
 def import_stat_files(db):
     from ..models import StatPlan
@@ -20,12 +20,12 @@ def import_stat_files(db):
     stats_dir = os.path.join('website', 'static', 'files', 'stats')
     
     if not os.path.exists(stats_dir):
-        current_app.logger.warning(f'Папка со статистикой не найдена: {stats_dir}')
+        logger.warning(f'Папка со статистикой не найдена: {stats_dir}')
         return
     
     existing_reports = StatPlan.query.count()
     if existing_reports > 0:
-        current_app.logger.info(f'В БД уже есть {existing_reports} отчётов. Пропускаем импорт статистики.')
+        logger.info(f'В БД уже есть {existing_reports} отчётов. Пропускаем импорт статистики.')
         return
     
     stat_files = []
@@ -35,17 +35,17 @@ def import_stat_files(db):
             stat_files.append((file_path, filename))
     
     if not stat_files:
-        current_app.logger.warning('Нет файлов статистики для импорта')
+        logger.warning('Нет файлов статистики для импорта')
         return
     
-    current_app.logger.info(f'Найдено {len(stat_files)} файлов статистики для импорта')
+    logger.info(f'Найдено {len(stat_files)} файлов статистики для импорта')
     
     imported_count = 0
     error_count = 0
     
     for file_path, filename in stat_files:
         try:
-            current_app.logger.info(f'Импорт файла: {filename}')
+            logger.info(f'Импорт файла: {filename}')
             
             parsed = parse_stat_file(file_path, filename)
             
@@ -53,7 +53,7 @@ def import_stat_files(db):
             org = find_organization_by_okpo(okpo)
             
             if org is None:
-                current_app.logger.warning(
+                logger.warning(
                     f'Организация с ОКПО "{okpo}" не найдена. '
                     f'Файл: {filename}'
                 )
@@ -69,20 +69,20 @@ def import_stat_files(db):
             )
             
             imported_count += 1
-            current_app.logger.info(
-                f'Успешно импортирован отчёт {parsed.type} для организации {org.name}'
+            logger.info(
+                f'Успешно импортирован отчёт {parsed.type} для организации {org.full_name}'
             )
             
         except OrganizationNotFoundError as e:
-            current_app.logger.warning(f'Ошибка: {str(e)}. Файл: {filename}')
+            logger.warning(f'Ошибка: {str(e)}. Файл: {filename}')
             error_count += 1
             db.session.rollback()
         except Exception as e:
-            current_app.logger.error(f'Ошибка при импорте файла {filename}: {str(e)}')
+            logger.error(f'Ошибка при импорте файла {filename}: {str(e)}')
             error_count += 1
             db.session.rollback()
     
-    current_app.logger.info(
+    logger.info(
         f'Импорт статистики завершён: импортировано {imported_count} отчётов, '
         f'ошибок: {error_count}'
     )
@@ -107,7 +107,7 @@ def fill_organizations(db):
         for org_type, file_path in files.items():
             try:
                 if not os.path.exists(file_path):
-                    current_app.logger.warning(f'No file: {file_path}')
+                    logger.warning(f'No file: {file_path}')
                     continue
                 
                 df = pd.read_excel(file_path, header=3)
@@ -177,11 +177,11 @@ def fill_organizations(db):
                     created_count += 1
                     
             except Exception as e:
-                current_app.logger.error(f'Error with file {file_path}: {str(e)}')
+                logger.error(f'Error with file {file_path}: {str(e)}')
                 continue
         
         db.session.commit()
-        current_app.logger.info(
+        logger.info(
             f'Организации: создано {created_count}, обновлено {updated_count}, '
             f'пропущено дубликатов {skipped_duplicates}'
         )
@@ -222,7 +222,7 @@ def fill_organizations(db):
                 deleted_count += 1
         
         db.session.commit()
-        current_app.logger.info(
+        logger.info(
             f'Регионы: назначено {assigned_count} организациям, '
             f'удалено {deleted_count} организаций без региона'
         )
@@ -242,22 +242,22 @@ def fill_organizations(db):
             assigned_count += 1
         
         db.session.commit()
-        current_app.logger.info(
+        logger.info(
             f'Региональное управление: назначено {assigned_count} организациям'
         )
     
-    current_app.logger.info('Начинаем загрузку организаций...')
+    logger.info('Начинаем загрузку организаций...')
     load_organizations_from_excel()
     assign_regions_to_organizations()
     assign_region_management_to_organizations()
-    current_app.logger.info('Загрузка организаций завершена')
+    logger.info('Загрузка организаций завершена')
 
 
 def fill_users(db):
     from ..models import User
     
     # if User.query.count() > 0:
-    #     current_app.logger.info('Пользователи уже заполнены')
+    #     logger.info('Пользователи уже заполнены')
     #     return
     
     users_data = [
@@ -294,14 +294,14 @@ def fill_users(db):
         )
         db.session.add(user)
     db.session.commit()
-    current_app.logger.info(f'Добавлено {len(users_data)} пользователей')
+    logger.info(f'Добавлено {len(users_data)} пользователей')
 
 
 def fill_units(db):
     from ..models import Unit
     
     if Unit.query.count() > 0:
-        current_app.logger.info('Единицы измерения уже заполнены')
+        logger.info('Единицы измерения уже заполнены')
         return
     
     unit_data = [
@@ -326,14 +326,14 @@ def fill_units(db):
         unit = Unit(id=id, name=name)
         db.session.add(unit)
     db.session.commit()
-    current_app.logger.info(f'Добавлено {len(unit_data)} единиц измерения')
+    logger.info(f'Добавлено {len(unit_data)} единиц измерения')
 
 
 def fill_directions(db):
     from ..models import Direction
     
     if Direction.query.count() > 0:
-        current_app.logger.info('Направления уже заполнены')
+        logger.info('Направления уже заполнены')
         return
     
     direction_data = [
@@ -441,7 +441,7 @@ def fill_directions(db):
         )
         db.session.add(direction)
     db.session.commit()
-    current_app.logger.info(f'Добавлено {len(direction_data)} направлений')
+    logger.info(f'Добавлено {len(direction_data)} направлений')
 
 
 def fill_indicators(db):
@@ -449,7 +449,7 @@ def fill_indicators(db):
     from website.utils.plans import to_decimal_3
     
     if Indicator.query.count() > 0:
-        current_app.logger.info('Индикаторы уже заполнены')
+        logger.info('Индикаторы уже заполнены')
         return
     
     indicator_data = [
@@ -515,14 +515,14 @@ def fill_indicators(db):
         )
         db.session.add(indicator)
     db.session.commit()
-    current_app.logger.info(f'Добавлено {len(indicator_data)} индикаторов')
+    logger.info(f'Добавлено {len(indicator_data)} индикаторов')
 
 
 def fill_news(db):
     from ..models import News
     
     # if News.query.count() > 0:
-    #     current_app.logger.info('Новости уже заполнены')
+    #     logger.info('Новости уже заполнены')
     #     return
     
     news_data = [
@@ -546,18 +546,18 @@ def fill_news(db):
         )
         db.session.add(news)
     db.session.commit()
-    current_app.logger.info(f'Добавлено {len(news_data)} новостей')
+    logger.info(f'Добавлено {len(news_data)} новостей')
 
 
 def fill_statistics(db):
     try:
         import_stat_files(db)
     except Exception as e:
-        current_app.logger.error(f'Ошибка при импорте статистических файлов: {str(e)}')
+        logger.error(f'Ошибка при импорте статистических файлов: {str(e)}')
 
 
 def filling_database(db):
-    current_app.logger.debug('Filling database is in progress...')
+    logger.debug('Filling database is in progress...')
     fill_organizations(db)
     fill_users(db)
     fill_units(db)
@@ -566,7 +566,7 @@ def filling_database(db):
     fill_news(db)
     fill_statistics(db)
     
-    current_app.logger.debug('The filling is finished!')
+    logger.debug('The filling is finished!')
 
 
 @db_bp.route('/fill-all-data', methods=['POST'])
@@ -576,13 +576,13 @@ def fill_database_route():
     from website import db
     
     try:
-        fill_organizations(db)
+        # fill_organizations(db)
         # fill_users(db)
         # fill_units(db)
         # fill_directions(db)
         # fill_indicators(db)
         # fill_news(db)
-        # fill_statistics(db)
+        fill_statistics(db)
         
         return jsonify({
             'success': True,
@@ -590,7 +590,7 @@ def fill_database_route():
         }), 200
     except Exception as e:
         db.session.rollback()
-        current_app.logger.error(f'Ошибка при заполнении базы данных: {str(e)}')
+        logger.error(f'Ошибка при заполнении базы данных: {str(e)}')
         return jsonify({
             'success': False,
             'message': f'Ошибка: {str(e)}'
@@ -600,7 +600,7 @@ def fill_database_route():
 @db_bp.route('/test-route', methods=['GET', 'POST'])
 @csrf.exempt
 def test_route():
-    current_app.logger.info(f'test route')
+    logger.info(f'test route')
     return jsonify({
         'success': True,
         'message': 'Succes test'

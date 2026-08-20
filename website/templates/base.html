@@ -36,13 +36,13 @@
                 </div>
                 <div class="header-aside-text">
                     <a class="title">EnPlans</a>
-                    <span class="subtitle">{{ _('Формирование планов мероприятий по энергосбережению') }}</span>
+                    {#<span class="subtitle">{{ _('Формирование планов мероприятий по энергосбережению') }}</span>#}
                 </div>
             </div>
             
             <div class="header-bside">
                 {% if not current_user.is_authenticated %}        
-                    <button type="button" class="svg-btn tooltip-btn" onclick="navigateToSection('contacts-cont')">
+                    <button type="button" class="svg-btn tooltip-btn contacts" onclick="navigateToSection('contacts-cont')">
                         {{ icons.icon_contacts() }}
                         <span class="tooltip-text">{{ _('Контакты') }}</span>
                     </button>
@@ -79,17 +79,17 @@
                         </div>
                     </div>
 
-                    <button type="button" class="svg-btn tooltip-btn" style="margin: 0;" onclick="ChatModule.toggleChat()">
+                    <button type="button" class="svg-btn tooltip-btn helper" style="margin: 0;" onclick="ChatModule.toggleChat()">
                         {{ icons.icon_helper() }} 
                         <span class="tooltip-text">{{ _('Консультант') }}</span>
                     </button>
 
-                    <button type="button" class="svg-btn tooltip-btn" style="margin: 0;" onclick="window.location.href='/FAQ'">
+                    <button type="button" class="svg-btn tooltip-btn help" style="margin: 0;" onclick="window.location.href='/FAQ'">
                         {{ icons.icon_help() }} 
                         <span class="tooltip-text">{{ _('Помощь') }}</span>
                     </button>
 
-                    <button type="button" class="svg-btn tooltip-btn" style="margin: 0;" onclick="window.location.href='/news'">
+                    <button type="button" class="svg-btn tooltip-btn news" style="margin: 0;" onclick="window.location.href='/news'">
                         {{ icons.icon_news() }} 
                         <span class="tooltip-text">{{ _('Новости') }}</span>
                     </button>
@@ -128,9 +128,14 @@
                                 {{ icons.icon_contacts() }}
                                 <span>{{ _('Контакты') }}</span>
                             </button>
+                            <hr>
                             <button type="button" class="nav-menu-item" onclick="window.location.href='/FAQ'">
                                 {{ icons.icon_help() }}
                                 <span>{{ _('Помощь') }}</span>
+                            </button>
+                            <button type="button" class="nav-menu-item" onclick="ChatModule.toggleChat()">
+                                {{ icons.icon_helper() }}
+                                <span>{{ _('Онлайн консультант') }}</span>
                             </button>
                             <hr>
                             <button class="nav-menu-item" onclick="window.location.href='/logout'">

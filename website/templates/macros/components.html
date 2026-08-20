@@ -166,7 +166,7 @@ current_user=None)%}
       <span class="nav-text-mobile">{{ _('Создать') }}</span>
     </div>
     {% endif %}
-
+ {#
     <div
       class="nav-item disabled-tab {% if active_tab == 'stats' %} active {% endif %}"
       onclick="window.location.href = '/stats'"
@@ -175,7 +175,7 @@ current_user=None)%}
       <span class="nav-text">{{ _('Статистика') }}</span>
       <span class="nav-text-mobile">{{ _('Статистика') }}</span>
     </div>
-
+#}
     <div
       class="nav-item {% if active_tab == 'export' %} active{% endif %}"
       onclick="window.location.href = '/export'"
@@ -305,7 +305,9 @@ plan=None, current_user=None) %}
     </div>
   </nav>
 </div>
-{% endmacro %} {% macro plan_agree_slider(plan, current_user) %} {% set
+{% endmacro %}
+
+{% macro plan_agree_slider(plan, current_user) %} {% set
 approval_paths = plan.approval_paths|sort(attribute='step_order') %} {% set
 total_steps = approval_paths|length %} {% set completed_steps =
 approval_paths|selectattr('is_viewed', 'equalto', True)|list|length %} {% set
@@ -333,9 +335,9 @@ progress_width = (completed_steps / total_steps * 100) if total_steps > 0 else 0
 
       <div
         class="enplans-approval-step-name"
-        title="{{ org.name if org else 'Неизвестно' }}"
+        title="{{ org.full_name if org else 'Неизвестно' }}"
       >
-        {{ org.name if org else 'Неизвестно' }}
+        {{ org.full_name if org else 'Неизвестно' }}
       </div>
 
       <div class="enplans-approval-step-type">{{ path.step_type_label }}</div>

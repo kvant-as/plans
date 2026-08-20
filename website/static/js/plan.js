@@ -226,8 +226,9 @@ class PlanEvents {
         
         const totalRow = document.createElement('tr');
         totalRow.className = 'total-row';
+        totalRow.style.borderBottom = '1px solid var(--border-color) !important;';
         totalRow.innerHTML = `
-            <td style="text-align: left; padding-left: 60px" colspan="4">Итого по разделу:</td>
+            <td style="text-align: left; padding-left: 60px;" colspan="4">Итого по разделу:</td>
             <td style="text-align: end;">-</td>
             <td style="text-align: end;">${this.sumEvents(events, 'EffTut').toFixed(2).replace('.', ',')}</td>
             <td style="text-align: end;">${(this.sumEvents(events, 'EffRub') || 0).toString().replace('.', ',')}</td>
@@ -262,25 +263,38 @@ class PlanEvents {
         
         const totalRow = document.createElement('tr');
         totalRow.className = 'total-row';
-        totalRow.innerHTML = `
-            <td colspan="3">Всего по части ${partNumber}, в том числе:</td>
-            <td style="text-align: end;">-</td>
-            <td style="text-align: end;">-</td>
-            <td style="text-align: end;">${this.sumEvents(allEvents, 'EffTut').toFixed(2).replace('.', ',')}</td>
-            <td style="text-align: end;">${(this.sumEvents(allEvents, 'EffRub') || 0).toString().replace('.', ',')}</td>
-            <td style="text-align: end;">-</td>
-            <td style="text-align: end;">${this.sumEvents(allEvents, 'EffCurrYear').toFixed(2).replace('.', ',')}</td>
-            <td style="text-align: end;">-</td>
-            <td style="text-align: end;">${(this.sumEvents(allEvents, 'ObchVolumeFin') || 0).toString().replace('.', ',')}</td>
-            <td style="text-align: end;">${(this.sumEvents(allEvents, 'VolumeFinCurrentYear') || 0).toString().replace('.', ',')}</td>
-            <td style="text-align: end;">${(this.sumEvents(allEvents, 'BudgetState') || 0).toString().replace('.', ',')}</td>
-            <td style="text-align: end;">${(this.sumEvents(allEvents, 'BudgetRep') || 0).toString().replace('.', ',')}</td>
-            <td style="text-align: end;">${(this.sumEvents(allEvents, 'BudgetLoc') || 0).toString().replace('.', ',')}</td>
-            <td style="text-align: end;">${(this.sumEvents(allEvents, 'BudgetOther') || 0).toString().replace('.', ',')}</td>
-            <td style="text-align: end;">${(this.sumEvents(allEvents, 'MoneyOwn') || 0).toString().replace('.', ',')}</td>
-            <td style="text-align: end;">${(this.sumEvents(allEvents, 'MoneyLoan') || 0).toString().replace('.', ',')}</td>
-            <td style="text-align: end;">${(this.sumEvents(allEvents, 'MoneyOther') || 0).toString().replace('.', ',')}</td>
-        `;
+
+        const borderStyle = 'border-top: 1px solid #f1f5f9;';
+        const endAlign = 'text-align: end;';
+
+        const cells = [
+            { text: `Всего по части ${partNumber}, в том числе:`, colSpan: 3 },
+            { text: '-' },
+            { text: '-' },
+            { text: this.sumEvents(allEvents, 'EffTut').toFixed(2).replace('.', ',') },
+            { text: (this.sumEvents(allEvents, 'EffRub') || 0).toString().replace('.', ',') },
+            { text: '-' },
+            { text: this.sumEvents(allEvents, 'EffCurrYear').toFixed(2).replace('.', ',') },
+            { text: '-' },
+            { text: (this.sumEvents(allEvents, 'ObchVolumeFin') || 0).toString().replace('.', ',') },
+            { text: (this.sumEvents(allEvents, 'VolumeFinCurrentYear') || 0).toString().replace('.', ',') },
+            { text: (this.sumEvents(allEvents, 'BudgetState') || 0).toString().replace('.', ',') },
+            { text: (this.sumEvents(allEvents, 'BudgetRep') || 0).toString().replace('.', ',') },
+            { text: (this.sumEvents(allEvents, 'BudgetLoc') || 0).toString().replace('.', ',') },
+            { text: (this.sumEvents(allEvents, 'BudgetOther') || 0).toString().replace('.', ',') },
+            { text: (this.sumEvents(allEvents, 'MoneyOwn') || 0).toString().replace('.', ',') },
+            { text: (this.sumEvents(allEvents, 'MoneyLoan') || 0).toString().replace('.', ',') },
+            { text: (this.sumEvents(allEvents, 'MoneyOther') || 0).toString().replace('.', ',') }
+        ];
+
+        totalRow.innerHTML = cells.map((cell, index) => {
+            const styles = `${borderStyle} ${endAlign}`;
+            const colspan = cell.colSpan ? ` colspan="${cell.colSpan}"` : '';
+            const isFirst = index === 0;
+            const align = isFirst ? '' : endAlign;
+            return `<td${colspan} style="${borderStyle} ${align}">${cell.text}</td>`;
+        }).join('');
+
         otherContent.appendChild(totalRow);
         
         const periods = [

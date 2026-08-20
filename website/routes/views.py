@@ -13,13 +13,13 @@ from flask_login import (
     current_user, login_required
 )
 
-from common_models.src import current_utc_time
+from common_models.src import current_utc_time, db
 from website.utils.currency_rates import fetch_usd_rate_from_any_source
 from website.utils.plans import get_column_configs_for_plan, to_decimal_1, to_decimal_2, update_ChangeTimePlan
 from website.sessions import session_required
 
 from ..models import News, PlanColumnConfig, User, Organization, Plan, PlanTicket, Indicator, IndicatorUsage
-from .. import db
+from website import db
 
 from functools import wraps
 

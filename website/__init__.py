@@ -108,6 +108,14 @@ def create_app():
     app.register_blueprint(stat_bp, url_prefix='/stat-reports')
     app.register_blueprint(db_bp, url_prefix='/database')
     
+    project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    common_templates = os.path.join(project_root, 'common_models', 'templates')
+    
+    app.jinja_loader.searchpath = [
+        os.path.join(app.root_path, 'templates'),
+        common_templates
+    ]
+    
     with app.app_context():
         from .routes.admin import AdminSetup
         admin_setup = AdminSetup(app, db)

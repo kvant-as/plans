@@ -11,9 +11,9 @@
       </div>
       <div class="employee-card">
         <a class="employee-name">{{ current_user.first_name}} {{ current_user.last_name}}</a>
-        {% if current_user.post %}  
+        {#{% if current_user.post %}  
           <a class="employee-position">{{ current_user.post}}</a>
-        {% endif%}
+        {% endif%}#}
         <a class="employee-company" title="{% if current_user.organization %} {{ current_user.organization.full_name}} {% endif%}">
           {% if current_user.organization %} {{ current_user.organization.full_name}} {% endif%}
         </a>

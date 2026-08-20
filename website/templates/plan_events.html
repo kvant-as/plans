@@ -2,8 +2,8 @@
 
 {% if event_type == 'saving' %}
   {% set title = _('Мероприятия по экономии топливно-энергетических ресурсов') %}
-  {% set section_title = '2.1 Мероприятия по экономии ТЭР (первоначальная редакция)' %}
-  {% set section_changes_title = '2.2 Мероприятия по экономии ТЭР (включенные в план при внесении в него изменений)' %}
+  {% set section_title = 'Раздел 2.1 Мероприятия по экономии ТЭР (первоначальная редакция)' %}
+  {% set section_changes_title = 'Раздел 2.2 Мероприятия по экономии ТЭР (включенные в план при внесении в него изменений)' %}
   {% set eff_label = 'Условно-годовой экономический эффект' %}
   {% set eff_curr_label = 'Ожидаемый экономический эффект от внедрения мероприятия в текущем году, т у.т.' %}
   {% set empty_message = 'Нет мероприятий по экономии ТЭР' %}
@@ -15,8 +15,8 @@
 
 {% else %}
   {% set title = _('Мероприятия по увеличению использования местных топливно-энергетических ресурсов') %}
-  {% set section_title = '3.1 Мероприятия по увеличению использования местных ТЭР (первоначальная редакция)' %}
-  {% set section_changes_title = '3.2 Мероприятия по увеличению использования местных ТЭР (включенные в перечень при внесении в него изменений)' %}
+  {% set section_title = 'Раздел 3.1 Мероприятия по увеличению использования местных ТЭР (первоначальная редакция)' %}
+  {% set section_changes_title = 'Раздел 3.2 Мероприятия по увеличению использования местных ТЭР (включенные в план при внесении в него изменений)' %}
   {% set eff_label = 'Условно-годовое увеличение использования местных ТЭР' %}
   {% set eff_curr_label = 'Ожидаемое увеличение использования местных ТЭР в текущем году, т у.т.' %}
   {% set empty_message = 'Нет мероприятий по увеличению использования местных ТЭР' %}
@@ -158,8 +158,8 @@
           </tr>
         </thead>
         
-        <tr class="group-header" data-target="non-local-content" style="border-top: none !important;">
-          <td colspan="19">
+        <tr class="group-header" data-target="non-local-content">
+          <td colspan="19" style="border-bottom: 1px solid var(--border-color);">
             <div class="group-header-content">
               {{ icons.dropdown_arrow() }}
               <span>{{ section_title }}</span>
@@ -173,7 +173,7 @@
         </tbody>
         
         <tr class="group-header" data-target="local-content" >
-          <td colspan="19">
+          <td colspan="19" style="border-top: 1px solid var(--border-color) !important; border-bottom: 1px solid var(--border-color) !important;">
             <div class="group-header-content">
               {{ icons.dropdown_arrow() }}
               <span>{{ section_changes_title }}</span>
@@ -186,14 +186,14 @@
           </tr>
         </tbody>
         
-        <tr class="group-header" data-target="other-content">
+        <!-- <tr class="group-header" data-target="other-content">
           <td colspan="19">
             <div class="group-header-content">
               {{ icons.dropdown_arrow() }}
               <span>Другое</span>
             </div>
           </td>
-        </tr>
+        </tr> -->
         <tbody id="other-content" class="rows">
           <tr>
             <td colspan="19"></td>

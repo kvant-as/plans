@@ -1,13 +1,27 @@
-window.addEventListener('scroll', () => {
-    const header = document.querySelector('.fixed-header');
-    header.classList.toggle('bubble', window.scrollY > 50);
+let scrollTimeout;
+
+window.addEventListener('scroll', function() {
+    if (scrollTimeout) return;
+    
+    scrollTimeout = setTimeout(function() {
+        var header = document.querySelector('.fixed-header');
+        var isScrolled = window.scrollY > 50;
+        
+        header.classList.toggle('bubble', isScrolled);
+        header.classList.toggle('scrolled', isScrolled);
+        
+        scrollTimeout = null;
+    }, 10);
 });
 
-window.addEventListener('resize', () => {
-    const header = document.querySelector('.fixed-header');
-    if (window.innerWidth <= 768) {
-        header.classList.toggle('bubble', window.scrollY > 50);
-    }
+window.addEventListener('resize', function() {
+    clearTimeout(window.resizeTimeout);
+    window.resizeTimeout = setTimeout(function() {
+        var header = document.querySelector('.fixed-header');
+        if (window.innerWidth <= 768) {
+            header.classList.toggle('bubble', window.scrollY > 50);
+        }
+    }, 100);
 });
 
 // document.addEventListener('DOMContentLoaded', () => {

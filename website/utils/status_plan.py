@@ -1,8 +1,11 @@
-from datetime import timedelta
 from flask import current_app
 from flask_login import current_user
-from ..models import db, Plan, PlanTicket, Notification, PlanApprovalPath, Organization, current_utc_time
-  
+from ..models import PlanTicket, Notification, PlanApprovalPath, Organization
+
+from common_models.src.time import current_utc_time
+from website import db
+
+
 def handle_draft_status(plan):
     try:
         plan.is_draft = True

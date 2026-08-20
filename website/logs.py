@@ -3,6 +3,7 @@ import json
 import logging
 from datetime import datetime
 import traceback
+from flask import current_app
 
 class WerkzeugFilter(logging.Filter):
     def filter(self, record):
@@ -58,7 +59,26 @@ class ColoredFormatter(logging.Formatter):
         return log_line
 
 
+_app_logger = None
+
+def get_logger():
+    global _app_logger
+    if _app_logger is None:
+        try:
+            _app_logger = current_app.logger
+        except RuntimeError:
+            _app_logger = logging.getLogger('EnPlans')
+            if not _app_logger.handlers:
+                handler = logging.StreamHandler(sys.stdout)
+                handler.setFormatter(ColoredFormatter())
+                _app_logger.addHandler(handler)
+                _app_logger.setLevel(logging.DEBUG)
+    return _app_logger
+
+
 def setup_logging(app):
+    global _app_logger
+    
     log_level = app.config.get('LOG_LEVEL', 'INFO').upper()
     log_static = app.config.get('LOG_STATIC_REQUESTS', False)
     
@@ -88,6 +108,8 @@ def setup_logging(app):
     app.logger.handlers.clear()
     app.logger.setLevel(numeric_level)
     app.logger.propagate = True
+    
+    _app_logger = app.logger
     
     app.logger.info("=" * 60)
     app.logger.info(f"Launch time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
