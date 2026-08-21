@@ -8,7 +8,6 @@ window.addEventListener('scroll', function() {
         var isScrolled = window.scrollY > 50;
         
         header.classList.toggle('bubble', isScrolled);
-        header.classList.toggle('scrolled', isScrolled);
         
         scrollTimeout = null;
     }, 10);
@@ -19,7 +18,8 @@ window.addEventListener('resize', function() {
     window.resizeTimeout = setTimeout(function() {
         var header = document.querySelector('.fixed-header');
         if (window.innerWidth <= 768) {
-            header.classList.toggle('bubble', window.scrollY > 50);
+            var isScrolled = window.scrollY > 50;
+            header.classList.toggle('bubble', isScrolled);
         }
     }, 100);
 });

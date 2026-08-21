@@ -11,6 +11,7 @@ from flask_login import (
 
 from sqlalchemy import func
 from werkzeug.security import check_password_hash
+from common_models.src.all_models import Report, Version_report
 from website.user import send_email
 
 from itsdangerous import URLSafeTimedSerializer
@@ -197,10 +198,9 @@ def logout():
     flash('Выполнен выход из аккаунта', 'success')
     return redirect(url_for('auth.login'))
 
-
 @auth.route('/delete-profile', methods=['POST'])
 @login_required
-def delete_profile():
+def delete_account():
     user = current_user
     confirm_email = request.form.get('confirm_email')
     
@@ -209,7 +209,7 @@ def delete_profile():
         return redirect(url_for('views.profile'))
     
     if user.is_admin or user.is_auditor:
-        flash('Администраторы и аудиторы не могут удалить аккаунт', 'error')
+        flash('Пользователь с вашим статусом не может удалить аккаунт', 'error')
         return redirect(url_for('views.profile'))
     
     has_active_plans = Plan.query.filter(
@@ -220,6 +220,20 @@ def delete_profile():
     if has_active_plans:
         flash('Невозможно удалить аккаунт. У вас есть отправленные, Утвержденные планы или планы с ошибками', 'error')
         return redirect(url_for('views.profile'))
+    
+    has_approved = db.session.query(
+        db.session.query(Version_report)
+        .join(Report)
+        .filter(
+            Report.user_id == current_user.id,
+            Version_report.status == 'Одобрен'
+        )
+        .exists()
+    ).scalar()
+    
+    if has_approved:
+        flash('Невозможно удалить аккаунт, так как есть отчеты в ErespodnentN со статусом "Одобрен"', 'error')
+        return redirect(url_for('views.profile'))     
     
     try:
         user_email = user.email

@@ -628,7 +628,7 @@ def edit_Eventes(id):
                 USD_RATE = float(current_plan.usd_rate) if current_plan.usd_rate else 2.75
                 COST_PER_TOE_USD = float(current_plan.cost_per_toe_usd) if current_plan.cost_per_toe_usd else 260.0
                 EffRub = int(float(EffTut) * COST_PER_TOE_USD * USD_RATE)
-                Payback = None
+                Payback = to_decimal_1(0)
                 
                 current_app.logger.info(f'Double effect saving event: financing blocked')
             else:
@@ -648,9 +648,12 @@ def edit_Eventes(id):
                 
                 if EffRub > 0:
                     payback_value = float(VolumeFinCurrentYear) / float(EffRub)
-                    Payback = to_decimal_1(payback_value)
+                    if payback_value < 0.01:
+                        Payback = to_decimal_1(0.1)
+                    else:
+                        Payback = to_decimal_1(payback_value)
                 else:
-                    Payback = None
+                    Payback = to_decimal_1(0)
                 
                 current_app.logger.info(f'Regular event calculation: VolumeFinCurrentYear={VolumeFinCurrentYear}, EffRub={EffRub}, Payback={Payback}')
 

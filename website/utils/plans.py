@@ -247,7 +247,7 @@ def get_filtered_plans(user, status_filter="all", year_filter="all", search_name
             base_query = base_query.join(Organization, Plan.org_id == Organization.id)
             
             if search_name:
-                base_query = base_query.filter(organization.full_name.ilike(f'%{search_name}%'))
+                base_query = base_query.filter(Organization.full_name.ilike(f'%{search_name}%'))
             
             if search_ynp:
                 base_query = base_query.filter(Organization.ynp.ilike(f'%{search_ynp}%'))

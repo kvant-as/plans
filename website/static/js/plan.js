@@ -403,9 +403,24 @@ class PlanEvents {
     }
 
     formatNumber(value) {
-        if (value === null || value === undefined) return '';
-        const num = parseFloat(value);
-        if (isNaN(num)) return '0,00';
+        if (value === null || value === undefined || value === '') {
+            return '0,00';
+        }
+        
+        let strValue = String(value).trim().replace(/\s/g, '');
+        
+        if (strValue === '') {
+            return '0,00';
+        }
+        
+        strValue = strValue.replace(',', '.');
+        
+        const num = parseFloat(strValue);
+        
+        if (isNaN(num) || !isFinite(num)) {
+            return '0,00';
+        }
+        
         return num.toFixed(2).replace('.', ',');
     }
 
@@ -2035,16 +2050,20 @@ class PlansLoader {
         this.currentSearchName = '';
         this.currentSearchYnp = '';
         this.currentPage = 1;
+        this.totalPages = 1;
         this.isLoading = false;
-        this.hasMore = true;
         this.searchTimeout = null;
         this.perPage = options.perPage || 5;
         this.isAuditor = options.isAuditor || false;
         
         this.containerId = options.containerId || 'plans-container';
-        this.loadMoreBtnId = options.loadMoreBtnId || 'load-more-btn';
         this.searchNameId = options.searchNameId || 'search-name';
         this.searchYnp = options.searchYnp || 'search-ynp';
+        this.paginationAreaId = 'pagination-area';
+        this.prevPageBtnId = 'prev-page-btn';
+        this.nextPageBtnId = 'next-page-btn';
+        this.currentPageSpanId = 'current-page';
+        this.totalPagesSpanId = 'total-pages';
         
         this.init();
     }
@@ -2067,26 +2086,28 @@ class PlansLoader {
         if (this.currentSearchYnp) {
             params.set('search_ynp', this.currentSearchYnp);
         }
+        if (this.currentPage > 1) {
+            params.set('page', this.currentPage);
+        }
         
         const newUrl = params.toString() ? `${window.location.pathname}?${params.toString()}` : window.location.pathname;
         window.history.pushState({}, '', newUrl);
     }
     
-    async loadPlans(reset = true) {
+    async loadPlans() {
         if (this.isLoading) return;
         
         this.isLoading = true;
-        const page = reset ? 1 : this.currentPage + 1;
         const container = document.getElementById(this.containerId);
         
-        if (reset && container) {
+        if (container) {
             container.innerHTML = '<div class="loading-container"><div class="loading-spinner"></div></div>';
         }
         
         this.updateUrl();
         
         try {
-            let url = `/api/plans?page=${page}&per_page=${this.perPage}&status=${this.currentStatus}&year=${this.currentYear}&region=${this.currentRegion}&show_checkboxes=${this.showCheckboxes || false}`;
+            let url = `/api/plans?page=${this.currentPage}&per_page=${this.perPage}&status=${this.currentStatus}&year=${this.currentYear}&region=${this.currentRegion}&show_checkboxes=${this.showCheckboxes || false}`;
             if (this.currentSearchName) {
                 url += `&search_name=${encodeURIComponent(this.currentSearchName)}`;
             }
@@ -2098,21 +2119,14 @@ class PlansLoader {
             const data = await response.json();
             
             if (data.success) {
-                if (reset) {
-                    if (container) {
-                        container.innerHTML = `<div class="plans-area">${data.html}</div>`;
-                    }
-                    this.currentPage = 1;
-                } else {
-                    const plansArea = document.querySelector('.plans-area');
-                    if (plansArea) {
-                        plansArea.insertAdjacentHTML('beforeend', data.html);
-                    }
-                    this.currentPage = page;
+                if (container) {
+                    container.innerHTML = `<div class="plans-area">${data.html}</div>`;
                 }
                 
-                this.hasMore = data.pagination.has_next;
-                this.updateLoadMoreButton();
+                this.totalPages = data.pagination.total_pages || 1;
+                this.currentPage = data.pagination.current_page || 1;
+                
+                this.updatePagination();
                 this.updateCountsDisplay(data.counts);
                 this.attachCheckboxListeners();
 
@@ -2122,15 +2136,56 @@ class PlansLoader {
             }
         } catch (error) {
             console.error('Error loading plans:', error);
+            if (container) {
+                container.innerHTML = '<div class="plans-error" style="text-align: center; padding: 40px; color: red;">Ошибка загрузки планов</div>';
+            }
         } finally {
             this.isLoading = false;
         }
     }
-    
-    updateLoadMoreButton() {
-        const loadMoreContainer = document.getElementById('load-more-container');
-        if (loadMoreContainer) {
-            loadMoreContainer.style.display = this.hasMore ? 'block' : 'none';
+
+    updatePagination() {
+        const paginationArea = document.getElementById(this.paginationAreaId);
+        const currentPageSpan = document.getElementById(this.currentPageSpanId);
+        const totalPagesSpan = document.getElementById(this.totalPagesSpanId);
+        const prevBtn = document.getElementById(this.prevPageBtnId);
+        const nextBtn = document.getElementById(this.nextPageBtnId);
+        
+        if (paginationArea) {
+            if (this.totalPages > 1) {
+                paginationArea.style.display = 'flex';
+                paginationArea.style.justifyContent = 'center';
+            } else {
+                paginationArea.style.display = 'none';
+            }
+        }
+        
+        if (currentPageSpan) {
+            currentPageSpan.textContent = this.currentPage;
+        }
+        
+        if (totalPagesSpan) {
+            totalPagesSpan.textContent = this.totalPages;
+        }
+        
+        if (prevBtn) {
+            if (this.currentPage <= 1) {
+                prevBtn.disabled = true;
+                prevBtn.classList.add('disabled');
+            } else {
+                prevBtn.disabled = false;
+                prevBtn.classList.remove('disabled');
+            }
+        }
+        
+        if (nextBtn) {
+            if (this.currentPage >= this.totalPages) {
+                nextBtn.disabled = true;
+                nextBtn.classList.add('disabled');
+            } else {
+                nextBtn.disabled = false;
+                nextBtn.classList.remove('disabled');
+            }
         }
     }
     
@@ -2198,6 +2253,24 @@ class PlansLoader {
         }
     }
     
+    goToPage(page) {
+        if (page < 1 || page > this.totalPages || page === this.currentPage) return;
+        this.currentPage = page;
+        this.loadPlans();
+    }
+    
+    goToPrevPage() {
+        if (this.currentPage > 1) {
+            this.goToPage(this.currentPage - 1);
+        }
+    }
+    
+    goToNextPage() {
+        if (this.currentPage < this.totalPages) {
+            this.goToPage(this.currentPage + 1);
+        }
+    }
+    
     handleSearch() {
         if (this.searchTimeout) {
             clearTimeout(this.searchTimeout);
@@ -2205,8 +2278,9 @@ class PlansLoader {
         this.searchTimeout = setTimeout(() => {
             this.currentSearchName = document.getElementById(this.searchNameId)?.value || '';
             this.currentSearchYnp = document.getElementById(this.searchYnp)?.value || '';
+            this.currentPage = 1;
             this.updateUrl();
-            this.loadPlans(true);
+            this.loadPlans();
         }, 500);
     }
     
@@ -2245,10 +2319,11 @@ class PlansLoader {
                     e.stopPropagation();
                     const value = item.dataset.value;
                     this.currentStatus = value;
+                    this.currentPage = 1;
                     if (selectedSpan) selectedSpan.textContent = item.textContent;
                     statusDropdown.classList.remove('active');
                     this.updateUrl();
-                    this.loadPlans(true);
+                    this.loadPlans();
                 });
             });
         }
@@ -2273,6 +2348,7 @@ class PlansLoader {
                     e.stopPropagation();
                     const value = item.dataset.value;
                     this.currentYear = value;
+                    this.currentPage = 1;
                     if (selectedSpan) {
                         if (value === 'all') {
                             selectedSpan.textContent = 'Год';
@@ -2282,7 +2358,7 @@ class PlansLoader {
                     }
                     yearDropdown.classList.remove('active');
                     this.updateUrl();
-                    this.loadPlans(true);
+                    this.loadPlans();
                 });
             });
         }
@@ -2307,10 +2383,11 @@ class PlansLoader {
                     e.stopPropagation();
                     const value = item.dataset.value;
                     this.currentRegion = value;
+                    this.currentPage = 1;
                     if (selectedSpan) selectedSpan.textContent = item.textContent;
                     regionDropdown.classList.remove('active');
                     this.updateUrl();
-                    this.loadPlans(true);
+                    this.loadPlans();
                 });
             });
         }
@@ -2327,6 +2404,17 @@ class PlansLoader {
             }
         });
         
+        const prevBtn = document.getElementById(this.prevPageBtnId);
+        const nextBtn = document.getElementById(this.nextPageBtnId);
+        
+        if (prevBtn) {
+            prevBtn.addEventListener('click', () => this.goToPrevPage());
+        }
+        
+        if (nextBtn) {
+            nextBtn.addEventListener('click', () => this.goToNextPage());
+        }
+        
         window.addEventListener('popstate', (event) => {
             const params = new URLSearchParams(window.location.search);
             const newStatus = params.get('status') || 'all';
@@ -2334,28 +2422,26 @@ class PlansLoader {
             const newRegion = params.get('region') || 'all';
             const newSearchName = params.get('search_name') || '';
             const newSearchOkpo = params.get('search_ynp') || '';
+            const newPage = parseInt(params.get('page')) || 1;
             
             if (newStatus !== this.currentStatus || newYear !== this.currentYear || newRegion !== this.currentRegion ||
-                newSearchName !== this.currentSearchName || newSearchOkpo !== this.currentSearchYnp) {
+                newSearchName !== this.currentSearchName || newSearchOkpo !== this.currentSearchYnp ||
+                newPage !== this.currentPage) {
                 
                 this.currentStatus = newStatus;
                 this.currentYear = newYear;
                 this.currentRegion = newRegion;
                 this.currentSearchName = newSearchName;
                 this.currentSearchYnp = newSearchOkpo;
+                this.currentPage = newPage;
                 
                 if (searchNameInput) searchNameInput.value = newSearchName;
                 if (searchOkpoInput) searchOkpoInput.value = newSearchOkpo;
                 
                 this.updateFilterDisplay();
-                this.loadPlans(true);
+                this.loadPlans();
             }
         });
-        
-        const loadMoreBtn = document.getElementById(this.loadMoreBtnId);
-        if (loadMoreBtn) {
-            loadMoreBtn.addEventListener('click', () => this.loadPlans(false));
-        }
     }
     
     updateFilterDisplay() {
@@ -2415,7 +2501,7 @@ class PlansLoader {
         this.selectedPlans = new Set();
         this.selectedFormat = null;
         this.initFilters();
-        this.loadPlans(true);
+        this.loadPlans();
     }
 }
 
@@ -2427,8 +2513,8 @@ class ExportPlansLoader {
         this.currentSearchName = '';
         this.currentSearchYnp = '';
         this.currentPage = 1;
+        this.totalPages = 1;
         this.isLoading = false;
-        this.hasMore = true;
         this.searchTimeout = null;
         this.perPage = options.perPage || 5;
         this.selectedPlans = new Set();
@@ -2445,6 +2531,11 @@ class ExportPlansLoader {
         this.selectAllId = options.selectAllId || 'selectAllBtn';
         this.clearAllId = 'clearAllBtn';
         this.exportFormId = options.exportFormId || 'exportForm';
+        this.paginationAreaId = 'pagination-area';
+        this.prevPageBtnId = 'prev-page-btn';
+        this.nextPageBtnId = 'next-page-btn';
+        this.currentPageSpanId = 'current-page';
+        this.totalPagesSpanId = 'total-pages';
         
         this.init();
     }
@@ -2467,6 +2558,9 @@ class ExportPlansLoader {
         if (this.currentSearchYnp) {
             params.set('search_ynp', this.currentSearchYnp);
         }
+        if (this.currentPage > 1) {
+            params.set('page', this.currentPage);
+        }
         
         const newUrl = params.toString() ? `${window.location.pathname}?${params.toString()}` : window.location.pathname;
         
@@ -2482,21 +2576,16 @@ class ExportPlansLoader {
         if (this.isLoading) return;
         
         this.isLoading = true;
-        const page = reset ? 1 : this.currentPage + 1;
         const container = document.getElementById(this.containerId);
         
-        // if (reset && container) {
-        //     container.innerHTML = '<div class="loading-spinner" style="text-align: center; padding: 40px;"></div>';
-        // }
-        
-        const loadMoreBtn = document.getElementById(this.loadMoreBtnId);
-        if (!reset && loadMoreBtn) {
-            loadMoreBtn.disabled = true;
-            loadMoreBtn.innerHTML = '<span class="loading-spinner" style="display: inline-block;"></span> Загрузка...';
+        if (reset && container) {
+            container.innerHTML = '<div class="loading-container"><div class="loading-spinner"></div></div>';
         }
         
+        this.updateUrl();
+        
         try {
-            let url = `/api/plans?page=${page}&per_page=${this.perPage}&status=${this.currentStatus}&year=${this.currentYear}&region=${this.currentRegion}&show_checkboxes=${this.showCheckboxes || true}`;
+            let url = `/api/plans?page=${this.currentPage}&per_page=${this.perPage}&status=${this.currentStatus}&year=${this.currentYear}&region=${this.currentRegion}&show_checkboxes=${this.showCheckboxes || true}`;
             if (this.currentSearchName) {
                 url += `&search_name=${encodeURIComponent(this.currentSearchName)}`;
             }
@@ -2508,25 +2597,21 @@ class ExportPlansLoader {
             const data = await response.json();
             
             if (data.success) {
-                if (reset) {
-                    if (container) {
-                        container.innerHTML = `<div class="plans-area">${data.html}</div>`;
-                    }
-                    this.currentPage = 1;
-                    this.selectedPlans.clear();
-                } else {
-                    const plansArea = document.querySelector('.plans-area');
-                    if (plansArea) {
-                        plansArea.insertAdjacentHTML('beforeend', data.html);
-                    }
-                    this.currentPage = page;
+                if (container) {
+                    container.innerHTML = `<div class="plans-area">${data.html}</div>`;
                 }
                 
-                this.hasMore = data.pagination.has_next;
-                this.updateLoadMoreButton();
+                this.totalPages = data.pagination.total_pages || 1;
+                this.currentPage = data.pagination.current_page || 1;
+                
+                this.updatePagination();
                 this.attachCheckboxListeners();
                 this.updateButtons();
                 this.updateExportButton();
+                
+                if (typeof initStatusProgress === 'function') {
+                    setTimeout(initStatusProgress, 100);
+                }
             }
         } catch (error) {
             console.error('Error loading plans:', error);
@@ -2535,17 +2620,51 @@ class ExportPlansLoader {
             }
         } finally {
             this.isLoading = false;
-            if (!reset && loadMoreBtn) {
-                loadMoreBtn.disabled = false;
-                loadMoreBtn.innerHTML = '<span class="btn-text">Загрузить еще</span>';
-            }
         }
     }
     
-    updateLoadMoreButton() {
-        const loadMoreContainer = document.getElementById('load-more-container');
-        if (loadMoreContainer) {
-            loadMoreContainer.style.display = this.hasMore ? 'block' : 'none';
+    updatePagination() {
+        const paginationArea = document.getElementById(this.paginationAreaId);
+        const currentPageSpan = document.getElementById(this.currentPageSpanId);
+        const totalPagesSpan = document.getElementById(this.totalPagesSpanId);
+        const prevBtn = document.getElementById(this.prevPageBtnId);
+        const nextBtn = document.getElementById(this.nextPageBtnId);
+        
+        if (paginationArea) {
+            if (this.totalPages > 1) {
+                paginationArea.style.display = 'flex';
+                paginationArea.style.justifyContent = 'center';
+            } else {
+                paginationArea.style.display = 'none';
+            }
+        }
+        
+        if (currentPageSpan) {
+            currentPageSpan.textContent = this.currentPage;
+        }
+        
+        if (totalPagesSpan) {
+            totalPagesSpan.textContent = this.totalPages;
+        }
+        
+        if (prevBtn) {
+            if (this.currentPage <= 1) {
+                prevBtn.disabled = true;
+                prevBtn.classList.add('disabled');
+            } else {
+                prevBtn.disabled = false;
+                prevBtn.classList.remove('disabled');
+            }
+        }
+        
+        if (nextBtn) {
+            if (this.currentPage >= this.totalPages) {
+                nextBtn.disabled = true;
+                nextBtn.classList.add('disabled');
+            } else {
+                nextBtn.disabled = false;
+                nextBtn.classList.remove('disabled');
+            }
         }
     }
     
@@ -2623,6 +2742,24 @@ class ExportPlansLoader {
         this.updateExportButton();
     }
     
+    goToPage(page) {
+        if (page < 1 || page > this.totalPages || page === this.currentPage) return;
+        this.currentPage = page;
+        this.loadPlans(true);
+    }
+    
+    goToPrevPage() {
+        if (this.currentPage > 1) {
+            this.goToPage(this.currentPage - 1);
+        }
+    }
+    
+    goToNextPage() {
+        if (this.currentPage < this.totalPages) {
+            this.goToPage(this.currentPage + 1);
+        }
+    }
+    
     handleSearch() {
         if (this.searchTimeout) {
             clearTimeout(this.searchTimeout);
@@ -2630,6 +2767,7 @@ class ExportPlansLoader {
         this.searchTimeout = setTimeout(() => {
             this.currentSearchName = document.getElementById(this.searchNameId)?.value || '';
             this.currentSearchYnp = document.getElementById(this.searchYnp)?.value || '';
+            this.currentPage = 1;
             this.updateUrl();
             this.loadPlans(true);
         }, 500);
@@ -2692,6 +2830,7 @@ class ExportPlansLoader {
                     e.stopPropagation();
                     const value = item.dataset.value;
                     this.currentStatus = value;
+                    this.currentPage = 1;
                     if (selectedSpan) selectedSpan.textContent = item.textContent;
                     statusDropdown.classList.remove('active');
                     this.updateUrl();
@@ -2719,6 +2858,7 @@ class ExportPlansLoader {
                     e.stopPropagation();
                     const value = item.dataset.value;
                     this.currentYear = value;
+                    this.currentPage = 1;
                     if (selectedSpan) {
                         if (value === 'all') {
                             selectedSpan.textContent = 'Год';
@@ -2752,6 +2892,7 @@ class ExportPlansLoader {
                     e.stopPropagation();
                     const value = item.dataset.value;
                     this.currentRegion = value;
+                    this.currentPage = 1;
                     if (selectedSpan) selectedSpan.textContent = item.textContent;
                     regionDropdown.classList.remove('active');
                     this.updateUrl();
@@ -2772,6 +2913,25 @@ class ExportPlansLoader {
             }
         });
         
+        const prevBtn = document.getElementById(this.prevPageBtnId);
+        const nextBtn = document.getElementById(this.nextPageBtnId);
+        
+        if (prevBtn) {
+            prevBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                this.goToPrevPage();
+            }.bind(this));
+        }
+        
+        if (nextBtn) {
+            nextBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                this.goToNextPage();
+            }.bind(this));
+        }
+        
         window.addEventListener('popstate', (event) => {
             const params = new URLSearchParams(window.location.search);
             const newStatus = params.get('status') || 'all';
@@ -2779,15 +2939,18 @@ class ExportPlansLoader {
             const newRegion = params.get('region') || 'all';
             const newSearchName = params.get('search_name') || '';
             const newSearchOkpo = params.get('search_ynp') || '';
+            const newPage = parseInt(params.get('page')) || 1;
             
             if (newStatus !== this.currentStatus || newYear !== this.currentYear || newRegion !== this.currentRegion ||
-                newSearchName !== this.currentSearchName || newSearchOkpo !== this.currentSearchYnp) {
+                newSearchName !== this.currentSearchName || newSearchOkpo !== this.currentSearchYnp ||
+                newPage !== this.currentPage) {
                 
                 this.currentStatus = newStatus;
                 this.currentYear = newYear;
                 this.currentRegion = newRegion;
                 this.currentSearchName = newSearchName;
                 this.currentSearchYnp = newSearchOkpo;
+                this.currentPage = newPage;
                 
                 if (searchNameInput) searchNameInput.value = newSearchName;
                 if (searchOkpoInput) searchOkpoInput.value = newSearchOkpo;
@@ -2799,7 +2962,10 @@ class ExportPlansLoader {
         
         const loadMoreBtn = document.getElementById(this.loadMoreBtnId);
         if (loadMoreBtn) {
-            loadMoreBtn.addEventListener('click', () => this.loadPlans(false));
+            loadMoreBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                this.loadPlans(false);
+            }.bind(this));
         }
     }
     

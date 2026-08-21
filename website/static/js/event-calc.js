@@ -836,7 +836,6 @@ class EventModalManager {
                 }
             }
             
-            // VolumeFinCurrentYear и Payback всегда readonly
             if (VolumeFinCurrentYearInput) {
                 VolumeFinCurrentYearInput.readOnly = true;
                 console.log('editEventModal: VolumeFinCurrentYear readonly');
@@ -850,10 +849,10 @@ class EventModalManager {
             console.log('editEventModal: кнопка Next разблокирована');
 
             if (this.planUsdRate !== null && this.costPerToeUsd !== null) {
-                console.log('editEventModal: курсы загружены, вызываю initEditCalculations');
+                console.log('editEventModal: курсы загружены, initEditCalculations');
                 this.initEditCalculations();
             } else {
-                console.log('editEventModal: курсы не загружены, пропускаю расчеты');
+                console.log('editEventModal: курсы не загружены, пропуск расчетов');
             }
             
             console.log('=== editEventModal КОНЕЦ ===');

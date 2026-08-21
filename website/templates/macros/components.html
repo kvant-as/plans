@@ -492,10 +492,14 @@ show_checkboxes %}
     {% else %}
     <div class="plan-cont-column">
       <div class="plan-cont-column-header">
+        
         {% if (current_user.is_admin or current_user.is_auditor) and
         plan.user_id != current_user.id %}
-        <div class="plan-info">
+        <div class="plan-info"><span class="plan-info" style="font-weight: 600"
+            >{{ _('План на') }} {{ plan.year }} {{ _('год') }}</span
+          >
           <div>
+            
             {% if plan.organization.full_name %}
             <span class="structure-plan"></span>{{ plan.organization.full_name
             |truncate(35, True, '...') }} {% else %} {{ _('План на') }} {%
@@ -625,20 +629,25 @@ show_checkboxes %}
     </div>
   </div>
 </div>
-{% endif %} {% endmacro %} {% macro plans_list(plans, current_user,
-show_checkboxes=false, show_actions=true, custom_empty_message=none,
-compact_view=false) %}
-<div class="plans-area {% if compact_view %}compact-view{% endif %}">
-  {{ plans_list_items(plans, current_user, show_checkboxes, show_actions,
-  custom_empty_message, compact_view) }}
-</div>
-{% endmacro %} {% macro required_legend() %}
-<div class="required-legend">
-  <span>{{ _('Поля, отмеченные ')|safe }}</span>
-  {#{{ icons.icon_star() }}#} <span class="star">*</span>
-  <span>{{ _('обязательны для заполнения')|safe }}</span>
-</div>
-{% endmacro %} {% macro filters_section(years, current_user=none,
+{% endif %} 
+{% endmacro %} 
+
+{% macro plans_list(plans, current_user, show_checkboxes=false, show_actions=true, custom_empty_message=none, compact_view=false) %}
+  <div class="plans-area {% if compact_view %}compact-view{% endif %}">
+    {{ plans_list_items(plans, current_user, show_checkboxes, show_actions,
+    custom_empty_message, compact_view) }}
+  </div>
+{% endmacro %} 
+  
+{% macro required_legend() %}
+  <div class="required-legend">
+    <span>{{ _('Поля, отмеченные ')|safe }}</span>
+    {#{{ icons.icon_star() }}#} <span class="star">*</span>
+    <span>{{ _('обязательны для заполнения')|safe }}</span>
+  </div>
+{% endmacro %} 
+
+{% macro filters_section(years, current_user=none,
 show_search=true, show_status=true, show_year=true, show_regional_search=false,
 selected_status='all', selected_year='all') %}
 <div class="filters-area">

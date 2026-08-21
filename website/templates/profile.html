@@ -223,7 +223,7 @@
             </div>
         </div>
         <div class="danger-zone-actions">
-            <form id="deleteProfile_form" action="{{ url_for('auth.delete_profile') }}" method="POST">
+            <form id="deleteProfile_form" action="{{ url_for('auth.delete_account') }}" method="POST">
                 <div class="confirm-delete-area">
                     <div class="app-group">
                         <label for="confirm-email-field">{{ _('Введите') }} <strong>{{ current_user.email }}</strong> {{ _('для подтверждения') }}</label>

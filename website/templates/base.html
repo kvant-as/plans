@@ -46,21 +46,7 @@
                         {{ icons.icon_contacts() }}
                         <span class="tooltip-text">{{ _('Контакты') }}</span>
                     </button>
-                    <button type="button" class="svg-btn tooltip-btn" onclick="window.location.href='/FAQ'">
-                        {{ icons.icon_help() }}
-                        <span class="tooltip-text">{{ _('Помощь') }}</span>
-                    </button>
-                    <button type="button" class="svg-btn tooltip-btn" onclick="window.location.href='/news'">
-                        {{ icons.icon_news() }}
-                        <span class="tooltip-text">{{ _('Новости') }}</span>
-                    </button>
-                    <button type="button" class="svg-btn tooltip-btn" onclick="window.location.href='{{ url_for('auth.login') }}'">
-                        {{ icons.icon_login() }}
-                        <span class="tooltip-text">{{ _('Войти') }}</span>
-                        <span class="btn-text">{{ _('Войти') }}</span>
-                    </button>
-                {% endif %}
-                {% if current_user and current_user.is_authenticated %}
+                {% else %}
                     <div class="notif-wrapper">
                         <button type="button" class="svg-btn tooltip-btn" id="notifBtn" style="margin: 0; position: relative;">
                             {{ icons.icon_notif() }} 
@@ -78,73 +64,97 @@
                             <div class="notif-body" id="notifList"></div>
                         </div>
                     </div>
-
                     <button type="button" class="svg-btn tooltip-btn helper" style="margin: 0;" onclick="ChatModule.toggleChat()">
                         {{ icons.icon_helper() }} 
                         <span class="tooltip-text">{{ _('Консультант') }}</span>
                     </button>
+                {% endif %}
+                <button type="button" class="svg-btn tooltip-btn help" style="margin: 0;" onclick="window.location.href='/FAQ'">
+                    {{ icons.icon_help() }} 
+                    <span class="tooltip-text">{{ _('Помощь') }}</span>
+                </button>
+                <button type="button" class="svg-btn tooltip-btn news" style="margin: 0;" onclick="window.location.href='/news'">
+                    {{ icons.icon_news() }} 
+                    <span class="tooltip-text">{{ _('Новости') }}</span>
+                </button>
 
-                    <button type="button" class="svg-btn tooltip-btn help" style="margin: 0;" onclick="window.location.href='/FAQ'">
-                        {{ icons.icon_help() }} 
-                        <span class="tooltip-text">{{ _('Помощь') }}</span>
-                    </button>
+                {#
+                <button type="button" class="svg-btn tooltip-btn" onclick="window.location.href='{{ url_for('auth.login') }}'">
+                    {{ icons.icon_proflie() }}
+                    <span class="tooltip-text">{{ _('Войти') }}</span>
+                    <span class="btn-text">{{ _('Войти') }}</span>
+                </button>#}
 
-                    <button type="button" class="svg-btn tooltip-btn news" style="margin: 0;" onclick="window.location.href='/news'">
-                        {{ icons.icon_news() }} 
-                        <span class="tooltip-text">{{ _('Новости') }}</span>
-                    </button>
+                <div class="divider"></div>
 
-                    <div class="divider"></div>
-
-                    <div class="user-container" id="user-profile-panel-trigger">
-                        <div class="avatar-wrapper">
-                            <div class="avatar-circle">
+                <div class="user-container" id="user-profile-panel-trigger">
+                    <div class="avatar-wrapper">
+                        <div class="avatar-circle">
+                            {% if current_user.is_authenticated %}
                                 {{ current_user.first_name[:1] | upper if current_user.first_name else 'U' }}{{ current_user.last_name[:1] | upper if current_user.last_name else 'S' }}
-                            </div>
+                            {% else %}
+                                <span class="no-user">
+                                    {{ icons.icon_login() }}
+                                </span>
+                            {% endif %}
                         </div>
-                        <span class="chevron-icon">›</span>
                     </div>
+                    <span class="chevron-icon">›</span>
+                </div>
 
-                    <div class="user-profile-panel" id="user-profile-panel">
-                        <div class="nav-menu-list">
+                <div class="user-profile-panel" id="user-profile-panel">
+                    <div class="nav-menu-list">
+                        {% if current_user.is_authenticated %}
                             <button type="button" class="nav-menu-item" onclick="window.location.href='/profile'">
                                 {{ icons.icon_profile() }}
                                 <span>{{ _('Мой профиль') }}</span>
                             </button>
                             <hr>
-                            <button type="button" class="nav-menu-item" onclick="window.location.href='/'">
-                                {{ icons.icon_main() }}
-                                <span>{{ _('Главная') }}</span>
-                            </button>
+                        {% endif %}
+                        <button type="button" class="nav-menu-item" onclick="window.location.href='/'">
+                            {{ icons.icon_main() }}
+                            <span>{{ _('Главная') }}</span>
+                        </button>
+                        {% if current_user.is_authenticated %}
                             <button type="button" class="nav-menu-item" onclick="window.location.href='/plans'">
                                 {{ icons.icon_plans() }}
                                 <span>{{ _('Планы') }}</span>
                             </button>
-                            <button type="button" class="nav-menu-item" onclick="window.location.href='/news'">
-                                {{ icons.icon_news() }}
-                                <span>{{ _('Новости') }}</span>
-                            </button>
-                            <button type="button" class="nav-menu-item" onclick="navigateToSection('contacts-cont')">
-                                {{ icons.icon_contacts() }}
-                                <span>{{ _('Контакты') }}</span>
-                            </button>
-                            <hr>
-                            <button type="button" class="nav-menu-item" onclick="window.location.href='/FAQ'">
-                                {{ icons.icon_help() }}
-                                <span>{{ _('Помощь') }}</span>
-                            </button>
                             <button type="button" class="nav-menu-item" onclick="ChatModule.toggleChat()">
                                 {{ icons.icon_helper() }}
-                                <span>{{ _('Онлайн консультант') }}</span>
+                                <span>{{ _('Консультант') }}</span>
                             </button>
+                        {% endif %}
+                        
+                        <button type="button" class="nav-menu-item" onclick="window.location.href='/FAQ'">
+                            {{ icons.icon_help() }}
+                            <span>{{ _('Помощь') }}</span>
+                        </button>
+                        <button type="button" class="nav-menu-item" onclick="window.location.href='/news'">
+                            {{ icons.icon_news() }}
+                            <span>{{ _('Новости') }}</span>
+                        </button>
+                        <button type="button" class="nav-menu-item" onclick="navigateToSection('contacts-cont')">
+                            {{ icons.icon_contacts() }}
+                            <span>{{ _('Контакты') }}</span>
+                        </button>
+                  
+                        {% if current_user.is_authenticated %}
+                            
                             <hr>
-                            <button class="nav-menu-item" onclick="window.location.href='/logout'">
+                            <button class="nav-menu-item red" onclick="window.location.href='/logout'">
                                 {{ icons.icon_logout() }}
                                 <span>{{ _('Выйти из аккаунта') }}</span>
                             </button>
-                        </div>
+                        {% else %}
+                            <hr>
+                            <button class="nav-menu-item green" onclick="window.location.href='/login'">
+                                {{ icons.icon_login() }}
+                                <span>{{ _('Войти в аккаунт') }}</span>
+                            </button>
+                        {% endif %}
                     </div>
-                {% endif %}
+                </div>
             </div>
         </nav>
     </header>

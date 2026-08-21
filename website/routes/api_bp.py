@@ -55,6 +55,8 @@ def api_get_plans():
             compact_view=is_compact
         )
         
+        total_pages = (total_count + per_page - 1) // per_page if total_count > 0 else 1
+        
         return jsonify({
             'success': True,
             'html': html,
@@ -63,7 +65,8 @@ def api_get_plans():
                 'current_page': page,
                 'per_page': per_page,
                 'total_count': total_count,
-                'has_next': page * per_page < total_count
+                'total_pages': total_pages,
+                'has_next': page < total_pages
             }
         })
     except Exception as e:
