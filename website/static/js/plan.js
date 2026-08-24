@@ -155,8 +155,8 @@ class PlanEvents {
         
         if (!this.originalEvents || this.originalEvents.length === 0) {
             const emptyMessage = this.eventType === 'saving' 
-                ? 'Нет мероприятий по экономии ТЭР' 
-                : 'Нет мероприятий по увеличению использования местных ТЭР';
+                ? 'Нет мероприятий по экономии ТЭР (первоначальная редакция)' 
+                : 'Нет мероприятий по увеличению использования местных ТЭР (первоначальная редакция)';
             tbody.innerHTML = `<tr class="no-results-row"><td colspan="18">${emptyMessage}</tr>`;
             return;
         }
@@ -166,7 +166,7 @@ class PlanEvents {
             tbody.appendChild(tr);
         });
         
-        this.addTotalRow(tbody, this.originalEvents);
+        this.addTotalRow(tbody, this.originalEvents, false);
     }
 
     renderEventsWithChanges() {
@@ -188,7 +188,7 @@ class PlanEvents {
             tbody.appendChild(tr);
         });
         
-        this.addTotalRow(tbody, this.eventsWithChanges);
+        this.addTotalRow(tbody, this.eventsWithChanges, true);
     }
 
     createEventRow(row, index) {
@@ -221,14 +221,33 @@ class PlanEvents {
         return tr;
     }
 
-    addTotalRow(tbody, events) {
+    getSectionTitle(isCorrected) {
+        const partNumber = this.getPartNumber();
+        if (this.eventType === 'saving') {
+            if (isCorrected) {
+                return `Итого по разделу 2.2`;
+            } else {
+                return `Итого по разделу 2.1`;
+            }
+        } else {
+            if (isCorrected) {
+                return `Итого по разделу 3.2`;
+            } else {
+                return `Итого по разделу 3.1`;
+            }
+        }
+    }
+
+    addTotalRow(tbody, events, isCorrected = false) {
         if (events.length === 0) return;
-        
+
+        const sectionTitle = this.getSectionTitle(isCorrected);
         const totalRow = document.createElement('tr');
+
         totalRow.className = 'total-row';
         totalRow.style.borderBottom = '1px solid var(--border-color) !important;';
         totalRow.innerHTML = `
-            <td style="text-align: left; padding-left: 60px;" colspan="4">Итого по разделу:</td>
+            <td style="text-align: left; padding-left: 60px;" colspan="4">${sectionTitle}</td>
             <td style="text-align: end;">-</td>
             <td style="text-align: end;">${this.sumEvents(events, 'EffTut').toFixed(2).replace('.', ',')}</td>
             <td style="text-align: end;">${(this.sumEvents(events, 'EffRub') || 0).toString().replace('.', ',')}</td>

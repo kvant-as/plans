@@ -103,10 +103,8 @@ def api_update_column_label(token):
         import logging
         
         plan = Plan.query.filter_by(token=token).first_or_404()
-        # current_app.logger.info(f'Plan found: id={plan.id}, year={plan.year}')
         
         data = request.get_json()
-        # current_app.logger.debug(f'Request data: {data}')
         
         config_id = data.get('config_id')
         new_label = data.get('label')
@@ -280,7 +278,7 @@ def create_indicator(token):
         custom_coeff_before = request.form.get('custom_coeff_before')
         custom_coeff_prev = request.form.get('custom_coeff_prev')
         custom_coeff_current = request.form.get('custom_coeff_current')
-        
+
         current_app.logger.info(f'[create_indicator] Raw form data - coeff_before: {custom_coeff_before}, coeff_prev: {custom_coeff_prev}, coeff_current: {custom_coeff_current}')
 
         if not id_indicator:
@@ -321,11 +319,7 @@ def create_indicator(token):
         
         db.session.add(new_IndicatorUsage)
         db.session.commit()
-        
-        saved = IndicatorUsage.query.get(new_IndicatorUsage.id)
-        current_app.logger.info(f'[create_indicator] SAVED IN DB - coeff_before_prev: {saved.coeff_before_prev}, coeff_prev: {saved.coeff_prev}, coeff_current: {saved.coeff_current}')
-        current_app.logger.info(f'[create_indicator] SAVED IN DB - QYearBeforePrev: {saved.QYearBeforePrev}, QYearPrev: {saved.QYearPrev}, QYearCurrent: {saved.QYearCurrent}')
-        
+
         other_data_indicatorUpdate(current_plan.id)
         update_ChangeTimePlan(current_plan.id)
         
@@ -338,6 +332,7 @@ def create_indicator(token):
         current_app.logger.error(f'Error creating indicator: {str(e)}', exc_info=True)
         flash(f'Ошибка при добавлении показателя: {str(e)}', 'error')
         return redirect(url_for('plan_bp.plan_indicators', token=token))
+
 
 @plan_bp.route('/edit-indicator/<token>', methods=['POST'])
 @user_with_all_params()
@@ -619,11 +614,27 @@ def edit_Eventes(id):
             EffTut = to_decimal_2(request.form.get('EffTut'))
             EffCurrYear = to_decimal_2(request.form.get('EffCurrYear'))
             
+            event_category = request.form.get('event_category')
+            current_app.logger.info(f'event_category from form: {event_category}')
+            
+            if event_category == 'local':
+                is_local = True
+                is_corrected = False
+            elif event_category == 'corrected':
+                is_local = False
+                is_corrected = True
+            else:
+                is_local = True
+                is_corrected = False
+            
+            current_app.logger.info(f'is_local={is_local}, is_corrected={is_corrected}')
+            
             is_double_effect = current_event.is_econom and current_event.is_increase
             
             if is_double_effect and current_event.is_econom:
                 BudgetState = BudgetRep = BudgetLoc = BudgetOther = MoneyOwn = MoneyLoan = MoneyOther = 0
                 VolumeFinCurrentYear = 0
+                ObchVolumeFin = 0
                 
                 USD_RATE = float(current_plan.usd_rate) if current_plan.usd_rate else 2.75
                 COST_PER_TOE_USD = float(current_plan.cost_per_toe_usd) if current_plan.cost_per_toe_usd else 260.0
@@ -632,6 +643,7 @@ def edit_Eventes(id):
                 
                 current_app.logger.info(f'Double effect saving event: financing blocked')
             else:
+                ObchVolumeFin = to_decimal_2(request.form.get('ObchVolumeFin')) 
                 BudgetState = to_decimal_2(request.form.get('BudgetState')) 
                 BudgetRep = to_decimal_2(request.form.get('BudgetRep')) 
                 BudgetLoc = to_decimal_2(request.form.get('BudgetLoc')) 
@@ -647,7 +659,7 @@ def edit_Eventes(id):
                 EffRub = int(float(EffTut) * COST_PER_TOE_USD * USD_RATE)
                 
                 if EffRub > 0:
-                    payback_value = float(VolumeFinCurrentYear) / float(EffRub)
+                    payback_value = float(ObchVolumeFin) / float(EffRub)
                     if payback_value < 0.01:
                         Payback = to_decimal_1(0.1)
                     else:
@@ -655,7 +667,7 @@ def edit_Eventes(id):
                 else:
                     Payback = to_decimal_1(0)
                 
-                current_app.logger.info(f'Regular event calculation: VolumeFinCurrentYear={VolumeFinCurrentYear}, EffRub={EffRub}, Payback={Payback}')
+                current_app.logger.info(f'Regular event calculation: EffRub={EffRub}, Payback={Payback}')
 
             Volume = int(float(Volume_value)) if Volume_value and Volume_value.strip() else None
             ExpectedQuarter = int(float(ExpectedQuarter_value)) if ExpectedQuarter_value and ExpectedQuarter_value.strip() else None
@@ -667,6 +679,7 @@ def edit_Eventes(id):
             current_event.EffRub = EffRub
             current_event.EffCurrYear = EffCurrYear
             current_event.Payback = Payback
+            current_event.ObchVolumeFin = ObchVolumeFin
             current_event.VolumeFinCurrentYear = VolumeFinCurrentYear
             current_event.BudgetState = BudgetState
             current_event.BudgetRep = BudgetRep
@@ -675,8 +688,10 @@ def edit_Eventes(id):
             current_event.MoneyOwn = MoneyOwn
             current_event.MoneyLoan = MoneyLoan
             current_event.MoneyOther = MoneyOther
+            current_event.is_local = is_local
+            current_event.is_corrected = is_corrected
             
-            current_app.logger.info(f'Updated all fields for event {id}')
+            current_app.logger.info(f'Updated all fields for event {id}, is_local={is_local}, is_corrected={is_corrected}')
 
         db.session.commit()
         

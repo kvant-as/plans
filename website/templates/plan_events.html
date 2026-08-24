@@ -80,7 +80,7 @@
               <div class="resizer"></div>
             </th>
             <th rowspan="3" class="resizable vertical-text">
-              <a>Общий объем финансирования в текущем году, руб. {{ icons.icon_sort() }}</a>
+              <a>Общий объем финансирования, руб. {{ icons.icon_sort() }}</a>
               <div class="resizer"></div>
             </th>
             <th rowspan="3" class="resizable vertical-text">
@@ -274,6 +274,26 @@
 
             <form action="{{ url_for('plan_bp.create_event', token=plan.token) }}" method="POST">
                 <div id="step2" class="modal-step" style="display: none;">
+                    <div class="category-section" id="event-category-section">
+                        <div class="name-section-title">Тип мероприятия</div>
+                        <div class="category-options">
+                            <label class="category-option">
+                                <input type="radio" name="event_category" value="local" checked>
+                                <div class="category-option-content">
+                                    <div class="category-option-title">Первоначальная редакция</div>
+                                    <div class="category-option-desc">Мероприятие относится к первоначальной редакции</div>
+                                </div>
+                            </label>
+                            <label class="category-option">
+                                <input type="radio" name="event_category" value="corrected">
+                                <div class="category-option-content">
+                                    <div class="category-option-title">Включенные в план при внесении в него изменений</div>
+                                    <div class="category-option-desc">Мероприятие включено в план при внесении изменений</div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="name-section-title">Добавление</div>
                     <div class="app-group">
                         <label>[3] {{ _('Наименование мероприятия') }}</label>
                         <div class="input-with-icon">
@@ -366,10 +386,13 @@
                             </div>
                         </div> 
                         <div class="app-group">
-                            <label>[11] {{ _('Общий объем финансирования в текущем году, руб.') }}</label>
+                            <label>[11] {{ _('Общий объем финансирования, руб.') }}</label>
                             <div class="input-with-icon">
                                 {{ icons.icon_half() }}
                                 <input type="text" value="0" name="ObchVolumeFin" class="app-numeric-input-integer">
+                            </div>
+                            <div id="obch-volume-fin-warning" class="error-message-modern" style="display: none;">
+                                {{ _('Общий объем финансирования не может быть меньше объема финансирования в текущем году') }}
                             </div>
                         </div>
                     </div>
@@ -407,7 +430,7 @@
                     </div> 
                     <div class="row-app-group">
                         <div class="app-group">
-                            <label>[16] {{ _('другие') }}</label>
+                            <label>[16] {{ _('другие бюджетные средства') }}</label>
                             <div class="input-with-icon">
                                 {{ icons.icon_half() }}
                                 <input type="number" name="BudgetOther" class="app-numeric-input-integer" value="0" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
@@ -490,6 +513,26 @@
 
                 <div id="steps-edit">
                     <div id="step1" class="modal-step">
+                        <div class="category-section" id="edit-event-category-section">
+                            <div class="name-section-title">Тип мероприятия</div>
+                            <div class="category-options">
+                                <label class="category-option">
+                                    <input type="radio" name="event_category" id="edit-event-category-local" value="local">
+                                    <div class="category-option-content">
+                                        <div class="category-option-title">Первоначальная редакция</div>
+                                        <div class="category-option-desc">Мероприятие относится к первоначальной редакции</div>
+                                    </div>
+                                </label>
+                                <label class="category-option">
+                                    <input type="radio" name="event_category" id="edit-event-category-corrected" value="corrected">
+                                    <div class="category-option-content">
+                                        <div class="category-option-title">Включенные в план при внесении в него изменений</div>
+                                        <div class="category-option-desc">Мероприятие включено в план при внесении изменений</div>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="name-section-title">Редактирование</div>
                         <div class="app-group">
                             <label>[3] {{ _('Наименование мероприятия') }}</label>
                             <div class="input-with-icon">
@@ -580,10 +623,13 @@
                                 </div>
                             </div>
                             <div class="app-group">
-                                <label>[11] {{ _('Общий объем финансирования в текущем году, руб.') }}</label>
+                                <label>[11] {{ _('Общий объем финансирования, руб.') }}</label>
                                 <div class="input-with-icon">
                                     {{ icons.icon_half() }}
                                     <input type="text" id="change-ObchVolumeFin-edit-model" name="ObchVolumeFin" placeholder="0" class="app-numeric-input-integer" value="0">
+                                </div>
+                                <div id="edit-obch-volume-fin-warning" class="error-message-modern" style="display: none;">
+                                    {{ _('Общий объем финансирования не может быть меньше объема финансирования в текущем году') }}
                                 </div>
                             </div>
                         </div>
@@ -621,7 +667,7 @@
                         </div> 
                         <div class="row-app-group">
                             <div class="app-group">
-                                <label>[16] {{ _('другие') }}</label>
+                                <label>[16] {{ _('другие бюджетные средства') }}</label>
                                 <div class="input-with-icon">
                                     {{ icons.icon_half() }}
                                     <input type="number" id="change-BudgetOther-edit-model" name="BudgetOther" placeholder="0" class="app-numeric-input-integer" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>

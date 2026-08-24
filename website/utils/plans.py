@@ -285,10 +285,10 @@ def get_filtered_plans(user, status_filter="all", year_filter="all", search_name
             filtered_query = filtered_query.filter(Plan.year == int(year_filter))
         
         total_count = filtered_query.count()
-        current_app.logger.debug(f'total_count={total_count}')
+        # current_app.logger.debug(f'total_count={total_count}')
         
         plans = filtered_query.order_by(Plan.begin_time.desc()).offset((page - 1) * per_page).limit(per_page).all()
-        current_app.logger.debug(f'plans count={len(plans)}')
+        # current_app.logger.debug(f'plans count={len(plans)}')
         
         count_query = base_query
         if year_filter != 'all':

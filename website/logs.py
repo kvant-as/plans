@@ -5,6 +5,7 @@ from datetime import datetime
 import traceback
 from flask import current_app
 
+
 class WerkzeugFilter(logging.Filter):
     def filter(self, record):
         return not (record.name == 'werkzeug' and 'GET /static/' in record.getMessage())

@@ -235,6 +235,7 @@ class EventModalManager {
     validateEffCurrYear() {
         const effTutInput = document.querySelector('#AddEventModal input[name="EffTut"]');
         const effCurrYearInput = document.querySelector('#AddEventModal input[name="EffCurrYear"]');
+        const warningSpan = document.getElementById('eff-curr-year-warning');
         
         if (!effTutInput || !effCurrYearInput) return;
         
@@ -245,19 +246,56 @@ class EventModalManager {
             effCurrYear = effTut;
             effCurrYearInput.value = this.formatNumber(effCurrYear, 2);
             
-            const warningMessage = `Эффект в текущем году (${this.formatNumber(effCurrYear, 2)} т у.т.) не может превышать общий эффект (${this.formatNumber(effTut, 2)} т у.т.)`;
-            this.showEffCurrYearWarning(warningMessage);
+            if (warningSpan) {
+                warningSpan.textContent = `Эффект в текущем году (${this.formatNumber(effCurrYear, 2)} т у.т.) не может превышать общий эффект (${this.formatNumber(effTut, 2)} т у.т.)`;
+                warningSpan.style.display = 'block';
+            }
             
             effCurrYearInput.classList.add('is-invalid');
             setTimeout(() => {
+                if (warningSpan) {
+                    warningSpan.style.display = 'none';
+                }
                 effCurrYearInput.classList.remove('is-invalid');
             }, 7000);
         } else {
-            const warningSpan = document.getElementById('eff-curr-year-warning');
             if (warningSpan) {
                 warningSpan.style.display = 'none';
             }
             effCurrYearInput.classList.remove('is-invalid');
+        }
+    }
+
+    validateObchVolumeFin() {
+        const obchVolumeFinInput = document.querySelector('#AddEventModal input[name="ObchVolumeFin"]');
+        const volumeFinCurrentYearInput = document.querySelector('#AddEventModal input[name="VolumeFinCurrentYear"]');
+        const warningSpan = document.getElementById('obch-volume-fin-warning');
+        
+        if (!obchVolumeFinInput || !volumeFinCurrentYearInput) return;
+        
+        const obchVolumeFin = this.parseNumber(obchVolumeFinInput.value);
+        const volumeFinCurrentYear = this.parseNumber(volumeFinCurrentYearInput.value);
+        
+        if (obchVolumeFin < volumeFinCurrentYear) {
+            obchVolumeFinInput.value = this.formatNumber(volumeFinCurrentYear, 0);
+            
+            if (warningSpan) {
+                warningSpan.textContent = `Общий объем финансирования (${this.formatNumber(obchVolumeFin, 0)} руб.) не может быть меньше объема финансирования в текущем году (${this.formatNumber(volumeFinCurrentYear, 0)} руб.)`;
+                warningSpan.style.display = 'block';
+            }
+            
+            obchVolumeFinInput.classList.add('is-invalid');
+            setTimeout(() => {
+                if (warningSpan) {
+                    warningSpan.style.display = 'none';
+                }
+                obchVolumeFinInput.classList.remove('is-invalid');
+            }, 7000);
+        } else {
+            if (warningSpan) {
+                warningSpan.style.display = 'none';
+            }
+            obchVolumeFinInput.classList.remove('is-invalid');
         }
     }
 
@@ -346,6 +384,7 @@ class EventModalManager {
         if (this.planUsdRate === null || this.costPerToeUsd === null) return;
 
         this.validateEffCurrYear();
+        this.validateObchVolumeFin();
 
         const eventTypeInput = document.querySelector('#AddEventModal input[name="event_type"]');
         const eventType = eventTypeInput ? eventTypeInput.value : null;
@@ -404,9 +443,11 @@ class EventModalManager {
                 effRubInput.readOnly = true;
             }
             
+            const ObchVolumeFin = this.parseNumber(document.querySelector('#AddEventModal input[name="ObchVolumeFin"]')?.value);
+            
             let payback = 0;
             if (effRub > 0) {
-                payback = VolumeFinCurrentYear / effRub;
+                payback = ObchVolumeFin / effRub;
                 if (payback < 0.1 && payback > 0) {
                     payback = 0.1;
                 }
@@ -440,9 +481,11 @@ class EventModalManager {
             }
             
             const effRub = this.parseNumber(effRubInput?.value);
+            const ObchVolumeFin = this.parseNumber(document.querySelector('#AddEventModal input[name="ObchVolumeFin"]')?.value);
+            
             let payback = 0;
             if (effRub > 0) {
-                payback = VolumeFinCurrentYear / effRub;
+                payback = ObchVolumeFin / effRub;
                 if (payback < 0.1 && payback > 0) {
                     payback = 0.1;
                 }
@@ -667,7 +710,6 @@ class EventModalManager {
     }
 
     editEventModal() {
-        console.log('=== editEventModal НАЧАЛО ===');
         const activeRow = this.getActiveRow();
         console.log('activeRow:', activeRow);
         if (!activeRow) {
@@ -687,27 +729,20 @@ class EventModalManager {
         const isPeriod = periodCode && ['0001', '0002', '0003', '0004'].includes(periodCode);
 
         if (isPeriod) {
-            console.log('editEventModal: это период, вызываю editPeriodModal');
             this.editPeriodModal();
             return;
         }
 
-        console.log('editEventModal: это мероприятие, продолжаем');
         this.showEventStep();
         this.disableNextButton(true);
 
-        console.log('editEventModal: отправляю запросы');
         Promise.all([
             fetch(`/api/get-event/${idEvent}`).then(r => {
-                console.log('editEventModal: fetch get-event ответ получен, status:', r.status);
                 return r.json();
             }),
             this.fetchPlanRates()
         ]).then(([eventData, rates]) => {
             console.log('editEventModal: данные получены');
-            console.log('editEventModal: eventData:', eventData);
-            console.log('editEventModal: rates:', rates);
-            
             if (eventData.error) {
                 console.log('editEventModal: eventData.error:', eventData.error);
                 throw new Error(eventData.error);
@@ -716,36 +751,22 @@ class EventModalManager {
             const isIncrease = eventData.is_increase === true;
             const isDoubleEffect = eventData.is_double_effect === true;
             
-            console.log('editEventModal: isIncrease =', isIncrease);
-            console.log('editEventModal: isDoubleEffect =', isDoubleEffect);
-            
             this._currentEventType = isIncrease ? 'increase' : 'saving';
             this._isDoubleEffect = isDoubleEffect;
             
             console.log('editEventModal: _currentEventType =', this._currentEventType);
             console.log('editEventModal: _isDoubleEffect =', this._isDoubleEffect);
             
-            console.log('editEventModal: вызываю setEventFields');
             this.setEventFields(eventData);
-            console.log('editEventModal: вызываю setFormAction');
             this.setFormAction(idEvent);
             
-            console.log('editEventModal: ищу элементы DOM');
             const effRubInput = document.getElementById('change-EffRub-edit-model');
-            console.log('editEventModal: effRubInput:', effRubInput);
-            
             const budgetFields = ['BudgetState', 'BudgetRep', 'BudgetLoc', 'BudgetOther', 'MoneyOwn', 'MoneyLoan', 'MoneyOther'];
             const VolumeFinCurrentYearInput = document.getElementById('change-VolumeFinCurrentYear-edit-model');
-            console.log('editEventModal: VolumeFinCurrentYearInput:', VolumeFinCurrentYearInput);
             const ObchVolumeFinInput = document.getElementById('change-ObchVolumeFin-edit-model');
-            console.log('editEventModal: ObchVolumeFinInput:', ObchVolumeFinInput);
             const paybackInput = document.getElementById('change-Payback-edit-model');
-            console.log('editEventModal: paybackInput:', paybackInput);
             
-            // ============ double_effect + saving = все блокируется ============
             if (isDoubleEffect && !isIncrease) {
-                console.log('editEventModal: === double_effect + saving - блокируем все ===');
-                
                 if (effRubInput) {
                     effRubInput.readOnly = true;
                     effRubInput.disabled = false;
@@ -758,7 +779,6 @@ class EventModalManager {
                         input.value = '0';
                         input.readOnly = true;
                         input.disabled = true;
-                        console.log(`editEventModal: ${fieldName} установлен в 0 и заблокирован`);
                     } else {
                         console.log(`editEventModal: поле change-${fieldName}-edit-model не найдено`);
                     }
@@ -767,32 +787,24 @@ class EventModalManager {
                 if (VolumeFinCurrentYearInput) {
                     VolumeFinCurrentYearInput.value = '0';
                     VolumeFinCurrentYearInput.readOnly = true;
-                    console.log('editEventModal: VolumeFinCurrentYear установлен в 0 и заблокирован');
                 }
                 if (paybackInput) {
                     paybackInput.value = '0,0';
                     paybackInput.readOnly = true;
-                    console.log('editEventModal: Payback установлен в 0 и заблокирован');
                 }
                 if (ObchVolumeFinInput) {
                     ObchVolumeFinInput.value = '0';
                     ObchVolumeFinInput.readOnly = true;
-                    console.log('editEventModal: ObchVolumeFin установлен в 0 и заблокирован');
                 }
                 
                 this.disableNextButton(false);
-                console.log('editEventModal: double_effect + saving завершен');
                 return;
             }
             
-            // ============ Обычный increase ============
             if (isIncrease) {
-                console.log('editEventModal: === increase режим ===');
-                
                 if (effRubInput) {
                     effRubInput.readOnly = false;
                     effRubInput.disabled = false;
-                    console.log('editEventModal: EffRub доступен для редактирования (increase)');
                 }
                 
                 budgetFields.forEach(fieldName => {
@@ -800,24 +812,19 @@ class EventModalManager {
                     if (input) {
                         input.readOnly = false;
                         input.disabled = false;
-                        console.log(`editEventModal: ${fieldName} разблокирован`);
                     }
                 });
                 
                 if (ObchVolumeFinInput) {
                     ObchVolumeFinInput.readOnly = false;
                     ObchVolumeFinInput.disabled = false;
-                    console.log('editEventModal: ObchVolumeFin разблокирован');
                 }
                 
             } else {
-                // ============ saving (не double_effect) ============
-                console.log('editEventModal: === saving режим (не double_effect) ===');
                 
                 if (effRubInput) {
                     effRubInput.readOnly = true;
                     effRubInput.disabled = false;
-                    console.log('editEventModal: EffRub readonly (saving)');
                 }
                 
                 budgetFields.forEach(fieldName => {
@@ -825,39 +832,31 @@ class EventModalManager {
                     if (input) {
                         input.readOnly = false;
                         input.disabled = false;
-                        console.log(`editEventModal: ${fieldName} разблокирован`);
                     }
                 });
                 
                 if (ObchVolumeFinInput) {
                     ObchVolumeFinInput.readOnly = false;
                     ObchVolumeFinInput.disabled = false;
-                    console.log('editEventModal: ObchVolumeFin разблокирован');
                 }
             }
             
             if (VolumeFinCurrentYearInput) {
                 VolumeFinCurrentYearInput.readOnly = true;
-                console.log('editEventModal: VolumeFinCurrentYear readonly');
             }
+
             if (paybackInput) {
                 paybackInput.readOnly = true;
-                console.log('editEventModal: Payback readonly');
             }
             
             this.disableNextButton(false);
-            console.log('editEventModal: кнопка Next разблокирована');
-
             if (this.planUsdRate !== null && this.costPerToeUsd !== null) {
-                console.log('editEventModal: курсы загружены, initEditCalculations');
                 this.initEditCalculations();
             } else {
                 console.log('editEventModal: курсы не загружены, пропуск расчетов');
             }
             
-            console.log('=== editEventModal КОНЕЦ ===');
         }).catch(error => {
-            console.error('editEventModal: ОШИБКА:', error);
             alert('Ошибка при загрузке данных мероприятия: ' + error.message);
             this.disableNextButton(false);
         });
@@ -905,6 +904,7 @@ class EventModalManager {
             'change-ExpectedQuarter-edit-model': data.ExpectedQuarter || '',
             'change-EffCurrYear-edit-model': data.EffCurrYear ? this.formatNumber(parseFloat(data.EffCurrYear), 2) : '0,00',
             'change-Payback-edit-model': data.Payback ? this.formatNumber(parseFloat(data.Payback), 1) : '0,0',
+            'change-ObchVolumeFin-edit-model': data.ObchVolumeFin || '0',
             'change-VolumeFinCurrentYear-edit-model': data.VolumeFinCurrentYear ? this.formatNumber(parseFloat(data.VolumeFinCurrentYear), 0) : '0',
             'change-BudgetState-edit-model': data.BudgetState || '0',
             'change-BudgetRep-edit-model': data.BudgetRep || '0',
@@ -921,6 +921,19 @@ class EventModalManager {
                 element.value = value;
             }
         });
+
+        const localRadio = document.getElementById('edit-event-category-local');
+        const correctedRadio = document.getElementById('edit-event-category-corrected');
+        
+        if (localRadio && correctedRadio) {
+            if (data.is_local === true) {
+                localRadio.checked = true;
+            } else if (data.is_corrected === true) {
+                correctedRadio.checked = true;
+            } else {
+                localRadio.checked = true;
+            }
+        }
     }
 
     setFormAction(idEvent) {
@@ -933,6 +946,7 @@ class EventModalManager {
     validateEditEffCurrYear() {
         const effTutInput = document.getElementById('change-EffTut-edit-model');
         const effCurrYearInput = document.getElementById('change-EffCurrYear-edit-model');
+        const warningSpan = document.getElementById('eff-curr-year-warning');
         
         if (!effTutInput || !effCurrYearInput) return;
         
@@ -943,17 +957,19 @@ class EventModalManager {
             effCurrYear = effTut;
             effCurrYearInput.value = this.formatNumber(effCurrYear, 2);
             
-            // Показываем предупреждение
-            this.showEditEffCurrYearWarning(
-                `Эффект в текущем году (${this.formatNumber(effCurrYear, 2)} т у.т.) не может превышать общий эффект (${this.formatNumber(effTut, 2)} т у.т.)`
-            );
+            if (warningSpan) {
+                warningSpan.textContent = `Эффект в текущем году (${this.formatNumber(effCurrYear, 2)} т у.т.) не может превышать общий эффект (${this.formatNumber(effTut, 2)} т у.т.)`;
+                warningSpan.style.display = 'block';
+            }
             
             effCurrYearInput.classList.add('is-invalid');
             setTimeout(() => {
+                if (warningSpan) {
+                    warningSpan.style.display = 'none';
+                }
                 effCurrYearInput.classList.remove('is-invalid');
             }, 7000);
         } else {
-            const warningSpan = document.getElementById('edit-eff-curr-year-warning');
             if (warningSpan) {
                 warningSpan.style.display = 'none';
             }
@@ -961,54 +977,45 @@ class EventModalManager {
         }
     }
 
-    showEditEffCurrYearWarning(message) {
-        let warningSpan = document.getElementById('edit-eff-curr-year-warning');
+    validateEditObchVolumeFin() {
+        const obchVolumeFinInput = document.getElementById('change-ObchVolumeFin-edit-model');
+        const volumeFinCurrentYearInput = document.getElementById('change-VolumeFinCurrentYear-edit-model');
+        const warningSpan = document.getElementById('edit-obch-volume-fin-warning');
         
-        if (!warningSpan) {
-            const effCurrYearInput = document.getElementById('change-EffCurrYear-edit-model');
-            if (effCurrYearInput && effCurrYearInput.parentNode) {
-                const parentDiv = effCurrYearInput.parentNode;
-                const relativeDiv = parentDiv.querySelector('.position-relative');
-                
-                if (relativeDiv) {
-                    warningSpan = document.createElement('span');
-                    warningSpan.id = 'edit-eff-curr-year-warning';
-                    warningSpan.className = 'text-danger small mt-1';
-                    warningSpan.style.display = 'none';
-                    warningSpan.style.fontSize = '12px';
-                    warningSpan.style.marginTop = '5px';
-                    relativeDiv.appendChild(warningSpan);
-                } else {
-                    warningSpan = document.createElement('span');
-                    warningSpan.id = 'edit-eff-curr-year-warning';
-                    warningSpan.className = 'text-danger small';
-                    warningSpan.style.display = 'none';
-                    warningSpan.style.fontSize = '12px';
-                    warningSpan.style.marginTop = '5px';
-                    warningSpan.style.color = '#dc3545';
-                    effCurrYearInput.insertAdjacentElement('afterend', warningSpan);
-                }
-            }
-        }
+        if (!obchVolumeFinInput || !volumeFinCurrentYearInput) return;
         
-        if (warningSpan) {
-            warningSpan.textContent = message || 'Эффект в текущем году не может превышать общий эффект';
-            warningSpan.style.display = 'block';
+        const obchVolumeFin = this.parseNumber(obchVolumeFinInput.value);
+        const volumeFinCurrentYear = this.parseNumber(volumeFinCurrentYearInput.value);
+        
+        if (obchVolumeFin < volumeFinCurrentYear) {
+            obchVolumeFinInput.value = this.formatNumber(volumeFinCurrentYear, 0);
             
+            if (warningSpan) {
+                warningSpan.textContent = `Общий объем финансирования (${this.formatNumber(obchVolumeFin, 0)} руб.) не может быть меньше объема финансирования в текущем году (${this.formatNumber(volumeFinCurrentYear, 0)} руб.)`;
+                warningSpan.style.display = 'block';
+            }
+            
+            obchVolumeFinInput.classList.add('is-invalid');
             setTimeout(() => {
                 if (warningSpan) {
                     warningSpan.style.display = 'none';
                 }
-            }, 4000);
+                obchVolumeFinInput.classList.remove('is-invalid');
+            }, 7000);
+        } else {
+            if (warningSpan) {
+                warningSpan.style.display = 'none';
+            }
+            obchVolumeFinInput.classList.remove('is-invalid');
         }
     }
-
 
     initEditCalculations() {
         const self = this;
         
         const validateEditFields = () => {
             self.validateEditEffCurrYear();
+            self.validateEditObchVolumeFin();
         };
 
         const updateEditCalculations = () => {
@@ -1032,12 +1039,15 @@ class EventModalManager {
             const effTutInput = document.getElementById('change-EffTut-edit-model');
             const VolumeFinCurrentYearInput = document.getElementById('change-VolumeFinCurrentYear-edit-model');
             const paybackInput = document.getElementById('change-Payback-edit-model');
+            const ObchVolumeFinInput = document.getElementById('change-ObchVolumeFin-edit-model');
             
             let VolumeFinCurrentYear = 0;
             let effRub = 0;
+            let ObchVolumeFin = self.parseNumber(ObchVolumeFinInput?.value);
             
             if (isDoubleEffect && eventType === 'saving') {
                 VolumeFinCurrentYear = 0;
+                ObchVolumeFin = 0;
                 
                 const effTut = self.parseNumber(effTutInput?.value);
                 effRub = Math.round(effTut * self.costPerToeUsd * self.planUsdRate);
@@ -1054,12 +1064,17 @@ class EventModalManager {
                     paybackInput.value = '0,0';
                 }
                 
+                if (ObchVolumeFinInput) {
+                    ObchVolumeFinInput.value = '0';
+                }
+                
                 return;
             }
             
             if (eventType === 'increase') {
                 VolumeFinCurrentYear = budgetState + budgetRep + budgetLoc + budgetOther + moneyOwn + moneyLoan + moneyOther;
                 effRub = self.parseNumber(effRubInput?.value);
+                ObchVolumeFin = self.parseNumber(ObchVolumeFinInput?.value);
                 
                 if (VolumeFinCurrentYearInput) {
                     VolumeFinCurrentYearInput.value = self.formatNumber(VolumeFinCurrentYear, 0);
@@ -1076,6 +1091,7 @@ class EventModalManager {
                 
                 const effTut = self.parseNumber(effTutInput?.value);
                 effRub = Math.round(effTut * self.costPerToeUsd * self.planUsdRate);
+                ObchVolumeFin = self.parseNumber(ObchVolumeFinInput?.value);
                 
                 if (effRubInput) {
                     effRubInput.value = self.formatNumber(effRub, 0);
@@ -1089,9 +1105,16 @@ class EventModalManager {
                 }
             }
             
+            if (ObchVolumeFin < VolumeFinCurrentYear) {
+                ObchVolumeFin = VolumeFinCurrentYear;
+                if (ObchVolumeFinInput) {
+                    ObchVolumeFinInput.value = self.formatNumber(ObchVolumeFin, 0);
+                }
+            }
+            
             let payback = 0;
             if (effRub > 0) {
-                payback = VolumeFinCurrentYear / effRub;
+                payback = ObchVolumeFin / effRub;
                 if (payback < 0.1 && payback > 0) {
                     payback = 0.1;
                 }
@@ -1116,7 +1139,8 @@ class EventModalManager {
             'change-MoneyLoan-edit-model',
             'change-MoneyOther-edit-model',
             'change-VolumeFinCurrentYear-edit-model',
-            'change-EffCurrYear-edit-model'
+            'change-EffCurrYear-edit-model',
+            'change-ObchVolumeFin-edit-model'
         ];
 
         editFields.forEach(fieldId => {
@@ -1131,6 +1155,12 @@ class EventModalManager {
         if (effTutInput) {
             effTutInput.removeEventListener('input', validateEditFields);
             effTutInput.addEventListener('input', validateEditFields);
+        }
+
+        const obchVolumeFinInput = document.getElementById('change-ObchVolumeFin-edit-model');
+        if (obchVolumeFinInput) {
+            obchVolumeFinInput.removeEventListener('input', validateEditFields);
+            obchVolumeFinInput.addEventListener('input', validateEditFields);
         }
 
         setTimeout(updateEditCalculations, 100);
@@ -1172,8 +1202,6 @@ function setValueIfExists(elementId, value) {
         element.value = value;
     }
 }
-
-
 
 function validateAndEnableButton() {
     const addModal = document.getElementById('AddEventModal');
