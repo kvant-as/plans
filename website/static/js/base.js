@@ -2662,8 +2662,66 @@ document.addEventListener('DOMContentLoaded', function() {
 document.addEventListener('DOMContentLoaded', () => {
     try {
         const multiStepForm = new MultiStepForm();
-        window.multiStepForm = multiStepForm; 
+        window.multiStepForm = multiStepForm;
     } catch (error) {
         console.error('Failed to initialize MultiStepForm:', error);
     }
+});
+
+/* ============================================
+   FILTER DROPDOWNS
+   .filters-area can scroll horizontally on narrow
+   screens (fixed-width filter controls). Once a
+   container scrolls on one axis, the browser clips
+   the other axis too, which hides an absolutely
+   positioned .dropdown-menu-filter behind whatever
+   comes after it (e.g. .plans-area). Fix: while a
+   dropdown is open, position its menu with `fixed`
+   using the toggle button's real viewport coordinates,
+   so it escapes any scrolling/clipping ancestor.
+   ============================================ */
+document.addEventListener('DOMContentLoaded', () => {
+    function positionDropdownMenu(dropdown) {
+        const toggle = dropdown.querySelector('.dropdown-toggle');
+        const menu = dropdown.querySelector('.dropdown-menu-filter');
+        if (!toggle || !menu) return;
+
+        const rect = toggle.getBoundingClientRect();
+        menu.style.position = 'fixed';
+        menu.style.top = (rect.bottom + 4) + 'px';
+        menu.style.left = rect.left + 'px';
+        menu.style.right = 'auto';
+
+        requestAnimationFrame(() => {
+            const menuRect = menu.getBoundingClientRect();
+            const overflowRight = menuRect.right - window.innerWidth;
+            if (overflowRight > 0) {
+                menu.style.left = Math.max(8, rect.left - overflowRight - 8) + 'px';
+            }
+        });
+    }
+
+    function resetDropdownMenu(dropdown) {
+        const menu = dropdown.querySelector('.dropdown-menu-filter');
+        if (!menu) return;
+        menu.style.position = '';
+        menu.style.top = '';
+        menu.style.left = '';
+        menu.style.right = '';
+    }
+
+    document.querySelectorAll('.custom-dropdown').forEach(dropdown => {
+        const observer = new MutationObserver(() => {
+            if (dropdown.classList.contains('active')) {
+                positionDropdownMenu(dropdown);
+            } else {
+                resetDropdownMenu(dropdown);
+            }
+        });
+        observer.observe(dropdown, { attributes: true, attributeFilter: ['class'] });
+    });
+
+    window.addEventListener('resize', () => {
+        document.querySelectorAll('.custom-dropdown.active').forEach(positionDropdownMenu);
+    });
 });

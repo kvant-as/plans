@@ -4007,6 +4007,24 @@ input[type="checkbox"]:focus {
   min-width: 100px;
 }
 
+@media (max-width: 768px) {
+  .filters-area {
+    flex-wrap: nowrap;
+    max-width: 100%;
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+
+  .filters-area .input-with-icon,
+  .filters-area .custom-dropdown {
+    flex-shrink: 0;
+  }
+
+  .filters-area .app-input {
+    width: 160px;
+  }
+}
+
 .custom-dropdown {
   position: relative;
   display: inline-block;
