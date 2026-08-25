@@ -901,7 +901,6 @@ class EventModalManager {
             'change-Volume-edit-model': data.Volume || '',
             'change-EffTut-edit-model': data.EffTut || '',
             'change-EffRub-edit-model': data.EffRub || '',
-            'change-ExpectedQuarter-edit-model': data.ExpectedQuarter || '',
             'change-EffCurrYear-edit-model': data.EffCurrYear ? this.formatNumber(parseFloat(data.EffCurrYear), 2) : '0,00',
             'change-Payback-edit-model': data.Payback ? this.formatNumber(parseFloat(data.Payback), 1) : '0,0',
             'change-ObchVolumeFin-edit-model': data.ObchVolumeFin || '0',
@@ -921,6 +920,16 @@ class EventModalManager {
                 element.value = value;
             }
         });
+
+        if (data.ExpectedQuarter) {
+            const input = document.getElementById('edit-expected-quarter-input');
+            if (input) {
+                input.value = data.ExpectedQuarter;
+            }
+            if (window.editQuarterSelector) {
+                window.editQuarterSelector.setValue(data.ExpectedQuarter);
+            }
+        }
 
         const localRadio = document.getElementById('edit-event-category-local');
         const correctedRadio = document.getElementById('edit-event-category-corrected');
@@ -1168,6 +1177,94 @@ class EventModalManager {
     }
 }
 
+class QuarterSelector {
+    constructor(options = {}) {
+        this.inputId = options.inputId || 'expected-quarter-input';
+        this.popupId = options.popupId || 'quarter-popup';
+        this.defaultValue = options.defaultValue || '1-4';
+        this.onSelect = options.onSelect || null;
+        
+        this.input = document.getElementById(this.inputId);
+        this.popup = document.getElementById(this.popupId);
+        
+        if (!this.input || !this.popup) {
+            return;
+        }
+        
+        this.init();
+    }
+    
+    init() {
+        this.input.addEventListener('click', this.togglePopup.bind(this));
+        
+        const buttons = this.popup.querySelectorAll('.quarter-btn');
+        buttons.forEach(btn => {
+            btn.addEventListener('click', this.selectQuarter.bind(this));
+        });
+        
+        document.addEventListener('click', this.handleOutsideClick.bind(this));
+        
+        if (this.defaultValue) {
+            this.input.value = this.defaultValue;
+            this.highlightSelected(this.defaultValue);
+        }
+    }
+    
+    togglePopup(e) {
+        e.stopPropagation();
+        if (this.popup.classList.contains('show')) {
+            this.popup.classList.remove('show');
+        } else {
+            this.popup.classList.add('show');
+        }
+    }
+    
+    handleOutsideClick(e) {
+        const wrapper = this.input.closest('.quarter-selector-wrapper');
+        if (!wrapper.contains(e.target)) {
+            this.popup.classList.remove('show');
+        }
+    }
+    
+    selectQuarter(e) {
+        const btn = e.currentTarget;
+        const value = btn.dataset.value;
+        
+        this.input.value = value;
+        this.popup.classList.remove('show');
+        
+        this.highlightSelected(value);
+        
+        if (this.onSelect && typeof this.onSelect === 'function') {
+            this.onSelect(value);
+        }
+    }
+    
+    highlightSelected(value) {
+        const buttons = this.popup.querySelectorAll('.quarter-btn');
+        buttons.forEach(btn => {
+            btn.classList.remove('selected');
+            if (btn.dataset.value === value) {
+                btn.classList.add('selected');
+            }
+        });
+    }
+    
+    setValue(value) {
+        this.input.value = value;
+        this.highlightSelected(value);
+    }
+    
+    getValue() {
+        return this.input.value;
+    }
+    
+    destroy() {
+        this.input.removeEventListener('click', this.togglePopup);
+        document.removeEventListener('click', this.handleOutsideClick);
+    }
+}
+
 function Edit_Period_modal() {
     const manager = new EventModalManager();
     manager.editPeriodModal();
@@ -1214,7 +1311,7 @@ function validateAndEnableButton() {
                 const value = field.value.trim();
                 if (field.name === 'name') return value !== '';
                 if (field.name === 'Volume') return value !== '' && parseFloat(value) > 0;
-                if (field.name === 'ExpectedQuarter') return value !== '' && parseInt(value) >= 1 && parseInt(value) <= 4;
+                if (field.name === 'ExpectedQuarter') return value !== '';
                 return false;
             });
             addButton.disabled = !allFilled;
@@ -1241,7 +1338,7 @@ function validateAndEnableButton() {
                 const value = field.value.trim();
                 if (field.name === 'name') return value !== '';
                 if (field.name === 'Volume') return value !== '' && parseFloat(value) > 0;
-                if (field.name === 'ExpectedQuarter') return value !== '' && parseInt(value) >= 1 && parseInt(value) <= 4;
+                if (field.name === 'ExpectedQuarter') return value !== '';
                 return false;
             });
             editButton.disabled = !allFilled;
@@ -1249,11 +1346,36 @@ function validateAndEnableButton() {
     }
 }
 
+document.querySelectorAll('.capitalize-first-input').forEach(input => {
+    input.addEventListener('input', function(e) {
+        if (this.value.length > 1) {
+            this.value = this.value.charAt(0).toUpperCase() + this.value.slice(1);
+        } else if (this.value.length === 1) {
+            this.value = this.value.toUpperCase();
+        }
+    });
+});
+
 document.addEventListener('DOMContentLoaded', function() {
     if (document.getElementById('AddEventModal') || document.getElementById('EditEventModal')) {
         window.eventModalManager = new EventModalManager();
     }
  
+    const addQuarterSelector = new QuarterSelector({
+        inputId: 'expected-quarter-input',
+        popupId: 'quarter-popup',
+        defaultValue: '1-4'
+    });
+    
+    const editQuarterSelector = new QuarterSelector({
+        inputId: 'edit-expected-quarter-input',
+        popupId: 'edit-quarter-popup',
+        defaultValue: '1-4'
+    });
+    
+    window.addQuarterSelector = addQuarterSelector;
+    window.editQuarterSelector = editQuarterSelector;
+
     document.addEventListener('input', function(e) {
         if (e.target.matches('[name="name"], [name="Volume"], [name="ExpectedQuarter"]')) {
             setInterval(validateAndEnableButton, 300);   

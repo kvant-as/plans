@@ -7,7 +7,7 @@ from flask_login import (
 )
 
 from common_models.src import current_utc_time
-from website.utils.plans import check_and_create_period_directions, generate_unique_display_code, other_data_indicatorUpdate, to_decimal_1, to_decimal_2, to_decimal_3, update_ChangeTimePlan
+from website.utils.plans import check_and_create_period_directions, generate_unique_display_code, other_data_indicatorUpdate, to_decimal_1, to_decimal_2, to_decimal_3, update_ChangeTimePlan, validate_period_values
 from website.routes.auth import user_with_all_params
 from website.routes.views import owner_only
 from website.sessions import session_required
@@ -579,7 +579,7 @@ def create_event(token):
 @user_with_all_params()
 @login_required
 @session_required
-def edit_Eventes(id):
+def edit_event(id):
     try:
         current_app.logger.info(f'Starting edit event with id={id}')
         
@@ -605,8 +605,23 @@ def edit_Eventes(id):
             else:
                 EffCurrYear = to_decimal_2('0')
             
+            period_code = current_event.direction.code if current_event.direction else None
+            
+            if period_code in ['0001', '0002', '0003', '0004']:
+                error_message = validate_period_values(
+                    plan_id=current_plan.id,
+                    current_period_code=period_code,
+                    current_value=EffCurrYear,
+                    exclude_event_id=id
+                )
+                
+                if error_message:
+                    flash(error_message, 'error')
+                    return redirect(request.referrer)
+            
             current_event.EffCurrYear = EffCurrYear
             current_app.logger.info(f'Updated period EffCurrYear for event {id}: {EffCurrYear}')
+            
         else:
             name = request.form.get('name') or None
             Volume_value = request.form.get('Volume')
@@ -642,6 +657,7 @@ def edit_Eventes(id):
                 Payback = to_decimal_1(0)
                 
                 current_app.logger.info(f'Double effect saving event: financing blocked')
+                
             else:
                 ObchVolumeFin = to_decimal_2(request.form.get('ObchVolumeFin')) 
                 BudgetState = to_decimal_2(request.form.get('BudgetState')) 
@@ -670,7 +686,7 @@ def edit_Eventes(id):
                 current_app.logger.info(f'Regular event calculation: EffRub={EffRub}, Payback={Payback}')
 
             Volume = int(float(Volume_value)) if Volume_value and Volume_value.strip() else None
-            ExpectedQuarter = int(float(ExpectedQuarter_value)) if ExpectedQuarter_value and ExpectedQuarter_value.strip() else None
+            ExpectedQuarter = ExpectedQuarter_value if ExpectedQuarter_value and ExpectedQuarter_value.strip() else None
             
             current_event.name = name
             current_event.Volume = Volume

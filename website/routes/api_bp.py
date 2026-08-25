@@ -423,7 +423,7 @@ def get_events_data(token):
             'Volume': float(event.Volume) if event.Volume else None,
             'EffTut': float(event.EffTut) if event.EffTut else None,
             'EffRub': float(event.EffRub) if event.EffRub else None,
-            'ExpectedQuarter': event.ExpectedQuarter,
+            'ExpectedQuarter': str(event.ExpectedQuarter),
             'EffCurrYear': float(event.EffCurrYear) if event.EffCurrYear else None,
             'Payback': float(event.Payback) if event.Payback else None,
             'ObchVolumeFin': float(event.ObchVolumeFin) if event.ObchVolumeFin else None,

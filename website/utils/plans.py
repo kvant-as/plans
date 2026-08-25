@@ -673,6 +673,60 @@ def other_data_indicatorUpdate(plan_id):
         current_app.logger.error(f"Ошибка при обновлении индикаторов для плана {plan.id}: {e}")
         db.session.rollback()
 
+def validate_period_values(plan_id, current_period_code, current_value, exclude_event_id=None):
+    period_codes = ['0001', '0002', '0003', '0004']
+    
+    if current_period_code not in period_codes:
+        return None
+    
+    period_names = {
+        '0001': 'Январь-Март',
+        '0002': 'Январь-Июнь',
+        '0003': 'Январь-Сентябрь',
+        '0004': 'Январь-Декабрь'
+    }
+    
+    period_events = Event.query.filter(
+        Event.id_plan == plan_id,
+        Event.direction.has(Direction.code.in_(period_codes)),
+        Event.is_corrected == False
+    )
+    
+    if exclude_event_id:
+        period_events = period_events.filter(Event.id != exclude_event_id)
+    
+    period_events = period_events.all()
+    
+    period_values = {}
+    for pe in period_events:
+        if pe.direction and pe.direction.code:
+            period_values[pe.direction.code] = float(pe.EffCurrYear) if pe.EffCurrYear else 0
+    
+    period_values[current_period_code] = float(current_value) if current_value else 0
+    
+    if current_period_code == '0001':
+        if period_values.get('0001', 0) > period_values.get('0002', 0):
+            return 'Значение "{}" ({:.2f} т у.т.) не может быть больше "{}" ({:.2f} т у.т.)'.format(
+                period_names['0001'], period_values.get('0001', 0),
+                period_names['0002'], period_values.get('0002', 0)
+            )
+    
+    elif current_period_code == '0002':
+        if period_values.get('0002', 0) > period_values.get('0003', 0):
+            return 'Значение "{}" ({:.2f} т у.т.) не может быть больше "{}" ({:.2f} т у.т.)'.format(
+                period_names['0002'], period_values.get('0002', 0),
+                period_names['0003'], period_values.get('0003', 0)
+            )
+    
+    elif current_period_code == '0003':
+        if period_values.get('0003', 0) > period_values.get('0004', 0):
+            return 'Значение "{}" ({:.2f} т у.т.) не может быть больше "{}" ({:.2f} т у.т.)'.format(
+                period_names['0003'], period_values.get('0003', 0),
+                period_names['0004'], period_values.get('0004', 0)
+            )
+    
+    return None
+
 def check_and_create_period_directions(plan_id, event_type):
     try:
         period_codes = ['0001', '0002', '0003', '0004']

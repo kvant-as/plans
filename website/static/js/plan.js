@@ -247,7 +247,8 @@ class PlanEvents {
         totalRow.className = 'total-row';
         totalRow.style.borderBottom = '1px solid var(--border-color) !important;';
         totalRow.innerHTML = `
-            <td style="text-align: left; padding-left: 60px;" colspan="4">${sectionTitle}</td>
+            <td style="text-align: left; padding-left: 60px;" colspan="3">${sectionTitle}</td>
+            <td style="text-align: end;">-</td>
             <td style="text-align: end;">-</td>
             <td style="text-align: end;">${this.sumEvents(events, 'EffTut').toFixed(2).replace('.', ',')}</td>
             <td style="text-align: end;">${(this.sumEvents(events, 'EffRub') || 0).toString().replace('.', ',')}</td>

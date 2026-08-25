@@ -41,7 +41,7 @@ def process_event_data(current_plan, direction, event_type, form_data):
     Volume = int(form_data.get('Volume')) if form_data.get('Volume') else None
     EffTut_raw = form_data.get('EffTut')
     EffTut = float(to_decimal_2(EffTut_raw))
-    ExpectedQuarter = int(form_data.get('ExpectedQuarter')) if form_data.get('ExpectedQuarter') else None
+    ExpectedQuarter = form_data.get('ExpectedQuarter') or None
     EffCurrYear = to_decimal_2(form_data.get('EffCurrYear'))
     name = form_data.get('name') or None
     

@@ -293,12 +293,12 @@
                             </label>
                         </div>
                     </div>
-                    <div class="name-section-title">Добавление</div>
+                    <div class="name-section-title">Заполнение мероприятия</div>
                     <div class="app-group">
                         <label>[3] {{ _('Наименование мероприятия') }}</label>
                         <div class="input-with-icon">
                             {{ icons.icon_measure() }}
-                            <input type="text" name="name" placeholder="{{ _('Наименование') }}" class="app-input" required>
+                            <input type="text" name="name" placeholder="{{ _('Введите наименование') }}" class="app-input capitalize-first-input" required>
                         </div>
                     </div>
                     <div class="app-group">
@@ -327,10 +327,23 @@
                     <div class="row-app-group">
                         <div class="app-group">
                             <label>[8] {{ _('Ожидаемый срок внедрения мероприятия, квартал') }}</label>
-                            <div class="input-with-icon">
+                            <div class="input-with-icon quarter-selector-wrapper">
                                 {{ icons.icon_calendar() }}
-                                <input type="number" name="ExpectedQuarter" min="1" max="4" pattern="[1-4]" inputmode="numeric" value="4"
-                                class="app-input" oninput="this.value = this.value.replace(/[^1-4]/g, '').slice(0, 1)" required>
+                                <input type="text" name="ExpectedQuarter" id="expected-quarter-input" class="app-input quarter-input" placeholder="Выберите квартал" readonly required>
+                                <div class="quarter-popup" id="quarter-popup">
+                                    <div class="quarter-grid">
+                                        <button type="button" class="quarter-btn" data-value="1">1</button>
+                                        <button type="button" class="quarter-btn" data-value="2">2</button>
+                                        <button type="button" class="quarter-btn" data-value="3">3</button>
+                                        <button type="button" class="quarter-btn" data-value="4">4</button>
+                                        <button type="button" class="quarter-btn" data-value="1-2">1-2</button>
+                                        <button type="button" class="quarter-btn" data-value="1-3">1-3</button>
+                                        <button type="button" class="quarter-btn" data-value="1-4">1-4</button>
+                                        <button type="button" class="quarter-btn" data-value="2-3">2-3</button>
+                                        <button type="button" class="quarter-btn" data-value="2-4">2-4</button>
+                                        <button type="button" class="quarter-btn" data-value="3-4">3-4</button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="app-group">
@@ -532,12 +545,12 @@
                                 </label>
                             </div>
                         </div>
-                        <div class="name-section-title">Редактирование</div>
+                        <div class="name-section-title">Заполнение мероприятия</div>
                         <div class="app-group">
                             <label>[3] {{ _('Наименование мероприятия') }}</label>
                             <div class="input-with-icon">
                                 {{ icons.icon_measure() }}
-                                <input type="text" id="change-name-edit-model" name="name" placeholder="{{ _('Наименование') }}" class="app-input" required>
+                                <input type="text" id="change-name-edit-model" name="name" placeholder="{{ _('Введите наименование') }}" class="app-input capitalize-first-input" required>
                             </div>
                         </div>
                         <div class="app-group">
@@ -569,9 +582,23 @@
                         <div class="row-app-group">
                             <div class="app-group">
                                 <label>[8] {{ _('Ожидаемый срок внедрения мероприятия, квартал') }}</label>
-                                <div class="input-with-icon">
+                                <div class="input-with-icon quarter-selector-wrapper">
                                     {{ icons.icon_calendar() }}
-                                    <input type="number" name="ExpectedQuarter" min="1" max="4" pattern="[1-4]" inputmode="numeric" id="change-ExpectedQuarter-edit-model" placeholder="Квартал" class="app-input" oninput="this.value = this.value.replace(/[^1-4]/g, '').slice(0, 1)" required>
+                                    <input type="text" name="ExpectedQuarter" id="edit-expected-quarter-input" class="app-input quarter-input" placeholder="Выберите квартал" readonly required>
+                                    <div class="quarter-popup" id="edit-quarter-popup">
+                                        <div class="quarter-grid">
+                                            <button type="button" class="quarter-btn" data-value="1">1</button>
+                                            <button type="button" class="quarter-btn" data-value="2">2</button>
+                                            <button type="button" class="quarter-btn" data-value="3">3</button>
+                                            <button type="button" class="quarter-btn" data-value="4">4</button>
+                                            <button type="button" class="quarter-btn" data-value="1-2">1-2</button>
+                                            <button type="button" class="quarter-btn" data-value="1-3">1-3</button>
+                                            <button type="button" class="quarter-btn" data-value="1-4">1-4</button>
+                                            <button type="button" class="quarter-btn" data-value="2-3">2-3</button>
+                                            <button type="button" class="quarter-btn" data-value="2-4">2-4</button>
+                                            <button type="button" class="quarter-btn" data-value="3-4">3-4</button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="app-group">
@@ -729,6 +756,7 @@
 
                 <div id="period-step" class="modal-step" style="display: none;">
                     <input type="hidden" name="edit_type" value="period">
+                    <input type="hidden" id="period-code-hidden" name="period_code" value="">
                     <div class="selected-indicator-display" style="margin-bottom: 30px;">
                         <div class="selected-indicator-info">
                             <div class="selected-indicator-label">{{ _('Период') }}</div>
@@ -741,9 +769,10 @@
                             {{ icons.icon_half() }}
                             <input type="text" id="period-EffCurrYear-edit" name="EffCurrYear" placeholder="0,00" class="app-numeric-input">
                         </div>
+                        <div id="period-warning" class="error-message-modern" style="display: none;"></div>
                     </div>
                     <div class="button-auth-area">
-                        <button type="submit" class="main-btn main-btn-primary">
+                        <button type="submit" id="period-submit-btn" class="main-btn main-btn-primary">
                             {{ icons.icon_add() }}
                             <span class="btn-text">{{ _('Сохранить изменения') }}</span>
                         </button>
