@@ -442,20 +442,25 @@ body {
 
 @media screen and (max-width: 768px) {
   .header-aside {
-    display: block;
+    display: flex;
     width: fit-content;
     text-align: left;
+    gap: 8px;
   }
 
+  .header-aside-text {
+    min-width: 0;
+  }
 
-  /* .header-aside-text .title {
-    font-size: 14px;
+  .header-aside-text .title {
+    font-size: 15px;
+    white-space: nowrap;
   }
 
   .header-aside-text .subtitle {
     font-size: 11px;
     white-space: nowrap;
-  } */
+  }
 
   .divider {
     display: none;
@@ -476,7 +481,13 @@ body {
     border-radius: 12px;
   }
 
+  .header-aside-text {
+    min-width: 0;
+  }
 
+  .header-aside .title {
+    display: none;
+  }
 
   .header-bside .divider {
     display: none;
@@ -7723,14 +7734,14 @@ main {
 
 @media (max-width: 768px) {
   .cookie-banner {
-    bottom: 80px;
-    width: calc(100% - 40px);
+    bottom: 16px;
+    width: calc(100% - 24px);
   }
   .cookie-banner-content {
-    padding: 16px 20px;
+    padding: 14px 16px;
     flex-direction: column;
     text-align: center;
-    gap: 15px;
+    gap: 10px;
   }
   .cookie-banner-text {
     min-width: 100%;
@@ -7747,23 +7758,23 @@ main {
 }
 @media (max-width: 480px) {
   .cookie-banner-content {
-    padding: 15px;
-  }
-  .cookie-banner-buttons {
-    flex-direction: column;
+    padding: 12px;
     gap: 8px;
-  }
-  .cookie-banner-buttons .submit-button,
-  .cookie-banner-buttons .no-submit-button {
-    width: 100%;
-    min-width: 100%;
   }
   .cookie-banner-icon {
     width: 32px;
     height: 32px;
   }
   .cookie-banner-text p {
-    font-size: 13px;
+    font-size: 12px;
+    line-height: 1.4;
+  }
+  .cookie-banner-buttons .submit-button,
+  .cookie-banner-buttons .no-submit-button {
+    flex: 1;
+    min-width: 0;
+    padding: 7px 10px;
+    font-size: 12px;
   }
 }
 
@@ -8547,28 +8558,6 @@ main {
     padding: 8px;
   }
   .btn-text {
-    font-size: 13px;
-  }
-  .header-aside .title {
-    display: none;
-  }
-  .cookie-banner-content {
-    padding: 15px;
-  }
-  .cookie-banner-buttons {
-    flex-direction: column;
-    gap: 8px;
-  }
-  .cookie-banner-buttons .submit-button,
-  .cookie-banner-buttons .no-submit-button {
-    width: 100%;
-    min-width: 100%;
-  }
-  .cookie-banner-icon {
-    width: 32px;
-    height: 32px;
-  }
-  .cookie-banner-text p {
     font-size: 13px;
   }
 }

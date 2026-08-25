@@ -2062,6 +2062,21 @@ class CertificateUploadHandler {
     }
 }
 
+function initDeletePlanConfirmModal() {
+    if (document.querySelector('[data-modal-trigger="deletePlanconfirm"]')) {
+        initConfirmModal({
+            triggerButton: '[data-modal-trigger="deletePlanconfirm"]',
+            modalId: 'confirmModal2',
+            yesId: 'confirmYes',
+            noId: 'confirmNo',
+            textId: 'modal-text',
+            modalText: 'Вы действительно хотите удалить план?',
+            textSecondId: 'modal-text-second',
+            modalTextSecond: 'Это действие нельзя будет отменить.'
+        });
+    }
+}
+
 class PlansLoader {
     constructor(options = {}) {
         this.currentStatus = options.initialStatus || 'all';
@@ -2149,6 +2164,7 @@ class PlansLoader {
                 this.updatePagination();
                 this.updateCountsDisplay(data.counts);
                 this.attachCheckboxListeners();
+                initDeletePlanConfirmModal();
 
                 if (typeof initStatusProgress === 'function') {
                     setTimeout(initStatusProgress, 100);
@@ -3419,18 +3435,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    if (document.querySelector('[data-modal-trigger="deletePlanconfirm"]')) {
-        initConfirmModal({
-            triggerButton: '[data-modal-trigger="deletePlanconfirm"]',
-            modalId: 'confirmModal2',
-            yesId: 'confirmYes',
-            noId: 'confirmNo',
-            textId: 'modal-text',
-            modalText: 'Вы действительно хотите удалить план?',
-            textSecondId: 'modal-text-second',
-            modalTextSecond: 'Это действие нельзя будет отменить.'
-        });
-    }
+    initDeletePlanConfirmModal();
 
     if (document.getElementById('sent_mesPlanButton')) {
         initConfirmModal({

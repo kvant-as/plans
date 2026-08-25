@@ -140,12 +140,14 @@
                         </button>
                   
                         {% if current_user.is_authenticated %}
-                            
+
                             <hr>
-                            <button class="nav-menu-item red" onclick="window.location.href='/logout'">
-                                {{ icons.icon_logout() }}
-                                <span>{{ _('Выйти из аккаунта') }}</span>
-                            </button>
+                            <form id="logout_form" method="GET" action="{{ url_for('auth.logout') }}">
+                                <button type="button" id="logoutButton" class="nav-menu-item red">
+                                    {{ icons.icon_logout() }}
+                                    <span>{{ _('Выйти из аккаунта') }}</span>
+                                </button>
+                            </form>
                         {% else %}
                             <hr>
                             <button class="nav-menu-item green" onclick="window.location.href='/login'">

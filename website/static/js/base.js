@@ -1567,28 +1567,38 @@ function initConfirmModal(config) {
         });
     });
 
-    yesButton.addEventListener('click', function () {
-        modalElement.classList.remove('active');
-        if (modalElement._currentForm) {
-            modalElement._currentForm.submit();
-        }
-    });
-
-    noButton.addEventListener('click', function () {
-        modalElement.classList.remove('active');
-    });
-
-    modalElement.addEventListener('click', function (event) {
-        if (event.target === modalElement) {
+    if (!yesButton.dataset.confirmModalBound) {
+        yesButton.dataset.confirmModalBound = 'true';
+        yesButton.addEventListener('click', function () {
             modalElement.classList.remove('active');
-        }
-    });
+            if (modalElement._currentForm) {
+                modalElement._currentForm.submit();
+            }
+        });
+    }
 
-    document.addEventListener('keydown', function (event) {
-        if (event.key === 'Escape' && modalElement.classList.contains('active')) {
+    if (!noButton.dataset.confirmModalBound) {
+        noButton.dataset.confirmModalBound = 'true';
+        noButton.addEventListener('click', function () {
             modalElement.classList.remove('active');
-        }
-    });
+        });
+    }
+
+    if (!modalElement.dataset.confirmModalBound) {
+        modalElement.dataset.confirmModalBound = 'true';
+
+        modalElement.addEventListener('click', function (event) {
+            if (event.target === modalElement) {
+                modalElement.classList.remove('active');
+            }
+        });
+
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape' && modalElement.classList.contains('active')) {
+                modalElement.classList.remove('active');
+            }
+        });
+    }
 }
 
 class MultiStepForm {
