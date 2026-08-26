@@ -556,12 +556,12 @@ def fill_database_route():
     from website import db
     
     try:
-        fill_organizations(db)
+        # fill_organizations(db)
         # fill_users(db)
-        fill_units(db)
-        fill_directions(db)
-        fill_indicators(db)
-        fill_news(db)
+        # fill_units(db)
+        # fill_directions(db)
+        # fill_indicators(db)
+        # fill_news(db)
         fill_statistics(db)
         
         return jsonify({

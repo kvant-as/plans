@@ -2,8 +2,7 @@ from flask import current_app
 
 def create_database(app, db):
     with app.app_context():
-        # db.reflect()
-        # db.drop_all()
+
         db.create_all()
         filling_database(db)
 

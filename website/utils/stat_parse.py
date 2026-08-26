@@ -31,6 +31,7 @@ class ParsedStatPlan:
 
 # FILENAME_RE = re.compile(r"^(?P<okpo>\d{6,12})_(?P<year>\d{4})_(?P<form>4|12)\.xlsx?$", re.IGNORECASE)
 FILENAME_RE = re.compile(r"^(?P<okpo>\d+)_.*$", re.IGNORECASE)
+YEAR_RE = re.compile(r"_(?P<year>20\d{2})_", re.IGNORECASE)
 
 PERIOD_RE = re.compile(
     r"за\s+(?P<period>[A-Za-zА-Яа-яЁё\-]+(?:\s*-\s*[A-Za-zА-Яа-яЁё]+)?)\s+(?P<year>20\d{2})\s*год",
@@ -61,7 +62,7 @@ def extract_okpo_from_filename(filename: str) -> Optional[str]:
 
 
 def extract_year_from_filename(filename: str) -> Optional[int]:
-    m = FILENAME_RE.match(filename)
+    m = YEAR_RE.search(filename)
     return int(m.group("year")) if m else None
 
 
