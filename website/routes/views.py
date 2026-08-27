@@ -1,5 +1,5 @@
 from flask import (
-    Blueprint, abort, current_app, logging, render_template, redirect, send_file, url_for, flash, request, jsonify, session, g
+    Blueprint, abort, current_app, logging, render_template, redirect, send_file, url_for, flash, request, jsonify, session, g, make_response
 )
 
 import logging
@@ -16,7 +16,7 @@ from flask_login import (
 from common_models.src import current_utc_time, db
 from website.utils.currency_rates import fetch_usd_rate_from_any_source
 from website.utils.plans import get_column_configs_for_plan, to_decimal_1, to_decimal_2, update_ChangeTimePlan
-from website.sessions import session_required
+from website.sessions import session_required, get_or_refresh_session, build_session_info, set_session_cookie
 
 from ..models import News, PlanColumnConfig, User, Organization, Plan, PlanTicket, Indicator, IndicatorUsage
 from website import db
@@ -71,12 +71,17 @@ def profile():
     if Plan.query.filter(Plan.user_id == current_user.id).count() > 0:
         can_change_modal = False
 
-    return render_template('profile.html', 
+    token, payload = get_or_refresh_session(current_user)
+    session_info = build_session_info(current_user, payload)
+
+    response = make_response(render_template('profile.html',
                         can_change_modal=can_change_modal,
                         hide_header=False,
                         current_user=current_user,
-                        change_orgUser_modal = True
-                           )
+                        change_orgUser_modal = True,
+                        session_info = session_info
+                           ))
+    return set_session_cookie(response, token)
 
 @views.route('/profile/edit', methods = ['POST', 'GET'])
 @user_with_all_params()

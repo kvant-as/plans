@@ -210,12 +210,67 @@
     <hr>
     <div class="header-content">
       <div class="header-content-left">
+        <a class="name" style="padding-bottom: 0">{{ _('Сессии') }}</a>
+      </div>
+      <div class="header-content-right"></div>
+    </div>
+
+    <div class="glass-surface session-glass-card"
+         id="sessionCard"
+         data-timeout-minutes="{{ session_info.timeout_minutes }}"
+         data-last-active="{{ session_info.last_active }}"
+         data-expires-at="{{ session_info.expires_at }}"
+         data-server-time="{{ session_info.server_time }}">
+      <div class="session-card-top">
+        <div class="session-card-status">
+          <span class="session-status-dot"></span>
+          <span>{{ _('Текущая сессия активна') }}</span>
+        </div>
+        <span class="session-role-badge">{{ session_info.role_label }}</span>
+      </div>
+
+      <div class="session-info-grid">
+        <div class="session-info-item">
+          <span class="session-info-label">{{ _('Устройство') }}</span>
+          <span class="session-info-value">{{ session_info.device }}</span>
+        </div>
+        <div class="session-info-item">
+          <span class="session-info-label">{{ _('Срок бездействия') }}</span>
+          <span class="session-info-value">
+            {% if session_info.timeout_minutes % 60 == 0 %}
+              {{ (session_info.timeout_minutes // 60) }} {{ _('ч.') }}
+            {% else %}
+              {{ session_info.timeout_minutes }} {{ _('мин.') }}
+            {% endif %}
+          </span>
+        </div>
+        <div class="session-info-item">
+          <span class="session-info-label">{{ _('IP-адрес') }}</span>
+          <span class="session-info-value">{{ session_info.ip or '—' }}</span>
+        </div>
+      </div>
+
+      <div class="session-timer">
+        <div class="session-timer-header">
+          <span>{{ _('Автоматический выход через') }}</span>
+          <span class="session-timer-value" id="sessionTimerValue">--:--</span>
+        </div>
+        <div class="session-timer-track">
+          <div class="session-timer-fill" id="sessionTimerFill"></div>
+        </div>
+        <p class="session-timer-hint">{{ _('Таймер продлевается автоматически при любой активности в системе') }}</p>
+      </div>
+    </div>
+
+    <hr>
+    <div class="header-content">
+      <div class="header-content-left">
         <a class="name" style="padding-bottom: 0">{{ _('Опасная зона') }}</a>
       </div>
       <div class="header-content-right">
       </div>
     </div>
-    <div class="danger-zone">
+    <div class="danger-zone glass-surface glass-surface--danger">
         <div class="danger-zone-header">
             <div class="danger-zone-title">
                 <a class="name" style="padding-bottom: 0; margin: 0;">{{ _('Удаление аккаунта') }}</a>
@@ -228,7 +283,7 @@
                     <div class="app-group">
                         <label for="confirm-email-field">{{ _('Введите') }} <strong>{{ current_user.email }}</strong> {{ _('для подтверждения') }}</label>
                         <div class="input-with-icon">
-                            <input type="text" id="confirm-email-field" name="confirm_email" class="app-input" placeholder="{{ current_user.email }}">
+                            <input type="text" id="confirm-email-field" name="confirm_email" class="app-input danger-input" placeholder="{{ current_user.email }}">
                         </div>
                     </div>
                 </div>

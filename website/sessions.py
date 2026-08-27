@@ -12,7 +12,7 @@ SESSION_COOKIE_NAME = 'session_token'
 SESSION_DURATION = timedelta(days=7)
 
 def get_user_session_timeout(user):
-    if user.is_admin or user.is_auditor:
+    if user.is_admin or user.is_auditor or user.is_approver or user.is_reader:
         return timedelta(hours=9)
     return timedelta(minutes=60)
 
@@ -102,6 +102,74 @@ def update_session_activity(token):
     except jwt.InvalidTokenError:
         return None
 
+def describe_device(ua_string):
+    try:
+        ua = parse(ua_string or '')
+        browser = ua.browser.family or 'Браузер'
+        os_name = ua.os.family or ''
+        return f"{browser} · {os_name}".strip(' ·') or 'Неизвестное устройство'
+    except Exception:
+        return 'Неизвестное устройство'
+
+def build_session_info(user, payload=None):
+    """Session data used by the 'Сессии' section on the profile page
+    and by the /api/session-info endpoint."""
+    timeout = get_user_session_timeout(user)
+    now = current_utc_time()
+
+    last_active = now
+    created_at = now
+    device = describe_device(request.headers.get('User-Agent', ''))
+
+    if payload:
+        try:
+            last_active = datetime.fromisoformat(payload.get('last_active'))
+        except (TypeError, ValueError):
+            pass
+        try:
+            created_at = datetime.fromisoformat(payload.get('created_at'))
+        except (TypeError, ValueError):
+            pass
+
+    expires_at = last_active + timeout
+
+    if user.is_admin:
+        role_label = 'Администратор'
+    elif user.is_auditor:
+        role_label = 'Аудитор'
+    elif user.is_approver:
+        role_label = 'Утверждающий'
+    elif user.is_reader:
+        role_label = 'Читатель'
+    else:
+        role_label = 'Респондент'
+
+    return {
+        'role_label': role_label,
+        'timeout_minutes': int(timeout.total_seconds() // 60),
+        'created_at': created_at.isoformat(),
+        'last_active': last_active.isoformat(),
+        'expires_at': expires_at.isoformat(),
+        'server_time': now.isoformat(),
+        'device': device,
+        'ip': request.remote_addr or '',
+    }
+
+def get_or_refresh_session(user):
+    """Read the idle-tracking token for the current request, refreshing its
+    last_active timestamp, or mint a fresh one if it's missing/expired
+    (e.g. debug mode, where @session_required never sets the cookie, or a
+    session created before this token existed). Returns (token, payload)."""
+    token = request.cookies.get(SESSION_COOKIE_NAME)
+    payload = verify_session_token(token) if token else None
+
+    if payload:
+        token = update_session_activity(token) or token
+    else:
+        token = create_session_token(user)
+
+    return token, verify_session_token(token)
+
 def force_logout():
     response = make_response(redirect(url_for('views.login')))
     response.delete_cookie(SESSION_COOKIE_NAME, path='/')
@@ -111,28 +179,33 @@ def force_logout():
 def session_required(view_func):
     @wraps(view_func)
     def wrapper(*args, **kwargs):
+        from flask_login import current_user
         from .models import User
         from . import db
-        
+
         if current_app.debug:
             return view_func(*args, **kwargs)
-        
+
         token = request.cookies.get(SESSION_COOKIE_NAME)
-        
-        if not token:
-            print("No session token in cookie")
-            return force_logout()
-        
-        session_data = verify_session_token(token)
+        session_data = verify_session_token(token) if token else None
+
         if not session_data:
-            print("Invalid or expired token")
-            return force_logout()
-        
-        user = User.query.get(session_data['user_id'])
-        if not user:
-            print(f"User not found: {session_data['user_id']}")
-            return force_logout()
-        
+            if not current_user.is_authenticated:
+                print("No session token in cookie")
+                return force_logout()
+            # Flask-Login's own session is still valid, but our idle-tracking
+            # token is missing/expired (e.g. it didn't exist yet when this
+            # user logged in). Self-heal instead of forcing a disruptive
+            # logout on an otherwise legitimate session.
+            user = current_user._get_current_object()
+            token = create_session_token(user)
+            session_data = verify_session_token(token)
+        else:
+            user = User.query.get(session_data['user_id'])
+            if not user:
+                print(f"User not found: {session_data['user_id']}")
+                return force_logout()
+
         last_active = datetime.fromisoformat(session_data['last_active'])
         current_time = current_utc_time()
         

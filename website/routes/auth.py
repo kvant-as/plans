@@ -19,6 +19,7 @@ from datetime import datetime, timedelta
 
 from .. import db
 from ..models import Plan, User
+from website.sessions import create_session_token, set_session_cookie, clear_session_cookie
 
 
 auth = Blueprint('auth', __name__)
@@ -95,15 +96,16 @@ def login():
             user = User.query.filter(func.lower(User.email) == func.lower(email)).first()
             if user and user.password and check_password_hash(user.password, password):
                 login_user(user)
+                token = create_session_token(user)
                 if (
                     not user.last_name or
                     not user.first_name or
                     not user.telephone
-                ):  
+                ):
                     flash("Необходимо заполнить обязательные параметры", "error")
-                    return redirect(url_for('auth.param'))
+                    return set_session_cookie(redirect(url_for('auth.param')), token)
                 flash('Авторизация прошла успешно', 'success')
-                return redirect(url_for('views.profile'))
+                return set_session_cookie(redirect(url_for('views.profile')), token)
             else:
                 flash('Неправильный email или пароль', 'error')
         else:
@@ -196,7 +198,7 @@ def edit_param():
 def logout():
     logout_user()
     flash('Выполнен выход из аккаунта', 'success')
-    return redirect(url_for('auth.login'))
+    return clear_session_cookie(redirect(url_for('auth.login')))
 
 @auth.route('/delete-profile', methods=['POST'])
 @login_required

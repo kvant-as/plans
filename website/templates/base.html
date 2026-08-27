@@ -469,6 +469,9 @@
         <script src="{{ url_for('static', filename='js/plan.js') }}"></script>
         <script src="{{ url_for('static', filename='js/cookie.js') }}"></script>
         <script src="{{ url_for('static', filename='js/header.js') }}"></script>
+        {% if current_user and current_user.is_authenticated %}
+        <script src="{{ url_for('static', filename='js/session-guard.js') }}"></script>
+        {% endif %}
         <script>
         document.addEventListener('DOMContentLoaded', () => {
             messageFlash.init();

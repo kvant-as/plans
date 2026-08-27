@@ -239,6 +239,12 @@ class PlanStatControl {
         indicators.forEach(ind => {
             ind.style.display = enabled ? 'block' : 'none';
         });
+        // Drives both the red background (existing CSS) and the red text
+        // (#indicatorsTable.stat-indicators-on .stat-cell.mismatch) from a
+        // single class, so a mismatch's number is only red when the red
+        // background/indicator dot is actually visible — otherwise it's
+        // plain black, still clickable and still logged.
+        this.table.classList.toggle('stat-indicators-on', enabled);
         if (enabled) {
             document.querySelectorAll('.stat-cell.match, .stat-cell.mismatch').forEach(el => {
                 el.style.backgroundColor = '';
@@ -320,14 +326,17 @@ class PlanStatControl {
         
         const ths = headerRow.querySelectorAll('th');
         
+        // Columns 4/6/8 are the "в нат. велич." cells for each forecast
+        // year (5/7/9 would be their "в т у.т." neighbours) — comparing
+        // against statistics is more meaningful in natural units.
         ths.forEach((th, index) => {
             const colNumber = parseInt(th.textContent.trim());
             if (!isNaN(colNumber)) {
-                if (colNumber === 5) {
+                if (colNumber === 4) {
                     this.yearColumns[this.planYear - 2] = index;
-                } else if (colNumber === 7) {
+                } else if (colNumber === 6) {
                     this.yearColumns[this.planYear - 1] = index;
-                } else if (colNumber === 9) {
+                } else if (colNumber === 8) {
                     this.yearColumns[this.planYear] = index;
                 }
             }
@@ -351,28 +360,30 @@ class PlanStatControl {
         
         statCodes.forEach(code => {
             if (!planCodes.includes(code)) {
-                this.addLog(`Код ${code} есть в статистике, но отсутствует в плане`, 'warn');
+                const indicatorName = this.mapping[code]?.name || code;
+                this.addLog(`Показатель «${indicatorName}» есть в статистике, но отсутствует в плане`, 'warn');
             }
         });
         
         Object.entries(this.mapping).forEach(([planCode, mappingItem]) => {
+            const indicatorName = mappingItem.name || planCode;
             const planTr = this.findPlanRow(planCode);
             if (!planTr) {
-                this.addLog(`Строка с кодом ${planCode} не найдена в таблице`, 'error');
+                this.addLog(`Показатель «${indicatorName}» не найден в таблице`, 'error');
                 return;
             }
-            
+
             this.statYears.forEach(year => {
                 const column = this.yearColumns[year];
                 if (column === undefined) {
                     this.addLog(`Столбец для года ${year} не найден`, 'warn');
                     return;
                 }
-                
+
                 const planValue = this.getCellValue(planTr, column);
                 const statValue = this.getStatValue(year, mappingItem);
-                
-                this.paint(planTr, column, planValue, statValue, year, planCode, mappingItem.report);
+
+                this.paint(planTr, column, planValue, statValue, year, indicatorName, mappingItem.report);
             });
         });
         
@@ -444,7 +455,7 @@ class PlanStatControl {
         return Number(String(value).replace(/\s/g, '').replace(',', '.'));
     }
 
-    paint(row, column, plan, stat, year, code, report) {
+    paint(row, column, plan, stat, year, indicatorName, report) {
         const cells = row.querySelectorAll('td');
         const cell = cells[column];
         if (!cell) return;
@@ -470,10 +481,10 @@ class PlanStatControl {
             cell.classList.remove('match');
             indicator.title = `Не совпадает: план ${plan} != статистика ${stat}`;
             
-            this.addLog(`Не совпадает: код ${code}, год ${year}, план ${plan}, статистика ${stat}`, 'error');
-            
+            this.addLog(`Не совпадает: «${indicatorName}», год ${year}, план ${plan}, статистика ${stat}`, 'error');
+
             const showTooltip = (e) => {
-                this.showTooltip(stat, year, code, report, e, plan);
+                this.showTooltip(stat, year, indicatorName, report, e, plan);
             };
             
             const updatePosition = (e) => {
@@ -507,36 +518,33 @@ class PlanStatControl {
         this.tooltipElement = document.createElement('div');
         this.tooltipElement.className = 'stat-tooltip';
         this.tooltipElement.innerHTML = `
+            <div class="tooltip-indicator-name" id="stat-name-display"></div>
             <div class="tooltip-title">Статистика</div>
             <div class="tooltip-value" id="stat-value-display"></div>
             <div class="tooltip-divider"></div>
             <div class="tooltip-details">
                 <span id="stat-year-display"></span>
                 <span>·</span>
-                <span id="stat-code-display"></span>
-                <span>·</span>
                 <span id="stat-report-display"></span>
             </div>
-          
         `;
         
         document.body.appendChild(this.tooltipElement);
     }
 
-    showTooltip(statValue, year, code, report, event, planValue) {
+    showTooltip(statValue, year, indicatorName, report, event, planValue) {
         this.createTooltip();
-        
+
+        const nameDisplay = this.tooltipElement.querySelector('#stat-name-display');
         const valueDisplay = this.tooltipElement.querySelector('#stat-value-display');
         const yearDisplay = this.tooltipElement.querySelector('#stat-year-display');
-        const codeDisplay = this.tooltipElement.querySelector('#stat-code-display');
         const reportDisplay = this.tooltipElement.querySelector('#stat-report-display');
 
+        nameDisplay.textContent = indicatorName;
         valueDisplay.textContent = statValue;
         yearDisplay.textContent = year;
-        codeDisplay.textContent = `Код ${code}`;
         reportDisplay.textContent = report;
-       
-        
+
         this.tooltipElement.style.display = 'block';
         this.updateTooltipPosition(event);
     }

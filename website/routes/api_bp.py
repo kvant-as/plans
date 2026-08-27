@@ -5,7 +5,7 @@ from flask_login import current_user, login_required
 
 from website.routes.auth import user_with_all_params
 from website.routes.views import owner_only
-from website.sessions import session_required
+from website.sessions import session_required, set_session_cookie, build_session_info
 from common_models.src import current_utc_time
 from website.utils.plans import get_filtered_plans
 
@@ -74,6 +74,20 @@ def api_get_plans():
             'success': False,
             'error': str(e)
         }), 500
+
+@api_bp.route('/session-info', methods=['GET'])
+@login_required
+def api_session_info():
+    """Powers the 'Сессии' block on the profile page: current session
+    duration (role-based), last activity and time left before auto-logout.
+    Reading this endpoint also counts as activity, refreshing the timer,
+    same as any other request through @session_required."""
+    from website.sessions import get_or_refresh_session
+
+    token, payload = get_or_refresh_session(current_user)
+    info = build_session_info(current_user, payload)
+    response = jsonify({'success': True, **info})
+    return set_session_cookie(response, token)
 
 @api_bp.route('/news', methods=['GET'])
 def api_news():
@@ -558,20 +572,28 @@ def get_stat_data(organization_id):
                 'message': 'Статистические данные не найдены'
             }), 404
 
+        organization = Organization.query.get(organization_id)
+        # "Перечни" (ведомства/исполкомы) сверяются с суммой строки 110
+        # (головная организация) и строки 130 (филиалы) отчёта 12-тэк;
+        # обычные "Планы" — только со строкой 110 самой организации.
+        is_coordinator = bool(organization and organization.is_coordinator)
+        row_110 = '110+130' if is_coordinator else '110'
+
         mapping = {
-            # 12-тэк
-            '1000': {'report': '12-tek', 'row': '110', 'col': '1'},
-            '1104': {'report': '12-tek', 'row': '110', 'col': '2'},
-            '1105': {'report': '12-tek', 'row': '110', 'col': '3'},
-            # '9900': {'report': '12-tek', 'row': '110', 'col': '5'},
-            '1404': {'report': '12-tek', 'row': '140', 'col': '5'},
-            '1424': {'report': '12-tek', 'row': '142', 'col': '5'},
-            # '9915': {'report': '12-tek', 'row': '110', 'col': '4'},
-            '1405': {'report': '12-tek', 'row': '140', 'col': '4'},
-            '1425': {'report': '12-tek', 'row': '142', 'col': '4'},
-            '260': {'report': '12-tek', 'row': '260', 'col': '1'},
-            
-            # 4-тэк
+            # 12-тэк — часть 1 "Показатели ТЭР"
+            '1000': {'report': '12-tek', 'row': row_110, 'col': '1'},  # стр.1 — КПТ израсходовано всего
+            '1796': {'report': '12-tek', 'row': row_110, 'col': '2'},  # из него местные виды топлива и отходы (сумма стр. 11-22)
+            '1797': {'report': '12-tek', 'row': row_110, 'col': '3'},  # из них возобновляемые (сумма стр. 11, 16-20, 22)
+            '1105': {'report': '12-tek', 'row': row_110, 'col': '5'},  # стр.23 — Электроэнергия израсходовано всего
+            '1405': {'report': '12-tek', 'row': '140', 'col': '5'},    # стр.25 — Электроэнергия, выработанная собственными энергоисточниками
+            '1425': {'report': '12-tek', 'row': '142', 'col': '5'},    # стр.27 — в т.ч. энергия воды, ветра, солнца, геотермальных источников
+            '1104': {'report': '12-tek', 'row': row_110, 'col': '4'},  # стр.29 — Теплоэнергия израсходовано всего
+            '1404': {'report': '12-tek', 'row': '140', 'col': '4'},    # стр.31 — Теплоэнергия, произведенная собственными энергоисточниками
+            '1424': {'report': '12-tek', 'row': '142', 'col': '4'},    # стр.33 — в т.ч. энергия воды, ветра, солнца, геотермальных источников
+            '260': {'report': '12-tek', 'row': '260', 'col': '1'},     # стр.35 — Суммарное потребление ТЭР
+
+            # 4-тэк — построчно по видам топлива, одинаково для Планов и Перечней
+
             '2000': {'report': '4-tek', 'row': '1090', 'col': '3', 'subtract': ['1090_5', '1090_6', '1092_7']},
             '2001': {'report': '4-tek', 'row': '1050', 'col': '3', 'subtract': ['1050_5', '1050_6']},
             '2002': {'report': '4-tek', 'row': '1040', 'col': '3', 'subtract': ['1040_5', '1040_6']},
@@ -596,6 +618,13 @@ def get_stat_data(organization_id):
             '2021': {'report': '4-tek', 'row': '1740', 'col': '3', 'subtract': ['1740_5', '1740_6']},
             '2022': {'report': '4-tek', 'row': '1780', 'col': '3', 'subtract': ['1780_5', '1780_6']},
         }
+
+        indicator_names = {
+            ind.code: ind.name
+            for ind in Indicator.query.filter(Indicator.code.in_(mapping.keys())).all()
+        }
+        for code, mapping_item in mapping.items():
+            mapping_item['name'] = indicator_names.get(code, f'Показатель {code}')
 
         result = {
             'success': True,
