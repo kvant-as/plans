@@ -1,4 +1,4 @@
-from common_models.src import (
+from common_models import (
     User, Organization, Region, Ministry,
     Notification, PlanApprovalPath, PlanColumnConfig, Plan,
     PlanTicket, Unit, Direction, News, Event, Indicator, IndicatorUsage, 

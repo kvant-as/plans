@@ -11,7 +11,7 @@ from flask_login import (
 
 from sqlalchemy import func
 from werkzeug.security import check_password_hash
-from common_models.src.all_models import Report, Version_report
+from common_models.models import Report, Version_report
 from website.user import send_email
 
 from itsdangerous import URLSafeTimedSerializer

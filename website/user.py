@@ -37,6 +37,9 @@ def sign_def(email, password1, password2):
         elif not re.match(r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$', email):
             flash('Некорректный адрес электронной почты', 'error')
             return redirect(url_for('auth.sign'))
+        elif len(password1) < 5:
+            flash('Пароль должен содержать не менее 5 символов', 'error')
+            return redirect(url_for('auth.sign'))
         elif password1 != password2:
             flash('Ошибка в подтверждении пароля', 'error')
             return redirect(url_for('auth.sign'))

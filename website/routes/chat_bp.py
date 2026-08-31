@@ -4,8 +4,8 @@ import requests
 
 from ..models import Chat, ChatMessage
 
-from common_models.src import current_utc_time
-from common_models.src import current_utc_time, db
+from common_models import current_utc_time
+from common_models import current_utc_time, db
 
 chat_bp = Blueprint('chat_bp', __name__, url_prefix='/api/chat')
 

@@ -7,7 +7,7 @@ from flask_login import current_user
 from .. import db
 from ..models import Direction, Organization, Plan, PlanColumnConfig, PlanTicket, Indicator, Event, IndicatorUsage, Notification, PlanApprovalPath
 
-from common_models.src import current_utc_time
+from common_models import current_utc_time
 
 from sqlalchemy import func, or_
 
@@ -207,7 +207,7 @@ def get_plans_by_okpo():
 
 def get_filtered_plans(user, status_filter="all", year_filter="all", search_name="", search_ynp="", region_id=None, page=1, per_page=5):
     try:
-        current_app.logger.debug(f'get_filtered_plans called with region_id={region_id}')
+        # current_app.logger.debug(f'get_filtered_plans called with region_id={region_id}')
         
         if user.is_auditor:
             auditor_org_ids = []

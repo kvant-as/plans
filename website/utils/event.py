@@ -3,7 +3,7 @@ from flask import current_app
 from .currency_rates import get_usd_rate_with_fallback, update_plan_rates
 from .plans import to_decimal_2, to_decimal_1, generate_unique_display_code
 from website.models import Event
-from common_models.src import db
+from common_models import db
 
 logger = logging.getLogger(__name__)
 

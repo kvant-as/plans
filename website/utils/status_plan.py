@@ -2,7 +2,7 @@ from flask import current_app
 from flask_login import current_user
 from ..models import PlanTicket, Notification, PlanApprovalPath, Organization
 
-from common_models.src.time import current_utc_time
+from common_models.timeutils import current_utc_time
 from website import db
 
 

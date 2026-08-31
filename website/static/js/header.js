@@ -1,28 +1,25 @@
 let scrollTimeout;
 
+function syncHeaderScrolled() {
+    var header = document.querySelector('.fixed-header');
+    if (!header) return;
+    header.classList.toggle('scrolled', window.scrollY > 8);
+}
+
 window.addEventListener('scroll', function() {
     if (scrollTimeout) return;
-    
     scrollTimeout = setTimeout(function() {
-        var header = document.querySelector('.fixed-header');
-        var isScrolled = window.scrollY > 50;
-        
-        header.classList.toggle('bubble', isScrolled);
-        
+        syncHeaderScrolled();
         scrollTimeout = null;
     }, 10);
-});
+}, { passive: true });
 
 window.addEventListener('resize', function() {
     clearTimeout(window.resizeTimeout);
-    window.resizeTimeout = setTimeout(function() {
-        var header = document.querySelector('.fixed-header');
-        if (window.innerWidth <= 768) {
-            var isScrolled = window.scrollY > 50;
-            header.classList.toggle('bubble', isScrolled);
-        }
-    }, 100);
+    window.resizeTimeout = setTimeout(syncHeaderScrolled, 100);
 });
+
+document.addEventListener('DOMContentLoaded', syncHeaderScrolled);
 
 // document.addEventListener('DOMContentLoaded', () => {
 //     const lenis = new Lenis({

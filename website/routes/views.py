@@ -13,7 +13,7 @@ from flask_login import (
     current_user, login_required
 )
 
-from common_models.src import current_utc_time, db
+from common_models import current_utc_time, db
 from website.utils.currency_rates import fetch_usd_rate_from_any_source
 from website.utils.plans import get_column_configs_for_plan, to_decimal_1, to_decimal_2, update_ChangeTimePlan
 from website.sessions import session_required, get_or_refresh_session, build_session_info, set_session_cookie

@@ -13,7 +13,7 @@ import os
 
 from website.routes.views import owner_only
 from website.sessions import session_required
-from common_models.src import current_utc_time
+from common_models import current_utc_time
 from website.models import Plan, PlanTicket, PlanApprovalPath
 from website import db
 from .auth import user_with_all_params
