@@ -373,7 +373,8 @@ body {
 
 /* On scroll: just a solid background — no move, no resize. */
 .fixed-header.scrolled {
-  background: #ffffff;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px) saturate(160%);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), 0 6px 24px rgba(0, 0, 0, 0.06);
 }
 
@@ -744,7 +745,7 @@ body {
   font-weight: 500;
   position: relative;
   background: #ffffff;
-  border: 1px solid #e5e7eb;
+  border: 2px solid #e5e7eb;
   /* box-shadow: 0 12px 32px rgba(0, 0, 0, 0.22), 0 4px 10px rgba(0, 0, 0, 0.12); */
   cursor: pointer;
   overflow: hidden;

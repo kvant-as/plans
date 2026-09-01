@@ -1,4 +1,5 @@
 import os
+from datetime import timedelta
 from importlib.resources import files
 from dotenv import load_dotenv
 
@@ -75,10 +76,14 @@ def create_app():
         LOG_TO_FILE=os.getenv('LOG_TO_FILE'),
         LOG_DIR=os.getenv('LOG_DIR', 'logs'),
         LOG_FILE=os.getenv('LOG_FILE', 'enplans.json'),
-        # common_models.sessions — остальное берётся из дефолтов (privileged
-        # timeout 9ч, обычный 60мин, роли is_admin/is_auditor/is_approver/is_reader,
-        # без принудительного разлогина в debug)
+        # common_models.sessions
         SESSION_TOKEN_COOKIE='session_token',
+        SESSION_TOKEN_COOKIE_SECURE=os.getenv('SESSION_COOKIE_SECURE', '').lower() in ('1', 'true', 'yes'),
+        SESSION_LOGIN_ENDPOINT='auth.login',
+        SESSION_LOGOUT_ENDPOINT='auth.logout',
+        SESSION_TIMEOUT_PRIVILEGED=timedelta(hours=9),
+        SESSION_TIMEOUT_DEFAULT=timedelta(minutes=60),
+        # роли, дающие длинное окно; is_admin/is_auditor/is_approver/is_reader
     )
 
     db.init_app(app)
@@ -99,6 +104,9 @@ def create_app():
     login_manager.init_app(app)
     login_manager.login_message = "Пожалуйста, авторизуйтесь для доступа к этой странице"
     login_manager.login_view = "auth.login"
+
+    from common_models.sessions import enforce_idle_timeout
+    enforce_idle_timeout(app)
 
     from .routes.views import views
     from .routes.auth import auth

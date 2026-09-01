@@ -78,10 +78,10 @@ def api_get_plans():
 @api_bp.route('/session-info', methods=['GET'])
 @login_required
 def api_session_info():
-    """Powers the 'Сессии' block on the profile page: current session
-    duration (role-based), last activity and time left before auto-logout.
-    Reading this endpoint also counts as activity, refreshing the timer,
-    same as any other request through @session_required."""
+    """Powers the 'Сессии' block on the profile page and the idle guard:
+    current session duration (role-based), last activity and time left before
+    auto-logout. Being under /api, polling it does not itself slide the idle
+    window."""
     from website.sessions import get_or_refresh_session
 
     token, payload = get_or_refresh_session(current_user)
