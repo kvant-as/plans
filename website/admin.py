@@ -347,6 +347,14 @@ site.dashboard(
     greeting_attr="first_name",
     stats=["news", "plan", "user", "organization"],
     online_count=lambda: count_online("enplans"),
+    actions=[
+        {
+            "label": "Заполнить базу данных",
+            "endpoint": "db_bp.fill_database_route",
+            "method": "post",
+            "confirm": "Запустить заполнение всех справочных данных?",
+        },
+    ],
 )
 
 

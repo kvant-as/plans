@@ -553,15 +553,19 @@ def fill_statistics(db):
 @csrf.exempt
 def fill_database_route():
     from flask import current_app
+    from flask_login import current_user
     from website import db
-    
+
+    if not current_user.is_authenticated or not getattr(current_user, 'is_admin', False):
+        return jsonify({'success': False, 'message': 'Требуются права администратора'}), 403
+
     try:
-        # fill_organizations(db)
-        # fill_users(db)
-        # fill_units(db)
-        # fill_directions(db)
-        # fill_indicators(db)
-        # fill_news(db)
+        fill_organizations(db)
+        fill_users(db)
+        fill_units(db)
+        fill_directions(db)
+        fill_indicators(db)
+        fill_news(db)
         fill_statistics(db)
         
         return jsonify({
