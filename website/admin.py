@@ -354,6 +354,15 @@ site.dashboard(
             "method": "post",
             "confirm": "Запустить заполнение всех справочных данных?",
         },
+        {
+            "label": "Загрузить статистику",
+            "endpoint": "db_bp.upload_statistics_route",
+            "type": "upload",
+            "field": "archive",
+            "accept": ".zip",
+            "confirm": "Загрузить архив со статистикой? Имена файлов внутри должны "
+                       "соответствовать формату «окпо_..._год_...xlsx».",
+        },
     ],
 )
 

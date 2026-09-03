@@ -1,5 +1,5 @@
 import os
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, request
 import pandas as pd
 from werkzeug.security import generate_password_hash
 
@@ -10,81 +10,6 @@ from common_models.logs import get_logger
 db_bp = Blueprint('db_bp', __name__, url_prefix='/database/')
 
 logger = get_logger()
-
-def import_stat_files(db):
-    from ..models import StatPlan
-    from website.utils.stat_import import save_parsed_report, find_organization_by_okpo, OrganizationNotFoundError
-    from website.utils.stat_parse import parse_stat_file, extract_okpo_from_filename
-    
-    stats_dir = os.path.join('website', 'static', 'files', 'stats')
-    
-    if not os.path.exists(stats_dir):
-        logger.warning(f'Папка со статистикой не найдена: {stats_dir}')
-        return
-    
-    existing_reports = StatPlan.query.count()
-    if existing_reports > 0:
-        logger.info(f'В БД уже есть {existing_reports} отчётов. Пропускаем импорт статистики.')
-        return
-    
-    stat_files = []
-    for filename in os.listdir(stats_dir):
-        if filename.lower().endswith(('.xlsx', '.xls')) and not filename.startswith('~$'):
-            file_path = os.path.join(stats_dir, filename)
-            stat_files.append((file_path, filename))
-    
-    if not stat_files:
-        logger.warning('Нет файлов статистики для импорта')
-        return
-    
-    logger.info(f'Найдено {len(stat_files)} файлов статистики для импорта')
-    
-    imported_count = 0
-    error_count = 0
-    
-    for file_path, filename in stat_files:
-        try:
-            logger.info(f'Импорт файла: {filename}')
-            
-            parsed = parse_stat_file(file_path, filename)
-            
-            okpo = extract_okpo_from_filename(filename)
-            org = find_organization_by_okpo(okpo)
-            
-            if org is None:
-                logger.warning(
-                    f'Организация с ОКПО "{okpo}" не найдена. '
-                    f'Файл: {filename}'
-                )
-                error_count += 1
-                continue
-
-            report = save_parsed_report(
-                parsed=parsed,
-                organization_id=org.id,
-                db=db,
-                uploaded_by_id=None,
-                replace=True
-            )
-            
-            imported_count += 1
-            logger.info(
-                f'Успешно импортирован отчёт {parsed.type} для организации {org.full_name}'
-            )
-            
-        except OrganizationNotFoundError as e:
-            logger.warning(f'Ошибка: {str(e)}. Файл: {filename}')
-            error_count += 1
-            db.session.rollback()
-        except Exception as e:
-            logger.error(f'Ошибка при импорте файла {filename}: {str(e)}')
-            error_count += 1
-            db.session.rollback()
-    
-    logger.info(
-        f'Импорт статистики завершён: импортировано {imported_count} отчётов, '
-        f'ошибок: {error_count}'
-    )
 
 def fill_organizations(db):
     from ..models import Organization, Region
@@ -543,12 +468,6 @@ def fill_news(db):
     logger.info(f'Добавлено {len(news_data)} новостей')
 
 
-def fill_statistics(db):
-    try:
-        import_stat_files(db)
-    except Exception as e:
-        logger.error(f'Ошибка при импорте статистических файлов: {str(e)}')
-
 @db_bp.route('/fill-all-data', methods=['POST'])
 @csrf.exempt
 def fill_database_route():
@@ -566,8 +485,7 @@ def fill_database_route():
         fill_directions(db)
         fill_indicators(db)
         fill_news(db)
-        fill_statistics(db)
-        
+
         return jsonify({
             'success': True,
             'message': 'База данных успешно заполнена'
@@ -579,6 +497,57 @@ def fill_database_route():
             'success': False,
             'message': f'Ошибка: {str(e)}'
         }), 500
+
+
+@db_bp.route('/upload-statistics', methods=['POST'])
+@csrf.exempt
+def upload_statistics_route():
+    """Загрузка статистики отдельным архивом (ZIP) из панели администратора.
+    Каждый файл внутри должен соблюдать формат имени, который разбирает
+    website.utils.stat_parse (окпо и год в имени, тип отчёта — по содержимому)."""
+    from flask_login import current_user
+    from website import db
+    from website.utils.stat_import import import_stat_archive
+
+    if not current_user.is_authenticated or not getattr(current_user, 'is_admin', False):
+        return jsonify({'success': False, 'message': 'Требуются права администратора'}), 403
+
+    archive = request.files.get('archive')
+    if not archive or not archive.filename:
+        return jsonify({'success': False, 'message': 'Не выбран архив'}), 400
+    if not archive.filename.lower().endswith('.zip'):
+        return jsonify({'success': False, 'message': 'Ожидается ZIP-архив'}), 400
+
+    try:
+        result = import_stat_archive(archive.stream, db, uploaded_by_id=current_user.id)
+    except ValueError as e:
+        return jsonify({'success': False, 'message': str(e)}), 400
+    except Exception as e:
+        db.session.rollback()
+        logger.error(f'Ошибка при импорте архива статистики: {str(e)}')
+        return jsonify({'success': False, 'message': f'Ошибка: {str(e)}'}), 500
+
+    imported, skipped, errors = result['imported'], result['skipped'], result['errors']
+    logger.info(
+        f'Импорт статистики из архива {archive.filename}: '
+        f'{len(imported)} загружено, {len(skipped)} пропущено, {len(errors)} ошибок'
+    )
+
+    message = f'Загружено отчётов: {len(imported)}'
+    if skipped:
+        message += f', пропущено файлов: {len(skipped)}'
+    if errors:
+        message += f', ошибок: {len(errors)} — {"; ".join(errors[:3])}'
+        if len(errors) > 3:
+            message += '…'
+
+    return jsonify({
+        'success': not errors or bool(imported),
+        'message': message,
+        'imported': imported,
+        'skipped': skipped,
+        'errors': errors,
+    }), 200
 
 
 @db_bp.route('/test-route', methods=['GET', 'POST'])
