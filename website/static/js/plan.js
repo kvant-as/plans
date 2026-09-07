@@ -1092,6 +1092,9 @@ class SendModalPreview {
         this.coordinatorSearchTimeout = null;
         this.approverSearchTimeout = null;
 
+        this.coordinatorSort = { field: null, dir: 'asc' };
+        this.approverSort = { field: null, dir: 'asc' };
+
         this.regionNumber = window.regionNumber || '';
         this.regionNames = {
             1: 'Брестское областное управление по надзору за рациональным использованием ТЭР',
@@ -1114,18 +1117,85 @@ class SendModalPreview {
         this.initNavigation();
         this.initScrollLoading();
         this.initSliderDrag();
+        this.initSort();
         this.updateButtonsState();
+    }
+
+    // Заголовки "Наименование организации"/"УНП" сортируют через
+    // перезапрос с сервера (список подгружается постранично, поэтому
+    // сортировать можно только то, что реально лежит в БД, а не только
+    // уже подгруженные строки). Колонка "Выбор" — не серверное поле,
+    // сортирует только уже загруженные строки на клиенте: отмеченные
+    // организации поднимаются наверх.
+    initSort() {
+        this.initTableHeaderSort(this.coordinatorTbody, this.coordinatorSort, () => this.loadCoordinators(true));
+        this.initTableHeaderSort(this.approverTbody, this.approverSort, () => this.loadApprovers(true));
+    }
+
+    initTableHeaderSort(tbody, sortState, reload) {
+        if (!tbody) return;
+        const headerRow = tbody.closest('table')?.querySelector('thead tr');
+        if (!headerRow) return;
+
+        const fields = [null, 'name', 'ynp']; // индекс столбца -> серверное поле (null = "Выбор")
+        const sortIconSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6-6 6 6"/></svg>`;
+
+        Array.from(headerRow.children).forEach((th, index) => {
+            const field = fields[index];
+            th.classList.add('sortable');
+            const indicator = document.createElement('span');
+            indicator.className = 'sort-indicator';
+            indicator.innerHTML = sortIconSvg;
+            th.appendChild(indicator);
+
+            th.addEventListener('click', () => {
+                const direction = sortState.field === field && sortState.dir === 'asc' ? 'desc' : 'asc';
+                sortState.field = field;
+                sortState.dir = direction;
+
+                Array.from(headerRow.children).forEach((h) => h.classList.remove('sort-active', 'sort-desc'));
+                th.classList.add('sort-active');
+                if (direction === 'desc') th.classList.add('sort-desc');
+
+                if (field === null) {
+                    this.sortLoadedRowsByChecked(tbody, direction);
+                } else {
+                    reload();
+                }
+            });
+        });
+    }
+
+    // Сортировка колонки "Выбор" по уже загруженным строкам (подгрузка
+    // остальных страниц идёт как обычно и добавляется в конец).
+    sortLoadedRowsByChecked(tbody, direction) {
+        const rows = Array.from(tbody.querySelectorAll('tr.org-row'));
+        rows.sort((a, b) => {
+            const checkedA = a.querySelector('input[type="checkbox"]')?.checked ? 1 : 0;
+            const checkedB = b.querySelector('input[type="checkbox"]')?.checked ? 1 : 0;
+            const result = checkedA - checkedB;
+            return direction === 'asc' ? result : -result;
+        });
+        rows.forEach((row) => tbody.appendChild(row));
+        tbody.closest('.modal-table-conteiner').scrollTop = 0;
+    }
+
+    buildSortParams(sortState) {
+        if (!sortState || !sortState.field) return '';
+        return `&sort=${encodeURIComponent(sortState.field)}&order=${sortState.dir}`;
     }
 
     async loadCoordinators(reset = true) {
         if (this.coordinatorLoading) return;
-        
+
         if (reset) {
             this.coordinatorPage = 1;
             this.coordinatorHasMore = true;
             this.coordinatorTbody.innerHTML = '';
+            const container = this.coordinatorTbody.closest('.modal-table-conteiner');
+            if (container) container.scrollTop = 0;
         }
-        
+
         if (!this.coordinatorHasMore) {
             this.removeLoading(this.coordinatorTbody);
             return;
@@ -1135,7 +1205,7 @@ class SendModalPreview {
         this.showLoading(this.coordinatorTbody, 3);
 
         try {
-            const url = `/api/organizations?type=auditor&page=${this.coordinatorPage}&per_page=10&q=${encodeURIComponent(this.coordinatorSearchQuery)}&hide_rm=true`;
+            const url = `/api/organizations?type=auditor&page=${this.coordinatorPage}&per_page=10&q=${encodeURIComponent(this.coordinatorSearchQuery)}&hide_rm=true${this.buildSortParams(this.coordinatorSort)}`;
             console.log('[SendModalPreview] Loading coordinators, page:', this.coordinatorPage);
             
             const response = await fetch(url);
@@ -1173,13 +1243,15 @@ class SendModalPreview {
 
     async loadApprovers(reset = true) {
         if (this.approverLoading) return;
-        
+
         if (reset) {
             this.approverPage = 1;
             this.approverHasMore = true;
             this.approverTbody.innerHTML = '';
+            const container = this.approverTbody.closest('.modal-table-conteiner');
+            if (container) container.scrollTop = 0;
         }
-        
+
         if (!this.approverHasMore) {
             this.removeLoading(this.approverTbody);
             return;
@@ -1189,7 +1261,7 @@ class SendModalPreview {
         this.showLoading(this.approverTbody, 3);
 
         try {
-            const url = `/api/organizations?type=approver&page=${this.approverPage}&per_page=10&q=${encodeURIComponent(this.approverSearchQuery)}`;
+            const url = `/api/organizations?type=approver&page=${this.approverPage}&per_page=10&q=${encodeURIComponent(this.approverSearchQuery)}${this.buildSortParams(this.approverSort)}`;
             console.log('[SendModalPreview] Loading approvers, page:', this.approverPage);
             
             const response = await fetch(url);
@@ -2088,7 +2160,7 @@ class PlansLoader {
         this.totalPages = 1;
         this.isLoading = false;
         this.searchTimeout = null;
-        this.perPage = options.perPage || 5;
+        this.perPage = options.perPage || 50;
         this.isAuditor = options.isAuditor || false;
         
         this.containerId = options.containerId || 'plans-container';
@@ -2552,7 +2624,7 @@ class ExportPlansLoader {
         this.totalPages = 1;
         this.isLoading = false;
         this.searchTimeout = null;
-        this.perPage = options.perPage || 5;
+        this.perPage = options.perPage || 50;
         this.selectedPlans = new Set();
         this.selectedFormat = null;
         this.exportInProgress = false;
@@ -3309,7 +3381,7 @@ document.addEventListener('DOMContentLoaded', function() {
             window.exportPlansLoader = new ExportPlansLoader({
                 initialStatus: window.initialStatus || 'all',
                 initialYear: window.initialYear || 'all',
-                perPage: 5,
+                perPage: 50,
                 containerId: 'plans-container',
                 loadMoreBtnId: 'load-more-btn',
                 searchNameId: 'search-name',
@@ -3321,7 +3393,7 @@ document.addEventListener('DOMContentLoaded', function() {
             window.plansLoader = new PlansLoader({
                 initialStatus: window.initialStatus || 'all',
                 initialYear: window.initialYear || 'all',
-                perPage: 5,
+                perPage: 50,
                 containerId: 'plans-container',
                 loadMoreBtnId: 'load-more-btn',
                 searchNameId: 'search-name',

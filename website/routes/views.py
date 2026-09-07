@@ -27,6 +27,10 @@ from .auth import user_with_all_params
 
 views = Blueprint('views', __name__)
 
+
+PLAN_YEAR_MIN = 2026
+PLAN_YEAR_MAX = 2040
+
 def owner_only(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
@@ -384,14 +388,18 @@ def create_plan():
     if request.method == 'POST':
         year = int(request.form.get('year'))
 
+        if year < PLAN_YEAR_MIN or year > PLAN_YEAR_MAX:
+            flash(f'Год плана должен быть в диапазоне от {PLAN_YEAR_MIN} до {PLAN_YEAR_MAX}', 'error')
+            return redirect(url_for('views.create_plan'))
+
         existing_plan = Plan.query.filter_by(
             user_id=current_user.id,
             year=year
         ).first()
-        
+
         if existing_plan:
             flash(f'У вас уже есть план на {year} год!', 'error')
-            return render_template('create_plan.html', hide_header=False)
+            return redirect(url_for('views.create_plan'))
 
         energy_saving = to_decimal_1(request.form.get('energy_saving'))
         share_fuel = to_decimal_1(request.form.get('share_fuel'))
@@ -426,7 +434,7 @@ def create_plan():
         cost_per_toe_value = get_cost_per_toe_for_new_plan(year)
         
         if cost_per_toe_value is None:
-            return render_template('create_plan.html', hide_header=False)
+            return redirect(url_for('views.create_plan'))
 
         new_plan = Plan(
             org_id=org_id,
@@ -472,7 +480,22 @@ def create_plan():
     current_time = current_utc_time()
     next_year = current_time.year + 1
 
-    return render_template('create_plan.html', hide_header=False, next_year=next_year)
+    taken_years = [p.year for p in Plan.query.filter_by(user_id=current_user.id).all()]
+
+    # если план на next_year уже есть — предложим первый свободный год после него,
+    # чтобы в выпадающем списке по умолчанию не оказался отключённый вариант
+    default_year = next_year
+    while default_year in taken_years and default_year < PLAN_YEAR_MAX:
+        default_year += 1
+
+    return render_template(
+        'create_plan.html',
+        hide_header=False,
+        next_year=default_year,
+        plan_year_min=PLAN_YEAR_MIN,
+        plan_year_max=PLAN_YEAR_MAX,
+        taken_years=taken_years,
+    )
     
 @views.route('/plans/plan-edit/<token>', methods=['GET', 'POST'])
 @user_with_all_params()
@@ -489,13 +512,17 @@ def edit_plan(token):
         
         new_year = int(request.form.get('year'))
         old_year = current_plan.year
-        
+
+        if new_year < PLAN_YEAR_MIN or new_year > PLAN_YEAR_MAX:
+            flash(f'Год плана должен быть в диапазоне от {PLAN_YEAR_MIN} до {PLAN_YEAR_MAX}', 'error')
+            return redirect(url_for('views.edit_plan', token=token))
+
         existing_plan = Plan.query.filter(
             Plan.user_id == current_user.id,
             Plan.year == new_year,
-            Plan.token != token 
+            Plan.token != token
         ).first()
-        
+
         if existing_plan:
             flash(f'У вас уже есть другой план на {new_year} год!', 'error')
             return redirect(url_for('views.plans'))
@@ -525,11 +552,21 @@ def edit_plan(token):
         return redirect(url_for('plan_bp.plan_review', token=current_plan.token))  
     else:
         plan = g.current_plan
-        
+
+        taken_years = [
+            p.year for p in Plan.query.filter(
+                Plan.user_id == current_user.id,
+                Plan.token != token
+            ).all()
+        ]
+
         return render_template(
             'edit_plan.html',
             current_user=current_user,
-            plan=plan
+            plan=plan,
+            plan_year_min=PLAN_YEAR_MIN,
+            plan_year_max=PLAN_YEAR_MAX,
+            taken_years=taken_years,
         )
     
 @views.route('/delete-plan/<token>', methods=['POST'])

@@ -772,67 +772,68 @@ var NumericInputHandler = {
         });
     },
     
+    // Отфильтровывает недопустимые символы, не трогая то, что пользователь
+    // ещё не дописал (в отличие от прежней версии, которая на каждое
+    // нажатие клавиши прогоняла значение через parseFloat/toFixed — из-за
+    // этого набрать, например, "-3,3" посимвольно было невозможно: после
+    // ввода запятой поле тут же откатывалось обратно к "-3,0"). Полное
+    // округление/дополнение нулями по-прежнему происходит один раз, при
+    // потере фокуса — см. handleBlur.
+    sanitize: function(value, settings) {
+        var allowedRegex = settings.allowNegative ? /[^\d,.-]/g : /[^\d,.]/g;
+        var raw = value.replace(allowedRegex, '');
+
+        var negative = false;
+        if (settings.allowNegative) {
+            negative = /-/.test(raw);
+            raw = raw.replace(/-/g, '');
+        }
+
+        raw = raw.replace(/\./g, ',');
+        var commaIndex = raw.indexOf(',');
+        if (commaIndex !== -1) {
+            var intPart = raw.slice(0, commaIndex);
+            var fracPart = raw.slice(commaIndex + 1).replace(/,/g, '');
+            raw = settings.decimalPlaces > 0
+                ? intPart + ',' + fracPart.slice(0, settings.decimalPlaces)
+                : intPart;
+        }
+
+        return (negative ? '-' : '') + raw;
+    },
+
     handleInput: function(e, settings) {
         var input = e.target;
         var cursorPos = input.selectionStart;
         var oldValue = input.value;
-        var newValue = oldValue;
-        
-        if (settings.allowNegative) {
-            newValue = oldValue.replace(/[^\d,.-]/g, '');
-            var minusCount = (newValue.match(/-/g) || []).length;
-            if (minusCount > 1) {
-                newValue = '-' + newValue.replace(/-/g, '');
-            } else if (minusCount === 1 && !newValue.startsWith('-')) {
-                newValue = '-' + newValue.replace(/-/g, '');
-            }
-            if (newValue === '-') {
-                input.value = newValue;
-                return;
-            }
-        } else {
-            newValue = oldValue.replace(/[^\d,]/g, '');
-            if (newValue === '') {
-                input.value = '';
-                return;
-            }
-        }
-        
-        if (newValue !== '' && newValue !== '-') {
-            newValue = newValue.replace(',', '.');
-            var parts = newValue.split('.');
-            if (parts.length > 1) {
-                newValue = parts[0] + '.' + parts[1].slice(0, settings.decimalPlaces);
-            }
+        var newValue = NumericInputHandler.sanitize(oldValue, settings);
 
-            if (!newValue.includes('.') && settings.decimalPlaces > 0) {
-                newValue = newValue + '.' + '0'.repeat(settings.decimalPlaces);
-            }
-            
-            var floatValue = parseFloat(newValue);
-            if (!isNaN(floatValue)) {
-                newValue = floatValue.toFixed(settings.decimalPlaces);
-                newValue = newValue.replace('.', ',');
-            }
-        }
-        
-        if (newValue !== oldValue) {
-            input.value = newValue;
-            var newCursorPos = Math.min(cursorPos, newValue.length);
-            input.setSelectionRange(newCursorPos, newCursorPos);
-        }
+        if (newValue === oldValue) return;
+
+        // курсор пересчитываем по тому, сколько допустимых символов
+        // осталось перед прежней позицией курсора — так он не «убегает»
+        // при удалении лишних символов
+        var newCursorPos = NumericInputHandler.sanitize(oldValue.slice(0, cursorPos), settings).length;
+
+        input.value = newValue;
+        input.setSelectionRange(newCursorPos, newCursorPos);
     },
-    
+
     handleFocus: function(e, settings) {
         var input = e.target;
         if (input.value === '' || input.value === '-') {
             input.value = settings.defaultValue;
         }
+        if (settings.allowNegative || settings.decimalPlaces === 0) {
+            // поле может начинаться со знака «минус» — проще и удобнее
+            // выделить всё значение целиком, чтобы первое же нажатие
+            // клавиши (в т.ч. «-») заменило его полностью
+            input.select();
+            return;
+        }
         var commaIndex = input.value.indexOf(',');
         if (commaIndex !== -1 && settings.decimalPlaces > 0) {
             input.setSelectionRange(commaIndex, commaIndex);
-        } else if (settings.decimalPlaces === 0) {
-            input.select();
         }
     },
     
@@ -906,53 +907,39 @@ class DirectionsTable {
         this.tbody.appendChild(this.noInfoRow);
         this.noInfoRow.style.display = "none";
 
+        this.sortColumn = null;
+        this.sortDirection = "asc";
+
         this.initSearch();
         this.initSelection();
+        this.initSort();
 
         if (this.nextButton) {
             this.nextButton.disabled = true;
         }
     }
 
+    // Тот же .empty-state, что и везде в приложении (уведомления,
+    // список планов и т.д.) — вместо самодельной серой иконки с текстом,
+    // чтобы пустое состояние поиска выглядело частью общего стиля.
     createNoInfoRow() {
         const noResultsRow = document.createElement("tr");
         noResultsRow.className = "no-results-row";
+
         const cell = document.createElement("td");
-        cell.colSpan = 5;
-        cell.style.textAlign = "center";
-        cell.style.padding = "40px 20px";
-        
-        const container = document.createElement("div");
-        container.style.display = "flex";
-        container.style.flexDirection = "column";
-        container.style.alignItems = "center";
-        container.style.gap = "12px";
-        
-        const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-        svg.setAttribute("width", "38");
-        svg.setAttribute("height", "38");
-        svg.setAttribute("viewBox", "0 0 24 24");
-        svg.setAttribute("fill", "none");
-        svg.style.opacity = "0.5";
-        
-        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-        path.setAttribute("d", "M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z");
-        path.setAttribute("stroke", "#999");
-        path.setAttribute("stroke-width", "1.5");
-        path.setAttribute("stroke-linecap", "round");
-        path.setAttribute("stroke-linejoin", "round");
-        path.setAttribute("fill", "none");
-        
-        svg.appendChild(path);
-        
-        const text = document.createElement("span");
-        text.textContent = "Нет похожей информации";
-        text.style.fontSize = "13px";
-        text.style.color = "#999";
-        
-        container.appendChild(svg);
-        container.appendChild(text);
-        cell.appendChild(container);
+        cell.colSpan = this.table.querySelectorAll("thead th").length || 5;
+
+        cell.innerHTML = `
+            <div class="empty-state table-empty-state">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="10" cy="10" r="6.5"/>
+                    <path d="M19 19l-4.35-4.35"/>
+                </svg>
+                <h1>Ничего не найдено</h1>
+                <p>Попробуйте изменить запрос — код или наименование</p>
+            </div>
+        `;
+
         noResultsRow.appendChild(cell);
         return noResultsRow;
     }
@@ -997,6 +984,84 @@ class DirectionsTable {
                 this.nextButton.disabled = false;
             }
         });
+    }
+
+    // Клик по заголовку столбца сортирует строки по нему (повторный клик
+    // меняет направление). Строки уже все в DOM (без пагинации), поэтому
+    // просто переставляем существующие <tr> — так не теряются обработчики
+    // событий и текущая видимость строк (после поиска).
+    initSort() {
+        const headerRow = this.table.querySelector("thead tr");
+        if (!headerRow) return;
+
+        const sortIconSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6-6 6 6"/></svg>`;
+
+        Array.from(headerRow.children).forEach((th, index) => {
+            if (th.style.display === "none") return;
+
+            const indicator = document.createElement("span");
+            indicator.className = "sort-indicator";
+            indicator.innerHTML = sortIconSvg;
+            th.appendChild(indicator);
+
+            th.addEventListener("click", () => this.sortByColumn(index, th, headerRow));
+        });
+    }
+
+    sortByColumn(index, th, headerRow) {
+        const rows = Array.from(this.tbody.querySelectorAll("tr")).filter(
+            (row) => row !== this.noInfoRow
+        );
+        const isCheckboxColumn = rows.some((row) => row.cells[index]?.querySelector('input[type="checkbox"]'));
+
+        let direction;
+        if (this.sortColumn === index) {
+            direction = this.sortDirection === "asc" ? "desc" : "asc";
+        } else {
+            // для чекбокс-столбцов первый клик сразу показывает отмеченные
+            // сверху — иначе на столбцах, где отмечено почти всё (как
+            // "Эко."), сортировка "по возрастанию" визуально ничего не
+            // меняет и кажется нерабочей
+            direction = isCheckboxColumn ? "desc" : "asc";
+        }
+        this.sortColumn = index;
+        this.sortDirection = direction;
+
+        Array.from(headerRow.children).forEach((h) => h.classList.remove("sort-active", "sort-desc"));
+        th.classList.add("sort-active");
+        if (direction === "desc") th.classList.add("sort-desc");
+
+        rows.sort((rowA, rowB) => {
+            const valueA = this.getCellSortValue(rowA.cells[index]);
+            const valueB = this.getCellSortValue(rowB.cells[index]);
+
+            let result;
+            if (typeof valueA === "number" && typeof valueB === "number") {
+                result = valueA - valueB;
+            } else {
+                result = String(valueA).localeCompare(String(valueB), "ru", { numeric: true });
+            }
+            return direction === "asc" ? result : -result;
+        });
+
+        rows.forEach((row) => this.tbody.appendChild(row));
+        this.tbody.appendChild(this.noInfoRow);
+
+        const container = this.table.closest(".modal-table-conteiner");
+        if (container) container.scrollTop = 0;
+    }
+
+    getCellSortValue(cell) {
+        if (!cell) return "";
+
+        const checkbox = cell.querySelector('input[type="checkbox"]');
+        if (checkbox) return checkbox.checked ? 1 : 0;
+
+        const text = cell.textContent.trim();
+        if (/^-?\d+([.,]\d+)?$/.test(text)) {
+            return parseFloat(text.replace(",", "."));
+        }
+        return text.toLowerCase();
     }
 }
 
@@ -2723,5 +2788,35 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.addEventListener('resize', () => {
         document.querySelectorAll('.custom-dropdown.active').forEach(positionDropdownMenu);
+    });
+});
+
+// Копирование ОКПО/УНП по клику на карточке организации
+// (см. macros/components.html :: organization_view_card).
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.org-code-copy').forEach((btn) => {
+        btn.addEventListener('click', async () => {
+            const value = btn.dataset.copyValue || '';
+            if (!value) return;
+
+            try {
+                await navigator.clipboard.writeText(value);
+            } catch (e) {
+                const input = document.createElement('textarea');
+                input.value = value;
+                input.style.position = 'fixed';
+                input.style.opacity = '0';
+                document.body.appendChild(input);
+                input.select();
+                document.execCommand('copy');
+                document.body.removeChild(input);
+            }
+
+            btn.classList.add('copied');
+            clearTimeout(btn._copyResetTimeout);
+            btn._copyResetTimeout = setTimeout(() => {
+                btn.classList.remove('copied');
+            }, 1600);
+        });
     });
 });

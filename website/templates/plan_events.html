@@ -32,6 +32,20 @@
 
 {% block content %}
 
+{% macro icon_columns_2() %}
+<svg class="icon-two-col" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <rect x="3" y="4" width="7" height="16" rx="1.5"/>
+  <rect x="14" y="4" width="7" height="16" rx="1.5"/>
+</svg>
+{% endmacro %}
+
+{% macro icon_columns_1() %}
+<svg class="icon-one-col" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <rect x="4" y="4" width="16" height="16" rx="1.5"/>
+  <path d="M4 12h16"/>
+</svg>
+{% endmacro %}
+
 <div class="pers-page-with-table">
   {{ component.back_header(plan, current_user) }}
   {{ component.plan_navigation_header(nav_active, plan, current_user) }}
@@ -214,10 +228,14 @@
 </div>
 
 <div id="AddEventModal" class="modal">
-    <div class="modal-content">
+    <div class="modal-content event-modal-content">
         <div class="modal-header">
             <h1 id="modal-title">{{ _('Добавление мероприятия') }}</h1>
-            {{ icons.icon_close() }}  
+            <button type="button" class="layout-toggle-btn" data-action="toggle-field-layout" title="{{ _('Расположение полей: в 1 или 2 столбца') }}">
+                {{ icon_columns_2() }}
+                {{ icon_columns_1() }}
+            </button>
+            {{ icons.icon_close() }}
         </div>
         <input type="hidden" id="plan-token" value="{{ plan.token }}">
         <div class="modal-body">   
@@ -510,10 +528,14 @@
 </div>
 
 <div id="EditEventModal" class="modal">
-    <div class="modal-content">
+    <div class="modal-content event-modal-content">
         <div class="modal-header">
             <h1 id="modal-title">{{ _('Редактирование мероприятия') }}</h1>
-            {{ icons.icon_close() }}  
+            <button type="button" class="layout-toggle-btn" data-action="toggle-field-layout" title="{{ _('Расположение полей: в 1 или 2 столбца') }}">
+                {{ icon_columns_2() }}
+                {{ icon_columns_1() }}
+            </button>
+            {{ icons.icon_close() }}
         </div>
         <div class="modal-body">
             <div class="progress-modal-bar-container">
@@ -785,4 +807,56 @@
 
 
 <script src="{{ url_for('static', filename='js/event-calc.js') }}"></script>
+<script>
+    // Переключатель расположения полей формы в модалках мероприятия
+    // (в 1 столбец / в 2 столбца) — предпочтение общее для обеих модалок
+    // (добавление и редактирование) и запоминается между визитами.
+    (function () {
+        var STORAGE_KEY = 'enplans-event-modal-layout';
+
+        function applyLayout(layout) {
+            document.querySelectorAll('.event-modal-content').forEach(function (modal) {
+                modal.classList.toggle('single-column', layout === 'single');
+            });
+        }
+
+        var savedLayout = null;
+        try { savedLayout = localStorage.getItem(STORAGE_KEY); } catch (e) {}
+        if (savedLayout) applyLayout(savedLayout);
+
+        document.querySelectorAll('.layout-toggle-btn').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                var modal = btn.closest('.event-modal-content');
+                var next = modal.classList.contains('single-column') ? 'double' : 'single';
+                applyLayout(next);
+                try { localStorage.setItem(STORAGE_KEY, next); } catch (e) {}
+            });
+        });
+
+        // Кнопка нужна только на тех шагах формы, где реально есть пары
+        // полей в 2 столбца (поиск направления, поквартальная правка и
+        // т.п. — однoколоночные сами по себе, переключать там нечего).
+        // Шаги показываются/скрываются через element.style.display в
+        // event-calc.js в разных местах — вместо того чтобы дублировать
+        // эту логику, просто следим за изменениями style на шагах.
+        function updateToggleVisibility(modalContent) {
+            var toggle = modalContent.querySelector('.layout-toggle-btn');
+            if (!toggle) return;
+            var hasVisibleColumns = Array.prototype.some.call(
+                modalContent.querySelectorAll('.modal-step'),
+                function (step) {
+                    return step.style.display !== 'none' && step.querySelector('.row-app-group');
+                }
+            );
+            toggle.classList.toggle('is-hidden', !hasVisibleColumns);
+        }
+
+        document.querySelectorAll('.event-modal-content').forEach(function (modalContent) {
+            updateToggleVisibility(modalContent);
+            new MutationObserver(function () {
+                updateToggleVisibility(modalContent);
+            }).observe(modalContent, { attributes: true, attributeFilter: ['style'], subtree: true });
+        });
+    })();
+</script>
 {% endblock %}

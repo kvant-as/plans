@@ -156,57 +156,7 @@
           </div>
       </div>
     </div>
-    {% if current_user.organization %}
-    <div class="profile-org">
-      <div class="app-group">
-        <label>{{ _('Наименование') }}</label>
-        <div class="input-with-icon">
-          {{ icons.icon_org() }}
-          <input
-            type="text"
-            value="{{ current_user.organization.full_name }}"
-            class="app-input"
-          />
-        </div>
-      </div>
-      <div class="row-app-group">
-        <div class="app-group">
-          <label>{{ _('ОКПО') }}</label>
-          <div class="input-with-icon">
-            {{ icons.icon_okpo() }}
-            <input
-              type="text"
-              id="name"
-              placeholder="Номер окпо"
-              value="{{ current_user.organization.okpo }}"
-              class="app-input"
-            />
-          </div>
-        </div>
-        <div class="app-group">
-          <label>{{ _('УНП') }}</label>
-          <div class="input-with-icon">
-            {{ icons.icon_ynp() }}
-            <input
-              type="text"
-              value="{{ current_user.organization.ynp|default('Нет данных', true) }}"
-              class="app-input"
-            />
-          </div>
-        </div>
-      </div>
-      <div class="app-group">
-        <label>{{ _('Регион') }}</label>
-        <div class="input-with-icon">
-          {{ icons.icon_region() }}
-          <input
-            type="text"
-            value="{{ current_user.organization.region.name|default('Пусто', true) }}"
-            class="app-input"
-          />
-        </div>
-      </div>
-    {%endif%}
+    {{ component.organization_view_card(current_user.organization) }}
     <hr>
     <div class="header-content">
       <div class="header-content-left">

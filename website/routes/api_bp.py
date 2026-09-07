@@ -26,7 +26,7 @@ def api_get_plans():
         search_ynp = request.args.get('search_ynp', '')
         region = request.args.get('region', '')
         page = request.args.get('page', 1, type=int)
-        per_page = request.args.get('per_page', 5, type=int)
+        per_page = request.args.get('per_page', 10, type=int)
         show_checkboxes = request.args.get('show_checkboxes', 'false').lower() == 'true'
         
         region_id = None
@@ -40,8 +40,11 @@ def api_get_plans():
             current_user, status_filter, year_filter, search_name, search_ynp, region_id, page, per_page
         )
         
-        is_compact = current_user.is_auditor
-        
+        # Единое отображение карточки плана для всех типов пользователей
+        # (раньше аудиторы видели урезанный compact_view — теперь везде
+        # полная карточка с показателями и организацией плана).
+        is_compact = False
+
         html = render_template_string(
             '''
             {% import 'macros/components.html' as components %}
@@ -180,6 +183,13 @@ def get_organizations_api():
                     Organization.ynp.ilike(f"%{search_query}%")
                 )
             )
+
+        sort_field = request.args.get("sort", "").strip()
+        sort_order = request.args.get("order", "asc").strip().lower()
+        sort_columns = {"name": Organization.full_name, "ynp": Organization.ynp}
+        sort_column = sort_columns.get(sort_field)
+        if sort_column is not None:
+            query = query.order_by(sort_column.desc() if sort_order == "desc" else sort_column.asc())
 
         per_page = 10
         pagination = query.paginate(page=page, per_page=per_page, error_out=False)

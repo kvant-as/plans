@@ -191,60 +191,7 @@ can_audit %}
     component.plan_agree_slider(plan, current_user) }} {%endif%}
     <hr />
     <h1 class="name">{{ _('Предприятие') }}</h1>
-
-    {% set org = none %} 
-    {% if plan.organization %} 
-      {% set org = plan.organization.full_name %} 
-    {% endif %} 
-    
-    {% if org %}
-    <div class="app-group">
-      <label>{{ _('Наименование') }}</label>
-      <div class="input-with-icon">
-        {{ icons.icon_org() }}
-        <input type="text" value="{{ org }}" class="app-input" />
-      </div>
-    </div>
-    <div class="row-app-group">
-      <div class="app-group">
-        <label>{{ _('ОКПО') }}</label>
-        <div class="input-with-icon">
-          {{ icons.icon_okpo() }}
-          <input
-            type="text"
-            value="{{ plan.organization.okpo if plan.organization else '' }}"
-            class="app-input"
-          />
-        </div>
-      </div>
-      <div class="app-group">
-        <label>{{ _('УНП') }}</label>
-        <div class="input-with-icon">
-          {{ icons.icon_ynp() }}
-          <input
-            type="text"
-            value="{{ plan.organization.ynp if plan.organization else '' }}"
-            placeholder="Унп организации"
-            class="app-input"
-          />
-        </div>
-      </div>
-    </div>
-    <div class="row-app-group">
-      <div class="app-group">
-        <label>{{ _('Регион') }}</label>
-        <div class="input-with-icon">
-          {{ icons.icon_region() }}
-          <input
-            type="text"
-            value="{{ plan.organization.region.name if plan.organization and plan.organization.region else '' }}"
-            placeholder="Регион"
-            class="app-input"
-          />
-        </div>
-      </div>
-    </div>
-    {% endif %}
+    {{ component.organization_view_card(plan.organization) }}
 
     <hr />
     <h1 class="name">{{ _('Респондент') }}</h1>

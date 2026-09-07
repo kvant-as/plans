@@ -460,75 +460,34 @@ show_checkboxes %}
     data-name="{{ (plan.organization.full_name if plan.organization else '') | lower | e }}"
     data-okpo="{{ (plan.organization.okpo if plan.organization else '') | lower | e }}"
   >
-    {% if compact_view %}
+
     <div class="plan-cont-column">
       <div class="plan-cont-column-header">
-        <a class="plan-info">
-          <span class="plan-info" style="font-weight: 600"
-            >{{ _('План на') }} {{ plan.year }} {{ _('год') }}</span
-          >
-          {% if plan.organization.full_name %}
-          <span class="structure-plan"></span>{{ plan.organization.full_name |
-          truncate(35, True, '...') }} {% else %} {{ _('План на') }} {% endif %}
-        </a>
-        {{ status_plan(plan, current_user) }}
-      </div>
-      <div class="plan-cont-column-footer">
-        {% if plan.organization.okpo %}
-        <div class="plan-cont-column-footer-element">
-          <div class="date-icon black">{{ icons.icon_ynp() }}</div>
-          <a class="plan-info">{{ plan.organization.ynp }}</a>
+        <div class="plan-title-group">
+          <a class="plan-info">
+            {{ _('Год') }}
+            <span class="plan-year">{{ plan.year }} </span>
+          </a>
         </div>
+        {% if plan.organization and plan.organization.full_name %}
+          <span class="plan-org-name" title="{{ plan.organization.full_name }}"
+            >{{ plan.organization.full_name  }}</span
+          >
         {% endif %}
-        <div class="plan-cont-column-footer-element">
-          <div class="date-icon black">{{ icons.icon_send() }}</div>
-          <a class="plan-info"
-            >{{ plan.sent_time.strftime('%d-%m-%Y') if plan.sent_time else '--
-            -- --' }}</a
-          >
-        </div>
-      </div>
-    </div>
-    {% else %}
-    <div class="plan-cont-column">
-      <div class="plan-cont-column-header">
-        
-        {% if (current_user.is_admin or current_user.is_auditor) and
-        plan.user_id != current_user.id %}
-        <div class="plan-info"><span class="plan-info" style="font-weight: 600"
-            >{{ _('План на') }} {{ plan.year }} {{ _('год') }}</span
-          >
-          <div>
-            
-            {% if plan.organization.full_name %}
-            <span class="structure-plan"></span>{{ plan.organization.full_name
-            |truncate(35, True, '...') }} {% else %} {{ _('План на') }} {%
-            endif%}
+        {% if plan.organization and plan.organization.ynp %}
+          <div class="plan-org-param" title="УНП: {{ plan.organization.ynp }}">
+            {{ icons.icon_org() }}
+            {{ plan.organization.ynp }}
           </div>
-        </div>
-        {% else %}
-        <a class="plan-info">
-          {{ _('План на') }}
-          <span class="plan-info" style="font-weight: 600"
-            >{{ plan.year }} {{ _('год') }}</span
-          >
-        </a>
-        {% endif %} {{ status_plan(plan, current_user) }}
+        {% endif %}
+        {{ status_plan(plan, current_user) }}
       </div>
 
       <div class="plan-cont-column-footer">
         <div class="plan-cont-column-footer-element">
           <div class="date-icon black">{{ icons.icon_eco() }}</div>
           <a class="data-plan" title="Целевой показатель энергосбережения (%)"
-            >{{ plan.energy_saving or '0,0' }}</a
-          >
-        </div>
-        <div class="plan-cont-column-footer-element">
-          <div class="date-icon black">{{ icons.icon_half() }}</div>
-          <a
-            class="data-plan"
-            title="Целевой показатель по доле местных ТЭР в КПТ (%)"
-            >{{ plan.share_fuel or '0,0' }}</a
+            >{{ plan.energy_saving or '0.0' }}</a
           >
         </div>
         <div class="plan-cont-column-footer-element">
@@ -536,19 +495,23 @@ show_checkboxes %}
           <a
             class="data-plan"
             title="Целевой показатель по экономии ТЭР (т у.т.)"
-            >{{ plan.saving_fuel or '0,0' }}</a
+            >{{ plan.saving_fuel or '0.0' }}</a
+          >
+        </div>
+        <div class="plan-cont-column-footer-element">
+          <div class="date-icon black">{{ icons.icon_half() }}</div>
+          <a
+            class="data-plan"
+            title="Целевой показатель по доле местных ТЭР в КПТ (%)"
+            >{{ plan.share_fuel or '0.0' }}</a
           >
         </div>
         <div class="plan-cont-column-footer-element">
           <div class="date-icon black">{{ icons.icon_half() }}</div>
           <a class="data-plan" title="Целевой показатель по доле ВИЭ в КПТ"
-            >{{ plan.share_energy or '0,0' }}</a
+            >{{ plan.share_energy or '0.0' }}</a
           >
         </div>
-      </div>
-    </div>
-    <div class="plan-cont-column">
-      <div class="plan-cont-column-header">
         <div class="plan-cont-column-footer-element">
           <div class="date-icon black">{{ icons.icon_calendar() }}</div>
           <a class="plan-info"
@@ -565,8 +528,6 @@ show_checkboxes %}
         </div>
       </div>
     </div>
-    {% endif %}
-
     <div class="plan-cont-column">
       {% if show_checkboxes %}
       <input
@@ -824,3 +785,82 @@ selected_status='all', selected_year='all') %}
   </div>
 </div>
 {% endmacro %}
+
+{% macro year_picker(selected_year, taken_years=[], min_year=2024, max_year=2050, onchange='', current_year_attr=none) %}
+<div class="year-picker" id="yearPicker">
+  <div class="input-with-icon">
+    {{ icons.icon_calendar() }}
+    <button type="button" class="app-input year-picker-trigger" id="yearPickerTrigger" aria-haspopup="listbox" aria-expanded="false">
+      <span class="year-picker-value">{{ selected_year }}</span>
+    </button>
+  </div>
+  <input
+    type="hidden"
+    id="year"
+    name="year"
+    value="{{ selected_year }}"
+    required
+    {% if onchange %}onchange="{{ onchange }}"{% endif %}
+    {% if current_year_attr is not none %}data-current-year="{{ current_year_attr }}"{% endif %}
+  />
+  <div class="year-picker-panel" id="yearPickerPanel" role="listbox" tabindex="-1">
+    {% for y in range(min_year, max_year + 1) %}
+    <div
+      class="year-picker-option{% if y in taken_years %} disabled{% endif %}{% if y == selected_year %} selected{% endif %}"
+      data-year="{{ y }}"
+      role="option"
+      aria-selected="{% if y == selected_year %}true{% else %}false{% endif %}"
+    >
+      <span class="year-picker-option-year">{{ y }}</span>
+      {% if y in taken_years %}<span class="year-picker-option-tag">{{ _('занят') }}</span>{% endif %}
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endmacro %}
+
+
+{% macro organization_view_card(organization) %}
+{% if organization %}
+<div class="org-card">
+  <div class="org-card-accent"></div>
+  <div class="org-card-header">
+    <div class="org-card-heading">
+      <div class="org-card-name">{{ organization.full_name }}</div>
+    
+    
+    
+    </div>
+    {% if organization.region %}
+    <div class="org-card-region">
+      {{ icons.icon_region() }}
+      <span>{{ organization.region.name }}</span>
+    </div>
+    {% endif %}
+  </div>
+  <div class="org-card-codes">
+    <div class="org-code-chip">
+      <span class="org-code-label">{{ _('ОКПО') }}</span>
+      <span class="org-code-value">{{ organization.okpo or '—' }}</span>
+      {% if organization.okpo %}
+      <button type="button" class="org-code-copy" data-copy-value="{{ organization.okpo }}" title="{{ _('Скопировать') }}">
+        <span class="org-copy-icon">{{ icons.icon_coppy() }}</span>
+        <span class="org-copy-icon org-copy-done">{{ icons.icon_confirm() }}</span>
+      </button>
+      {% endif %}
+    </div>
+    <div class="org-code-chip">
+      <span class="org-code-label">{{ _('УНП') }}</span>
+      <span class="org-code-value">{{ organization.ynp or _('Нет данных') }}</span>
+      {% if organization.ynp %}
+      <button type="button" class="org-code-copy" data-copy-value="{{ organization.ynp }}" title="{{ _('Скопировать') }}">
+        <span class="org-copy-icon">{{ icons.icon_coppy() }}</span>
+        <span class="org-copy-icon org-copy-done">{{ icons.icon_confirm() }}</span>
+      </button>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endif %}
+{% endmacro %}
+

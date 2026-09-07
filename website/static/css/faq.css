@@ -368,7 +368,6 @@
 
 .step-content ul {
   margin: 12px 0 0;
-  padding-left: 20px;
 }
 
 .step-content ul li {
@@ -1379,10 +1378,8 @@ h3 {
 }
 
 .example-table th {
-  background: #f8f9fa;
   padding: 10px;
   text-align: left;
-
 }
 
 .example-table td {
@@ -1510,6 +1507,7 @@ h3 {
   display: block;
   text-align: left;
   align-items: stretch;
+  background: var(--faq-info-bg);
 }
 
 .note-card h4 {
@@ -1667,8 +1665,8 @@ h3 {
 }
 
 .convert-stat-value {
-  font-size: 16px;
-  font-weight: 700;
+  font-size: 14px;
+  font-weight: 600;
   color: var(--faq-text-primary);
 }
 

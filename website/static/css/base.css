@@ -366,15 +366,16 @@ body {
   padding: 0 var(--default-padding-x);
   font-size: 16px;
   font-weight: 500;
-  border-radius: 13px;
+  border-radius: 100px;
   background: transparent;
   box-shadow: none;
 }
 
 /* On scroll: just a solid background — no move, no resize. */
 .fixed-header.scrolled {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(20px) saturate(160%);
+  background: var(--blur2);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), 0 6px 24px rgba(0, 0, 0, 0.06);
 }
 
@@ -444,11 +445,8 @@ body {
 
 @media screen and (max-width: 768px) {
   .fixed-header {
-    border-radius: 0;
-    width: 100%;
-    top: 0;
-    padding: 0 16px;
-    height: 56px;
+    width: calc(100% - 10px);
+    padding: 0 20px;
   }
 
   .header-aside {
@@ -505,10 +503,6 @@ body {
 }
 
 @media screen and (max-width: 480px) {
-  .fixed-header {
-    padding: 0 12px;
-  }
-
   .header-aside-text {
     min-width: 0;
   }
@@ -745,7 +739,8 @@ body {
   font-weight: 500;
   position: relative;
   background: #ffffff;
-  border: 2px solid #e5e7eb;
+  /* border: 2px solid #e5e7eb; */
+  border: 2px solid var(--green-main);
   /* box-shadow: 0 12px 32px rgba(0, 0, 0, 0.22), 0 4px 10px rgba(0, 0, 0, 0.12); */
   cursor: pointer;
   overflow: hidden;
@@ -829,7 +824,7 @@ body {
 @media (max-width: 768px) {
   #flash-container {
     top: auto;
-    bottom: 16px;
+    bottom: 90px;
     left: 16px;
     right: 16px;
     transform: none;
@@ -2416,11 +2411,9 @@ input::placeholder {
 
 @media (max-width: 1200px) {
   .nav-text.long-text {
-    font-size: 11px;
     max-width: 140px;
   }
   .nav-item.active .nav-text.long-text {
-    font-size: 11px;
     max-width: 160px;
     -webkit-line-clamp: 2;
   }
@@ -2428,11 +2421,9 @@ input::placeholder {
 
 @media (max-width: 992px) {
   .nav-text.long-text {
-    font-size: 10px;
     max-width: 120px;
   }
   .nav-item.active .nav-text.long-text {
-    font-size: 10px;
     max-width: 130px;
     -webkit-line-clamp: 2;
   }
@@ -2531,7 +2522,7 @@ input::placeholder {
   justify-content: center;
   height: auto;
   width: 100%;
-  top: 70px;
+  top: 72px;
   z-index: 90;
   max-width: 1250px;
   text-align: center;
@@ -3191,7 +3182,7 @@ input::placeholder {
 .app-numeric-input-integer {
   width: 100%;
   padding: 9px 16px 9px 38px;
-  border: none;
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   font-size: 14px;
   background-color: var(--background-grey);
@@ -3204,9 +3195,7 @@ input::placeholder {
 
 .app-input.danger-input{
   background-color: white;
-
 }
-
 
 .mes-input {
   padding-right: 50px;
@@ -3219,6 +3208,7 @@ input::placeholder {
 .app-numeric-input-negative-one-decimal:focus:not(.readonly):not(.disabled),
 .app-numeric-input-integer:focus:not(.readonly):not(.disabled) {
   outline: none;
+    border: 1px solid var(--green-light);
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2);
   background-color: var(--white);
 }
@@ -3273,6 +3263,7 @@ input::placeholder {
 .app-numeric-input-negative-one-decimal:active,
 .app-numeric-input-integer:active {
   background-color: var(--background-light);
+  border: 1px solid var(--green-light);
 }
 
 .app-input:focus-visible,
@@ -3596,25 +3587,6 @@ input::placeholder {
   position: relative;
   isolation: isolate;
   overflow: hidden;
-  border-radius: 22px;
-  border: 1px solid var(--glass-surface-border);
-  background: var(--glass-surface-bg);
-  backdrop-filter: blur(18px) saturate(160%);
-  -webkit-backdrop-filter: blur(18px) saturate(160%);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.6);
-  transition: box-shadow 0.4s ease;
-}
-
-.glass-surface::before {
-  content: '';
-  position: absolute;
-  inset: -60%;
-  z-index: -1;
-  background:
-    radial-gradient(circle at 15% 20%, var(--glass-tint-1), transparent 55%),
-    radial-gradient(circle at 85% 85%, var(--glass-tint-2), transparent 55%);
-  filter: blur(40px);
-  transition: background 0.6s ease;
 }
 
 /* ============================================
@@ -3853,6 +3825,194 @@ input::placeholder {
 .date-status {
   display: flex;
   align-items: center;
+}
+
+/* ============================================
+   ORG CARD — карточка просмотра данных об организации на /profile
+   и /plan/audit/<token> (см. macros/components.html ::
+   organization_view_card). Градиентная полоса-акцент + иконка-бейдж
+   + код-чипы ОКПО/УНП с копированием в буфер по клику (см.
+   initOrgCardCopyButtons в base.js).
+   ============================================ */
+.org-card {
+  position: relative;
+  overflow: hidden;
+
+}
+
+.org-card-accent {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+}
+
+.org-card-header {
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.org-card-icon {
+  flex-shrink: 0;
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--green-main), var(--green-light));
+  box-shadow: 0 6px 16px rgba(0, 121, 143, 0.25);
+}
+
+.org-card-icon svg {
+  width: 25px;
+  height: 25px;
+  color: var(--white) !important;
+}
+
+.org-card-heading {
+  flex: 1;
+  min-width: 180px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.org-card-eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--green-main);
+}
+
+.org-card-name {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--black);
+  word-break: break-word;
+}
+
+.org-card-region {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  align-self: flex-start;
+  padding: 7px 14px;
+  border-radius: 20px;
+  background: rgba(0, 121, 143, 0.08);
+  border: 1px solid rgba(0, 121, 143, 0.18);
+  font-size: 12.5px;
+  color: var(--green-main);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.org-card-region svg {
+  width: 14px;
+  height: 14px;
+  color: var(--green-light) !important;
+}
+
+.org-card-codes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.org-code-chip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 8px 10px 14px;
+  border-radius: 12px;
+  background: rgba(0, 121, 143, 0.06);
+  border: 1px solid rgba(0, 121, 143, 0.16);
+  transition: border-color 0.2s ease;
+}
+
+.org-code-chip:hover {
+  border-color: var(--green-light);
+}
+
+.org-code-label {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-subtitle);
+}
+
+.org-code-value {
+  font-size: 13.5px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--black);
+}
+
+.org-code-copy {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: var(--text-subtitle);
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.org-code-copy:hover {
+  background: rgba(0, 121, 143, 0.12);
+  color: var(--green-main);
+}
+
+.org-copy-icon {
+  display: flex;
+  width: 15px;
+  height: 15px;
+}
+
+.org-copy-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.org-copy-done {
+  display: none;
+  color: #16a34a !important;
+}
+
+.org-code-copy.copied {
+  color: #16a34a;
+}
+
+.org-code-copy.copied .org-copy-icon:not(.org-copy-done) {
+  display: none;
+}
+
+.org-code-copy.copied .org-copy-done {
+  display: flex;
+}
+
+@media (max-width: 480px) {
+  .org-card {
+    padding: 18px 16px;
+  }
+  .org-card-codes {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .session-info-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* ============================================
@@ -4215,6 +4375,38 @@ input[type="checkbox"]:focus {
   .filters-area .app-input {
     width: 160px;
   }
+
+  /* Тот же приём, что и для .filters-area выше: строка статов не
+     переносится и не сжимается до нечитаемого размера — вместо этого
+     листается по горизонтали свайпом/скроллом. overflow: hidden здесь
+     обрезает .progress-line-container, который plan-status.js растягивает
+     на всю прокручиваемую ширину трека (чтобы полоса-заливка и точки
+     статусов оставались друг под другом при скролле — см. комментарий
+     в syncProgressLineToTrack()). */
+  .stats-container {
+    padding-bottom: 0;
+    overflow: hidden;
+  }
+  .stats-track {
+    flex-wrap: nowrap;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    margin-bottom: 30px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .stats-track::-webkit-scrollbar {
+    display: none;
+  }
+  .stat-and-dot {
+    flex: 0 0 150px;
+    width: 150px;
+  }
+  .stat {
+    width: 100%;
+    padding: 14px 10px;
+    white-space: nowrap;
+  }
 }
 
 .custom-dropdown {
@@ -4359,7 +4551,7 @@ input[type="checkbox"]:focus {
 }
 .plan-cont-column-header {
   display: flex;
-  gap: 20px;
+  gap: 10px;
   align-items: center;
 }
 .plan-info {
@@ -4368,6 +4560,87 @@ input[type="checkbox"]:focus {
   display: flex;
   flex-direction: row;
   gap: 5px;
+  align-items: center;
+}
+.plan-title-group {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.plan-org-name,
+.plan-org-param {
+  font-size: 14px;
+  font-weight: 500;
+  padding: 3px 5px;
+  border-radius: 30px;
+  background: transparent;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 400px;
+  box-sizing: border-box;
+}
+.plan-org-param {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+.plan-org-param svg {
+  width: 16px;
+  height: 16px;
+  color: black;
+}
+
+/* Бейджи организации/УНП красятся в тот же цвет, что и status-plan —
+   привязка идёт не к своему собственному классу, а к статус-модификатору,
+   который уже навешен на .plan-cont (см. plans_list_items), так что
+   раскраска остаётся в одном месте и не может разойтись со status-plan. */
+.plan-cont-redac .plan-org-name,
+.plan-cont-redac .plan-org-param {
+  background: rgba(59, 72, 246, 0.1);
+  color: var(--black);
+  border: 1px solid rgba(72, 59, 246, 0.2);
+}
+.plan-cont-control .plan-org-name,
+.plan-cont-control .plan-org-param {
+  background: rgba(96, 255, 228, 0.2);
+  color: var(--black);
+  border: 1px solid rgba(34, 197, 94, 0.2);
+}
+.plan-cont-sub .plan-org-name,
+.plan-cont-sub .plan-org-param {
+  background: rgba(34, 197, 94, 0.1);
+  color: var(--black);
+  border: 1px solid rgba(34, 197, 94, 0.2);
+}
+.plan-cont-sent .plan-org-name,
+.plan-cont-sent .plan-org-param {
+  background: rgba(59, 130, 246, 0.1);
+  color: var(--black);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+}
+.plan-cont-sogl .plan-org-name,
+.plan-cont-sogl .plan-org-param {
+  background: rgba(59, 202, 246, 0.1);
+  color: var(--black);
+  border: 1px solid rgba(46, 179, 189, 0.2);
+}
+.plan-cont-eror .plan-org-name,
+.plan-cont-eror .plan-org-param {
+  background: rgba(255, 30, 30, 0.1);
+  color: var(--black);
+  border: 1px solid rgba(134, 39, 39, 0.4);
+}
+.plan-cont-redac .plan-org-param svg,
+.plan-cont-control .plan-org-param svg,
+.plan-cont-sub .plan-org-param svg,
+.plan-cont-sent .plan-org-param svg,
+.plan-cont-sogl .plan-org-param svg,
+.plan-cont-eror .plan-org-param svg {
+  color: currentColor;
 }
 .plan-year {
   font-weight: 600;
@@ -4701,7 +4974,7 @@ input[type="checkbox"]:focus {
 .tickets-container {
   border: 1px solid var(--telegram-gray);
   border-radius: 12px;
-  background-color: #F8F9FA;
+  background-color: var(--th-background);
   position: relative;
   min-height: 100px;
   max-height: 400px;
@@ -5077,14 +5350,27 @@ input[type="checkbox"]:focus {
 
 .no-results-row td {
   font-style: italic;
-  text-align: center !important;  
+  text-align: center !important;
   font-weight: 500 !important;
   font-size: 12px !important;
   padding: 2ch 0 !important;
   vertical-align: middle;
-  
-  /* border-top: 1px solid var(--border-color) !important;
-  border-bottom: 1px solid var(--border-color) !important; */
+}
+
+/* .empty-state внутри строки "ничего не найдено" в поиске по таблице
+   (DirectionsTable.createNoInfoRow) — тот же общий вид пустого
+   состояния, что у уведомлений/списка планов, а не курсив мелким
+   текстом из правила выше. */
+.no-results-row:has(.table-empty-state) td {
+  font-style: normal !important;
+  padding: 0 !important;
+}
+.table-empty-state {
+  padding: 36px 20px;
+}
+.table-empty-state svg {
+  width: 40px;
+  height: 40px;
 }
 
 .bottom_tickets_arrea {
@@ -6086,6 +6372,150 @@ input[type="checkbox"]:focus {
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
 }
 
+/* Переключатель расположения полей формы (1 столбец / 2 столбца)
+   в модалках добавления/редактирования мероприятия — см. plan_events.html */
+.layout-toggle-btn {
+  position: absolute;
+  top: 20px;
+  right: 80px;
+  width: 38.48px;
+  height:  38.48px;
+  padding: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--white);
+  border: 1px solid var(--border-color);
+  border-radius: 100px;
+  color: var(--black);
+  cursor: pointer;
+  transition: 0.2s all ease-out;
+  z-index: 1;
+}
+
+.layout-toggle-btn:hover {
+  border-color: var(--green-light);
+  color: var(--green-light);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+.layout-toggle-btn svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.layout-toggle-btn .icon-one-col { display: none; }
+
+.modal-content.single-column .layout-toggle-btn .icon-two-col { display: none; }
+.modal-content.single-column .layout-toggle-btn .icon-one-col { display: block; }
+
+/* скрыт на шагах формы без пар полей в 2 столбца (переключается в plan.js) */
+.layout-toggle-btn.is-hidden { display: none; }
+
+.modal-content.single-column .row-app-group {
+  flex-direction: column;
+  gap: 0;
+}
+
+/* ============================================
+   YEAR PICKER — кастомная панель выбора года
+   (создание/редактирование плана, см. macros/components.html)
+   ============================================ */
+.year-picker {
+  position: relative;
+  width: 100%;
+}
+
+.year-picker-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  text-align: left;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.year-picker-trigger:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2);
+  background-color: var(--white);
+}
+
+.year-picker.open .year-picker-trigger {
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2);
+  background-color: var(--white);
+}
+
+.year-picker-panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  z-index: 30;
+  display: none;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  max-height: 280px;
+  overflow-y: auto;
+  padding: 10px;
+  background-color: var(--white);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.14);
+}
+
+.year-picker.open .year-picker-panel {
+  display: grid;
+}
+
+.year-picker-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 10px 4px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--black);
+  text-align: center;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.year-picker-option:hover:not(.disabled) {
+  background-color: var(--background-grey);
+}
+
+.year-picker-option.selected {
+  background-color: var(--green-main);
+  color: var(--white);
+}
+
+.year-picker-option.disabled {
+  color: var(--color-readonly);
+  cursor: not-allowed;
+  background-color: var(--background-grey-opa);
+}
+
+.year-picker-option-tag {
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  opacity: 0.75;
+}
+
+@media (max-width: 480px) {
+  .year-picker-panel {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
 .modal-subtext {
   font-size: 14px;
   color: var(--text-subtitle2);
@@ -6163,24 +6593,23 @@ input[type="checkbox"]:focus {
   transition: width 0.3s ease;
 }
 
-.table-container,
-.main-table,
+/* .table-container,
+.main-table, */
 .modal-table-conteiner {
-    scroll-behavior: smooth;
-    -webkit-overflow-scrolling: touch;
-    overflow-y: auto;
-    overflow-x: auto;
-}
-
-.modal-table-conteiner {
-  border-radius: 8px;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 12px;
   border: 1px solid var(--border-color);
   margin-top: 8px;
-  left: 0;
   width: 100%;
-  max-height: 300px;
+  max-height: 320px;
   overflow-y: auto;
+  overflow-x: auto;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
 }
+
+
+
 .modal-table-conteiner::-webkit-scrollbar {
   width: 6px;
 }
@@ -6200,8 +6629,7 @@ input[type="checkbox"]:focus {
   width: 100%;
   border-spacing: 0;
   border-collapse: separate;
-  overflow: hidden;
-  font-size: 13px;
+  font-size: 13.5px;
   background-color: var(--white);
 }
 .modal-table-main-titles {
@@ -6209,67 +6637,75 @@ input[type="checkbox"]:focus {
   width: 100%;
 }
 .modal-table-main th {
-  padding: 15px 18px;
+  padding: 13px 18px;
+  font-size: 11px;
   font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--text-subtitle);
+  background-color: var(--th-background);
   cursor: pointer;
   position: sticky;
   top: 0;
+  z-index: 2;
+  user-select: none;
+  border-bottom: 1px solid var(--border-color);
+  white-space: nowrap;
+  transition: color 0.2s ease, background-color 0.2s ease;
 }
 .modal-table-main th:hover {
   background-color: var(--background-grey);
+  color: var(--black);
 }
-.modal-table-main th,
-.modal-table-main td {
-  max-width: 150px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  transition: all 0.3s ease-out;
+.modal-table-main th.sort-active {
+  color: var(--green-main-dark, var(--green-main));
+}
+.modal-table-main th .sort-indicator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 5px;
+  width: 10px;
+  height: 10px;
+  opacity: 0.3;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  vertical-align: middle;
+}
+.modal-table-main th .sort-indicator svg {
+  width: 100%;
+  height: 100%;
+}
+.modal-table-main th.sort-active .sort-indicator {
+  opacity: 1;
+}
+.modal-table-main th.sort-desc .sort-indicator {
+  transform: rotate(180deg);
 }
 .modal-table-main td {
+  padding: 10px 18px;
   font-weight: 500;
-  padding: 8px 20px;
+  font-size: 12px;
+  vertical-align: top;
+  white-space: normal;
+  word-break: break-word;
+  border-bottom: 1px solid var(--border-color);
+}
+.modal-table-main tbody tr:last-child td {
+  border-bottom: none;
+}
+.modal-table-main tbody tr {
+  cursor: pointer;
+  transition: background-color 0.15s ease-out;
 }
 .modal-table-main tbody tr:hover {
-  cursor: pointer;
-  transition: all 0.3s ease-out;
+  background-color: var(--background-grey-opa);
 }
-.modal-table-main tbody tr.active-row {
+.modal-table-main tbody tr.active-row,
+.modal-table-main tr.selected {
   background: var(--active-row-color);
 }
 .modal-table-main .modal-tbody {
   height: 400px;
-}
-.modal-table-main tr.selected {
-  background-color: var(--active-row-color);
-}
-.modal-table-main td:nth-child(3) {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  position: relative;
-  transition: all 0.3s ease-in-out;
-}
-.modal-table-main td:nth-child(2):hover,
-.modal-table-main td:nth-child(3):hover {
-  white-space: normal;
-  overflow: visible;
-  text-overflow: clip;
-  z-index: 1;
-  min-width: 150px;
-  width: auto;
-}
-.modal-table-main th:nth-child(1):hover,
-.modal-table-main th:nth-child(2):hover,
-.modal-table-main th:nth-child(3):hover,
-.modal-table-main th:nth-child(4):hover,
-.modal-table-main th:nth-child(5):hover {
-  white-space: normal;
-  overflow: visible;
-  text-overflow: clip;
-  z-index: 1;
-  min-height: auto;
-  width: auto;
 }
 .modal-table-main tbody tr.active-row .coordinator-checkbox,
 .modal-table-main tbody tr.active-row .approver-checkbox {
@@ -7403,7 +7839,6 @@ button[disabled] {
   font-family: monospace;
   font-size: 12px;
   color: #333;
-  background: #f9f9f9;
   padding: 8px;
   border-radius: 4px;
   outline: none;
@@ -8518,6 +8953,10 @@ main {
     gap: 0;
     margin: 0 !important;
   }
+  /* на мобильном поля и так всегда в один столбец — переключатель не нужен */
+  .layout-toggle-btn {
+    display: none;
+  }
   .submit-button {
     padding: 10px 14px;
     font-size: 14px;
@@ -8582,9 +9021,13 @@ main {
   .button-area {
     width: auto;
   }
+  /* Карточка плана — на мобильном все 3 колонки (заголовок+показатели,
+     даты, кнопки) складываются одна под другой на всю ширину, а не
+     втискиваются в ряд. Показатели и даты больше не прячутся через
+     display:none — просто переносятся компактной строкой. */
   .plan-cont {
-    flex-direction: row;
-    gap: 15px;
+    flex-direction: column;
+    gap: 12px;
     padding: 12px;
     width: calc(100% - 24px);
   }
@@ -8607,27 +9050,20 @@ main {
   }
   .plan-cont-column-footer {
     flex-wrap: wrap;
-    gap: 15px;
+    gap: 12px 15px;
     justify-content: flex-start;
     margin-top: 5px;
   }
   .plan-cont-column-footer-element {
     gap: 6px;
-    display: none;
   }
-  .plan-cont-column-footer-element img {
-    width: 12px;
-    height: 12px;
+  .plan-cont-column-footer-element img,
+  .plan-cont-column-footer-element svg {
+    width: 14px;
+    height: 14px;
   }
   .buttons-row {
     justify-content: flex-end;
-  }
-  .svg-btn {
-    padding: 8px 12px;
-    font-size: 13px;
-  }
-  .plan-cont-column-footer-element:first-child {
-    flex-basis: 100%;
   }
   .message-input-container {
     padding: 10px 14px;
@@ -8673,9 +9109,6 @@ main {
   }
   .element-text {
     font-size: 10px;
-  }
-  .progress-line-container {
-    bottom: 15px;
   }
   .pagination-container {
     gap: 8px;
@@ -8785,6 +9218,8 @@ main {
   }
   .plan-cont-column-footer {
     gap: 10px;
+    flex-direction: column;
+    display: none;
   }
   .plan-cont-column-footer-element {
     flex: 1 0 calc(1% - 5px);
@@ -8794,38 +9229,16 @@ main {
     width: 100%;
     justify-content: space-between;
   }
-  .svg-btn {
-    padding: 8px;
-  }
   .btn-text {
     font-size: 13px;
   }
 
-  /* Status-count strip: a single nowrap row of 5-6 pills doesn't fit a
-     phone screen even after trimming padding, so switch to a compact
-     2-column tile grid instead. The connecting stepper line only makes
-     sense as one continuous row, so it's hidden here rather than trying
-     to keep it in sync with wrapped rows. */
-  .stats-container {
-    padding-bottom: 0;
-  }
-  .stats-track {
-    flex-wrap: wrap;
-    gap: 10px;
-  }
+  /* Status-count strip: see the shared horizontal-scroll treatment for
+     .stats-track under the 768px breakpoint above — here just a bit
+     more compact for narrow phones. */
   .stat-and-dot {
-    flex: 0 0 calc(50% - 5px);
-    width: calc(50% - 5px);
-  }
-  .status-dot,
-  .progress-line-container {
-    display: none;
-  }
-  .stat {
-    width: 100%;
-    padding: 14px 8px;
-    white-space: normal;
-    line-height: 1.3;
+    flex-basis: 130px;
+    width: 130px;
   }
   .stat-number,
   .stat-number-redac,
@@ -8863,137 +9276,6 @@ main {
   }
 }
 
-@media (min-width: 768px) and (max-width: 1024px) {
-  body {
-    font-size: 15px;
-  }
-  #flash-container {
-    top: auto;
-    bottom: 20px;
-    left: 20px;
-    right: auto;
-    transform: none;
-    flex-direction: column-reverse;
-    gap: 10px;
-    width: 340px;
-    max-width: calc(100vw - 40px);
-  }
-  .custom-alert {
-    width: 100%;
-  }
-  .nav-item {
-    padding: 8px 25px;
-  }
-  .nav-text {
-    font-size: 13px;
-  }
-  .export-choose-area {
-    gap: 15px;
-  }
-  .export-choose {
-    width: calc(50% - 8px);
-    padding: 15px;
-  }
-  .export-choose-text-title {
-    font-size: 15px;
-  }
-  .export-choose-text-dis {
-    font-size: 13px;
-  }
-  .stat {
-    padding: 15px 40px;
-    font-size: 14px;
-    width: calc(100% - 80px);
-  }
-  .stat-number,
-  .stat-number-redac,
-  .stat-number-control,
-  .stat-number-sent,
-  .stat-number-eror,
-  .stat-number-sub {
-    font-size: 18px;
-  }
-  .plan-cont {
-    padding: 12px;
-    gap: 15px;
-  }
-  .plan-cont-column-footer {
-    gap: 15px;
-  }
-  .plan-cont-column-footer-element {
-    font-size: 12px;
-  }
-  .modal-content {
-    width: 85%;
-    padding: 25px;
-  }
-  .faq-container {
-    width: calc(95% - 62px);
-  }
-  .auth-container {
-    width: calc(100% - 30px);
-    padding: 15px;
-  }
-  .submit-button {
-    padding: 8px 16px;
-    font-size: 13px;
-  }
-  .no-submit-button {
-    padding: 7px 16px;
-    font-size: 12px;
-  }
-  .tickets-message {
-    max-width: 70%;
-  }
-  .fot_cont_text {
-    padding-left: 30px;
-  }
-  .fot_cont_img {
-    padding-right: 30px;
-  }
-  .element-text {
-    font-size: 10px;
-  }
-  .progress-line-container {
-    bottom: 15px;
-  }
-  .pagination-container {
-    gap: 8px;
-  }
-  .pagination-container button {
-    padding: 4px 6px;
-    font-size: 12px;
-  }
-  .drop-area {
-    padding: 2rem 1.2rem;
-  }
-  .section-header {
-    padding: 8px 15px;
-  }
-  .section-title {
-    font-size: 15px;
-  }
-  .row-app-group {
-    gap: 12px;
-  }
-  .app-group {
-    margin-bottom: 10px;
-  }
-  .status-plan {
-    font-size: 12px;
-    padding: 2px 6px;
-  }
-  .short-acc-info {
-    gap: 20px;
-  }
-  .employee-name {
-    font-size: 15px;
-  }
-  .notif-popup {
-    right: 5%;
-    width: 200px;
-  }
-}
 
 @media (max-width: 1080px) {
   .header-cont {
@@ -9094,21 +9376,11 @@ main {
     font-size: 14px;
     white-space: nowrap;
     display: inline-block;
-    animation: marquee 7s linear infinite;
-    padding-left: 100%;
   }
   .export-choose-text-title {
     display: flex;
     flex-direction: column;
     align-items: start;
-  }
-  @keyframes marquee {
-    0% {
-      transform: translateX(0);
-    }
-    100% {
-      transform: translateX(-80%);
-    }
   }
 }
 
@@ -9140,17 +9412,6 @@ main {
   }
   .personal-acc-conteiner .name {
     max-width: 70%;
-  }
-  .plan-cont {
-    flex-direction: row;
-    flex-wrap: wrap;
-  }
-  .plan-cont-column:first-child {
-    flex: 1 0 100%;
-  }
-  .plan-cont-column:nth-child(2),
-  .plan-cont-column:nth-child(3) {
-    flex: 1 0 calc(50% - 10px);
   }
   .plan-cont-column-header {
     flex-direction: column;

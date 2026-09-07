@@ -72,7 +72,7 @@
                 Заполнение плана
               </a>
               <a href="#difference-calculation" class="question-link-modern">
-                Расчет разницы в показателях
+                Цветовая индикация
               </a>
               <a href="#plan-control-send" class="question-link-modern">
                 Контроль и отправка плана
@@ -126,8 +126,7 @@
                 <div class="feature-icon">{{ icons.icon_stats() }}</div>
                 <h4>Анализ данных</h4>
                 <p>
-                  Автоматический анализ энергопотребления и выявление потенциала
-                  экономии
+                  Автоматический анализ потребления топливно-энергетических ресурсов
                 </p>
               </div>
               <div class="feature-card">
@@ -151,7 +150,7 @@
                   <p>заполнение и управление энергосберегающими планами</p>
                 </div>
                 <div class="feature-card">
-                  <h4>Проверяющие</h4>
+                  <h4>Проверяющих</h4>
                   <p>анализ планов и принятие решения</p>
                 </div>
               </div>
@@ -175,8 +174,7 @@
           <div class="answer-text">
             <p>
               Начать работу с EnPlans просто даже для новичков. Следуйте этому
-              пошаговому руководству, и вы сможете создать свой первый план за
-              15 минут.
+              пошаговому руководству, и вы сможете создать свой первый план.
             </p>
           </div>
 
@@ -312,18 +310,10 @@
         <article class="answer-active-modern" id="create-plan">
           <div class="answer-header-modern">
             <h1 class="answer-title-modern">
-              Создание плана энергоэффективности
+              Создание плана мероприятий по энергосбережению
             </h1>
           </div>
           <div class="answer-body-modern">
-            <div class="answer-text">
-              <p>
-                Создание плана энергоэффективности в EnPlans — это простой
-                пошаговый процесс, который занимает всего несколько минут.
-                Система проведет вас через все необходимые этапы.
-              </p>
-            </div>
-
             <div class="steps-container">
               <div class="step-item">
                 <div class="step-number">1</div>
@@ -343,14 +333,14 @@
               <div class="step-item">
                 <div class="step-number">2</div>
                 <div class="step-content">
-                  <h4>Заполнение базовых параметров</h4>
+                  <h4>Заполнение титульной страницы</h4>
                   <p>
-                    Укажите обязательные параметры: год, показатель
+                    Укажите параметры: год, показатель
                     энергосбережения, задания по экономии ТЭР, долю местных ТЭР
                     и ВИЭ.
                   </p>
                   <div class="faq-image-wrapper">
-                    <img src="/static/img/faq/create-plan-step2.png" alt="Заполнение базовых параметров" class="faq-image">
+                    <img src="/static/img/faq/create-plan-step2.png" alt="Заполнение титульной страницы" class="faq-image">
                   </div>
                 </div>
               </div>
@@ -360,7 +350,7 @@
                 <div class="step-content">
                   <h4>Открытие плана</h4>
                   <p>
-                    После ввода обязательных параметров вы будете перенаправлены на страницу с планами. Нажмите <strong>«Просмотр»</strong> для открытия плана и перехода к заполнению данных.
+                    После заполнения титульной страницы вы будете перенаправлены на страницу с планами. Нажмите <strong>«Просмотр»</strong> для открытия плана и перехода к заполнению данных.
                   </p>
                   <div class="faq-image-wrapper">
                     <img src="/static/img/faq/open-plan.png" alt="Открытие плана" class="faq-image">
@@ -373,22 +363,22 @@
                 <div class="step-content">
                   <h4>Выбор типа плана</h4>
                   <p>
-                    Определите категорию организации по объему энергопотребления:
+                    Определите категорию организации по объему суммарного потребления топливно-энергетических ресурсов:
                   </p>
 
                   <div class="plan-type-cards">
                     <div class="plan-type-card">
                       <div class="plan-type-icon">{{ icons.icon_plans() }}</div>
-                      <h5 class="plan-type-title">До 25 тыс. т. у. т.</h5>
+                      <h5 class="plan-type-title">До 25 тыс. т у. т. включительно</h5>
                       <p class="plan-type-description">
-                        Упрощенный формат отчетности для организаций с меньшим потреблением
+                        Для организаций с меньшим потреблением
                       </p>
                     </div>
                     <div class="plan-type-card">
                       <div class="plan-type-icon">{{ icons.icon_stats() }}</div>
-                      <h5 class="plan-type-title">Более 25 тыс. т. у. т.</h5>
+                      <h5 class="plan-type-title">Более 25 тыс. т у. т.</h5>
                       <p class="plan-type-description">
-                        Расширенный формат с детальными расчетами для крупных потребителей
+                        Для крупных потребителей
                       </p>
                     </div>
                   </div>
@@ -398,16 +388,6 @@
                   </div>
                 </div>
               </div>
-
-              <div class="step-item">
-                <div class="step-number">5</div>
-                <div class="step-content">
-                  <h4>Заполнение данных</h4>
-                  <p>
-                    Внесите информацию об энергопотреблении, заполнив таблицы мероприятий и показателей.
-                  </p>
-                </div>
-              </div>
             </div>
 
             <div class="callout callout--warning">
@@ -415,24 +395,6 @@
               <div class="callout-body">
                 <p class="callout-title">Важно</p>
                 <p>Все изменения фиксируются в системе автоматически после нажатия кнопок <strong>«Применить изменения»</strong> или <strong>«Добавить»</strong>.</p>
-              </div>
-            </div>
-
-            <div class="plan-after-creation">
-              <h3>Что происходит после создания плана?</h3>
-              <div class="plan-features">
-                <div class="plan-feature-item">
-                  <span class="plan-feature-check">{{ icons.icon_confirm() }}</span>
-                  <span class="plan-feature-text">Заполнение таблиц показателей и мероприятий</span>
-                </div>
-                <div class="plan-feature-item">
-                  <span class="plan-feature-check">{{ icons.icon_confirm() }}</span>
-                  <span class="plan-feature-text">Контроль плана с последующей отправкой на проверку</span>
-                </div>
-                <div class="plan-feature-item">
-                  <span class="plan-feature-check">{{ icons.icon_confirm() }}</span>
-                  <span class="plan-feature-text">Экспорт плана</span>
-                </div>
               </div>
             </div>
 
@@ -964,7 +926,7 @@
             <div class="features-grid modern-grid">
               <div class="feature-card modern-card modern-card-success">
                 <div class="card-content">
-                  <h4 class="card-title">Для местных видов топлива, включая:</h4>
+                  <h4 class="card-title">Для показателей, связанных с использованием местных ТЭР:</h4>
                   <div class="card-divider"></div>
                   <ul class="card-list">
                     <li>виды КПТ, которые включаются в строку <span class="highlight-text">«из него местные виды топлива и отходы»</span></li>
@@ -987,7 +949,7 @@
 
               <div class="feature-card modern-card modern-card-warning">
                 <div class="card-content">
-                  <h4 class="card-title">Для не местных видов топлива, включая:</h4>
+                  <h4 class="card-title">Для показателей, не связанных с использованием местных ТЭР:</h4>
                   <div class="card-divider"></div>
                   <ul class="card-list">
                     <li>виды КПТ, которые <span class="highlight-text">не</span> включаются в строку <span class="highlight-text">«из него местные виды топлива и отходы»</span></li>
@@ -1094,19 +1056,13 @@
 
         <article class="answer-active-modern" id="fill-plan">
           <div class="answer-header-modern">
-            <h1 class="answer-title-modern">Заполнение плана энергоэффективности</h1>
+            <h1 class="answer-title-modern">Заполнение плана мероприятий по энергосбережению</h1>
           </div>
           <div class="answer-body-modern">
+            <h3 style="margin-top: 0;">Часть 1. Показатели использования ТЭР</h3>
             <div class="answer-text">
               <p>
-                После создания плана и выбора типа (до 25 тыс. т у.т. или свыше 25 тыс. т у.т.) необходимо заполнить три основных раздела.
-              </p>
-            </div>
-
-            <h3>Раздел 1. Показатели использования ТЭР</h3>
-            <div class="answer-text">
-              <p>
-                В этом разделе отражаются объемы потребления топливно-энергетических ресурсов за отчетный, оценочный и прогнозный периоды.
+                В этом разделе отражаются объемы потребления топливно-энергетических ресурсов.
               </p>
             </div>
 
@@ -1147,8 +1103,7 @@
                     <div class="callout-body">
                       <p class="callout-title">Как это работает</p>
                       <ul class="detail-list">
-                        <li>Пользователь вводит значение в <strong>натуральных единицах</strong> (тонны, тыс. м³, Гкал и т.д.) в поле прогнозного года</li>
-                        <li>Система автоматически пересчитывает его в <strong>тонны условного топлива (т у.т.)</strong> с учетом коэффициента пересчета</li>
+                        <li>Пользователь вводит значение в <strong>натуральных единицах</strong> и автоматически пересчитываются в тонны условного топлива</li>
                         <li>Коэффициент пересчета можно <strong>редактировать вручную</strong> для каждого года отдельно</li>
                         <li>Если единица измерения показателя — <strong>т у.т.</strong>, редактирование коэффициента <strong>заблокировано</strong></li>
                       </ul>
@@ -1228,10 +1183,10 @@
               </div>
             </div>
 
-            <h3>Раздел 2. Мероприятия по экономии ТЭР</h3>
+            <h3>Часть 2. Мероприятия по экономии ТЭР</h3>
             <div class="answer-text">
               <p>
-                В этом разделе отражаются мероприятия, направленные на сокращение потребления топливно-энергетических ресурсов.
+                В этом разделе отражаются энергосберегающие мероприятия, в результате реализации которых достигается экономия ТЭР на единицу продукции (работ, услуг) или снижение предельных уровней их потребления, в том числе внедрение на новых и (или) действующих объектах современных технологий, оборудования.
               </p>
             </div>
 
@@ -1241,7 +1196,7 @@
                 <div class="step-content">
                   <h4>Добавление мероприятия</h4>
                   <p>
-                    Нажмите кнопку <strong>«Добавить»</strong> в таблице мероприятий по экономии ТЭР.
+                    Нажмите кнопку <strong>«Добавить»</strong>.
                   </p>
                   <div class="faq-image-wrapper">
                     <img src="/static/img/faq/add-economy-event.png" alt="Добавление мероприятия по экономии" class="faq-image">
@@ -1254,7 +1209,7 @@
                 <div class="step-content">
                   <h4>Выбор направления</h4>
                   <p>
-                    В открывшемся окне выберите направление энергосбережения из справочника, кликнув по строке.
+                    В открывшемся окне выберите направление энергосбережения из справочника, кликнув по строке, и нажмите на «Далее».
                   </p>
                   <div class="faq-image-wrapper ogr">
                     <img src="/static/img/faq/choose-economy-event.png" alt="Выбор направления" class="faq-image">
@@ -1266,44 +1221,48 @@
                 <div class="step-number">3</div>
                 <div class="step-content">
                   <h4>Заполнение данных мероприятия</h4>
-                  <p>
-                    После выбора направления заполните следующие поля:
-                  </p>
-                  <ul class="detail-list">
-                    <li><strong>Наименование мероприятия</strong> — описание мероприятия</li>
-                    <li><strong>Объем внедрения</strong> — в соответствующих единицах</li>
-                    <li><strong>Условно-годовой экономический эффект, т у.т.</strong> — в тоннах условного топлива</li>
-                    <li><strong>Условно-годовой экономический эффект, руб.</strong> — <span class="text-accent">рассчитывается автоматически</span> на основе текущего курса доллара и стоимости 1 т у.т.</li>
-                    <li><strong>Ожидаемый срок внедрения</strong> — квартал (1–4)</li>
-                    <li><strong>Ожидаемый экономический эффект в текущем году, т у.т.</strong></li>
-                  </ul>
-
-                  <div class="feature-card note-card">
-                    <p><strong>Поле «Условно-годовой экономический эффект, руб.»</strong> рассчитывается автоматически по формуле:</p>
-                    <div class="formula">Эффект (руб.) = Эффект (т у.т.) × Стоимость 1 т у.т. (USD) × Курс доллара (BYN)</div>
-                    <p class="feature-description">
-                      Курс доллара и стоимость 1 т у.т. указываются на титульном листе плана.
-                    </p>
-
-                    <div class="callout callout--warning">
-                      <span class="icon-badge icon-badge--warning">{{ icons.error_icon() }}</span>
-                      <div class="callout-body">
-                        <p class="callout-title">Важное ограничение</p>
-                        <p>
-                          <strong>Ожидаемый экономический эффект от внедрения мероприятия в текущем году</strong>
-                          <span class="text-danger">не может превышать</span>
-                          <strong>Условно-годовой экономический эффект, т у.т.</strong>
-                        </p>
-                        <div class="formula formula--constraint">Эффект в текущем году ≤ Условно-годовой эффект (т у.т.)</div>
-                        <p class="feature-description">
-                          При превышении система отобразит предупреждение и не позволит сохранить мероприятие.
-                        </p>
-                      </div>
+                  <p>Необходимо выбрать тип мероприятия мероприятия: <strong>Первоначальная редакция</strong> или <strong>Включенные в план при внесении в него изменений</strong>.</p>
+                  <div class="callout">
+                    <span class="icon-badge">{{ info_icon() }}</span>
+                    <div class="callout-body">
+                      <p class="callout-title">Также заполните следующие поля:</p>
+                      <ul class="detail-list">
+                        <li>Наименование мероприятия</li>
+                        <li>Объем внедрения</li>
+                        <li>Условно-годовой экономический эффект, т у.т.</li>
+                        <li>Ожидаемый срок внедрения</li>
+                        <li>Ожидаемый экономический эффект в текущем году</li>
+                      </ul>
                     </div>
                   </div>
 
                   <div class="faq-image-wrapper ogr">
                     <img src="/static/img/faq/fill-economy-event.png" alt="Заполнение мероприятия по экономии" class="faq-image">
+                  </div>
+
+
+                  <div class="feature-card note-card" style="margin-top: 20px;">
+                    <p><strong>«Условно-годовой экономический эффект, руб.»</strong> рассчитывается автоматически по формуле:</p>
+                    <div class="formula">Эффект (руб.) = Эффект (т у.т.) × Стоимость 1 т у.т. (USD) × Курс доллара (BYN)</div>
+                    <p class="feature-description">
+                      Курс доллара и стоимость 1 т у.т. указываются на титульном листе плана.
+                    </p>
+                  </div>
+
+                  <div class="callout callout--warning">
+                    <span class="icon-badge icon-badge--warning">{{ icons.error_icon() }}</span>
+                    <div class="callout-body">
+                      <p class="callout-title">Важное ограничение</p>
+                      <p>
+                        <strong>Ожидаемый экономический эффект от внедрения мероприятия в текущем году</strong>
+                        <span class="text-danger">не может превышать</span>
+                        <strong>Условно-годовой экономический эффект, т у.т.</strong>
+                      </p>
+                      <div class="formula formula--constraint">Эффект в текущем году ≤ Условно-годовой эффект (т у.т.)</div>
+                      <p class="feature-description">
+                        При превышении система отобразит предупреждение и не позволит сохранить мероприятие.
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1313,12 +1272,37 @@
                 <div class="step-content">
                   <h4>Финансовые показатели</h4>
                   <p>
-                    Укажите источники финансирования мероприятия и нажмите <strong>«Добавить мероприятие»</strong> для сохранения данных.
+                    Заполните данные по:
+                    общему объему финансирования (денежные расходы за все периоды реализации мероприятия);
+                    источникам финансирования (денежные расходы в текущем году).
+                    Для сохранения данных нажмите на <strong>«Добавить мероприятие».</strong>
+
                   </p>
+                  {#<div class="callout">
+                    <span class="icon-badge">{{ info_icon() }}</span>
+                    <div class="callout-body">
+                      <p>Для показателей с <strong>двойным эффектом</strong> (Экономия и Увеличение) финансы не указываются.</p>
+                    </div>
+                  </div>#}
                   <div class="callout">
                     <span class="icon-badge">{{ info_icon() }}</span>
                     <div class="callout-body">
-                      <p>Для показателей с двойным эффектом (Экономия и Увеличение) финансы не указываются.</p>
+                      <p>Данные <strong>«Объем финансирования в текущем году»</strong> и <strong>«Срок окупаемости»</strong> рассчитываются автоматически.</p>
+                    </div>
+                  </div>
+                  <div class="callout">
+                    <span class="icon-badge">{{ info_icon() }}</span>
+                    <div class="callout-body">
+                      <p>Данные по мероприятия, имеющим <strong>«двойной эффект»</strong> (как экономия ТЭР, так и увеличение использования местных ТЭР) отражаются в части 3.</p>
+                    </div>
+                  </div>
+                  <div class="callout callout--warning">
+                    <span class="icon-badge icon-badge--warning">{{ icons.error_icon() }}</span>
+                    <div class="callout-body">
+                      <p> Объем финансирования в текущем году, руб.
+                        <span class="text-danger">не может превышать</span>
+                        Общий объем финансирования, руб.
+                      </p>
                     </div>
                   </div>
                   <div class="faq-image-wrapper ogr">
@@ -1329,6 +1313,16 @@
 
               <div class="step-item">
                 <div class="step-number">5</div>
+                <div class="step-content">
+                  <h4>Добавление новых мероприятий</h4>
+                  <p>
+                    Для добавления последующих мероприятий повторите действия, указанные в пунктах 1-4 для текущей части.
+                  </p>
+                </div>
+              </div>
+
+              <div class="step-item">
+                <div class="step-number">6</div>
                 <div class="step-content">
                   <h4>Итоговые строки</h4>
                   <p>
@@ -1344,12 +1338,33 @@
                   </div>
                 </div>
               </div>
+
+              <div class="step-item">
+                <div class="step-number">7</div>
+                <div class="step-content">
+                  <h4>Поквартальная разбивка</h4>
+                  <p>После добавления всех необходимых мероприятий по строкам <strong>«январь-март»</strong>, <strong>«январь-июнь»</strong> и <strong>«январь-сентябрь»</strong> необходимо ввести данные.
+                    Для этого нажмите правой кнопкой мыши по нужной ячейке и выберите <strong>«Редактировать»</strong>.
+                  </p>
+                  
+                  <div class="faq-image-wrapper ogr">
+                    <img src="/static/img/faq/kvartal-razbivka.png" alt="Поквартальная разбивка" class="faq-image">
+                  </div>
+                  
+                  <div class="callout">
+                    <span class="icon-badge">{{ info_icon() }}</span>
+                    <div class="callout-body">
+                      <p>Данные по строке <strong>«январь-декабрь»</strong> заполняются автоматически, в отличии от остальных квартальных периодов.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
 
-            <h3>Раздел 3. Мероприятия по увеличению использования местных ТЭР</h3>
+            <h3>Часть 3. Мероприятия по увеличению использования местных ТЭР</h3>
             <div class="answer-text">
               <p>
-                В этом разделе отражаются мероприятия, направленные на увеличение использования местных топливно-энергетических ресурсов. Процесс заполнения аналогичен разделу 2, но с одним отличием.
+                В этом разделе отражаются мероприятия, направленные на увеличение использования местных ТЭР.
               </p>
               <div class="callout">
                 <span class="icon-badge">{{ sparkle_icon() }}</span>
@@ -1366,7 +1381,7 @@
                 <div class="step-content">
                   <h4>Добавление мероприятия</h4>
                   <p>
-                    Нажмите кнопку <strong>«Добавить»</strong> в таблице мероприятий по увеличению использования местных ТЭР.
+                    Нажмите кнопку <strong>«Добавить»</strong>.
                   </p>
                   <div class="faq-image-wrapper">
                     <img src="/static/img/faq/add-local-event.png" alt="Добавление мероприятия по увеличению местных ТЭР" class="faq-image">
@@ -1379,7 +1394,7 @@
                 <div class="step-content">
                   <h4>Выбор направления</h4>
                   <p>
-                    В открывшемся окне выберите направление энергосбережения из справочника (коды 1610–1699).
+                    В открывшемся окне выберите направление энергосбережения из справочника, кликнув по строке, и нажмите на «Далее».
                   </p>
                   <div class="faq-image-wrapper ogr">
                     <img src="/static/img/faq/choose-local-event.png" alt="Выбор направления для местных ТЭР" class="faq-image">
@@ -1391,17 +1406,23 @@
                 <div class="step-number">3</div>
                 <div class="step-content">
                   <h4>Заполнение данных мероприятия</h4>
-                  <p>
-                    После выбора направления заполните следующие поля:
-                  </p>
-                  <ul class="detail-list">
-                    <li><strong>Наименование мероприятия</strong> — описание мероприятия</li>
-                    <li><strong>Объем внедрения</strong> — в соответствующих единицах</li>
-                    <li><strong>Условно-годовое увеличение использования местных ТЭР, т у.т.</strong> — в тоннах условного топлива</li>
-                    <li><strong>Условно-годовое увеличение использования местных ТЭР, руб.</strong> — <span class="text-accent">рассчитывается автоматически</span></li>
-                    <li><strong>Ожидаемый срок внедрения</strong> — квартал (1–4)</li>
-                    <li><strong>Ожидаемое увеличение использования местных ТЭР в текущем году, т у.т.</strong> — <span class="text-accent text-accent-success">заполняется пользователем самостоятельно</span></li>
-                  </ul>
+                  
+
+                  <p>Необходимо выбрать тип мероприятия мероприятия: <strong>Первоначальная редакция</strong> или <strong>Включенные в план при внесении в него изменений</strong>.</p>
+                  <div class="callout">
+                    <span class="icon-badge">{{ info_icon() }}</span>
+                    <div class="callout-body">
+                      <p class="callout-title">Также заполните следующие поля:</p>
+                      <ul class="detail-list">
+                        <li>Наименование мероприятия</li>
+                        <li>Объем внедрения</li>
+                        <li>Условно-годовое увеличение использования местных ТЭР, т у.т.</li>
+                        <li>Условно-годовое увеличение использования местных ТЭР, руб.</li>
+                        <li>Ожидаемый срок внедрения</li>
+                        <li>Ожидаемое увеличение использования местных ТЭР в текущем году</li>
+                      </ul>
+                    </div>
+                  </div>
 
                   <div class="faq-image-wrapper ogr">
                     <img src="/static/img/faq/fill-local-event.png" alt="Заполнение мероприятия по увеличению местных ТЭР" class="faq-image">
@@ -1414,8 +1435,28 @@
                 <div class="step-content">
                   <h4>Финансовые показатели</h4>
                   <p>
-                    Укажите источники финансирования мероприятия и нажмите <strong>«Добавить мероприятие»</strong> для сохранения данных.
+                    Заполните данные по:
+                    общему объему финансирования (денежные расходы за все периоды реализации мероприятия);
+                    источникам финансирования (денежные расходы в текущем году).
+                    Для сохранения данных нажмите на <strong>«Добавить мероприятие»</strong>.
                   </p>
+
+                  <div class="callout">
+                    <span class="icon-badge">{{ info_icon() }}</span>
+                    <div class="callout-body">
+                      <p>Данные <strong>«Объем финансирования в текущем году»</strong> рассчитываются автоматически.</p>
+                    </div>
+                  </div>
+                  <div class="callout callout--warning">
+                    <span class="icon-badge icon-badge--warning">{{ icons.error_icon() }}</span>
+                    <div class="callout-body">
+                      <p>Данные в графе <strong>«Срок окупаемости»</strong> по мероприятия, имеющим <strong>«двойной эффект»</strong> 
+                        (как экономия ТЭР, так и увеличение использования местных ТЭР), рассчитываются исходя из условно-годового 
+                        экономического эффекта и условно-годового увеличения использования местных ТЭР, полученных от внедрения мероприятия.</p>
+                    </div>
+                  </div>
+
+                  
                   <div class="faq-image-wrapper ogr">
                     <img src="/static/img/faq/local-financing.png" alt="Финансовые показатели" class="faq-image">
                   </div>
@@ -1424,6 +1465,16 @@
 
               <div class="step-item">
                 <div class="step-number">5</div>
+                <div class="step-content">
+                  <h4>Добавление новых мероприятий</h4>
+                  <p>
+                    Для добавления последующих мероприятий повторите действия, указанные в пунктах 1-4 для текущей части.
+                  </p>
+                </div>
+              </div>
+
+              <div class="step-item">
+                <div class="step-number">6</div>
                 <div class="step-content">
                   <h4>Итоговые строки</h4>
                   <p>
@@ -1436,6 +1487,27 @@
                   </ul>
                   <div class="faq-image-wrapper">
                     <img src="/static/img/faq/local-totals.png" alt="Итоговые значения увеличения местных ТЭР" class="faq-image">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="step-item">
+              <div class="step-number">7</div>
+              <div class="step-content">
+                <h4>Поквартальная разбивка</h4>
+                <p>После добавления всех необходимых мероприятий по строкам <strong>«январь-март»</strong>, <strong>«январь-июнь»</strong> и <strong>«январь-сентябрь»</strong> необходимо ввести данные.
+                  Для этого нажмите правой кнопкой мыши по нужной ячейке и выберите <strong>«Редактировать»</strong>.
+                </p>
+                
+                <div class="faq-image-wrapper ogr">
+                  <img src="/static/img/faq/kvartal-razbivka.png" alt="Поквартальная разбивка" class="faq-image">
+                </div>
+                
+                <div class="callout">
+                  <span class="icon-badge">{{ info_icon() }}</span>
+                  <div class="callout-body">
+                    <p>Данные по строке <strong>«январь-декабрь»</strong> заполняются автоматически, в отличии от остальных квартальных периодов.</p>
                   </div>
                 </div>
               </div>
@@ -1482,21 +1554,20 @@
             </div>
 
             <div class="control-grid">
-
               <div class="control-card blue">
                 <div class="control-card-header">
                   <span class="icon">{{ icons.icon_plans() }}</span>
                   <h4>Обязательные поля</h4>
                 </div>
                 <ul class="control-list">
-                  <li><span class="marker blue-marker">•</span> Период (год)</li>
-                  <li><span class="marker blue-marker">•</span> Вид документа</li>
-                  <li><span class="marker blue-marker">•</span> Наименование организации</li>
-                  <li><span class="marker blue-marker">•</span> Код ОКПО (12 знаков)</li>
-                  <li><span class="marker blue-marker">•</span> Региональное управление</li>
-                  <li><span class="marker blue-marker">•</span> Должность и ФИО руководителя</li>
-                  <li><span class="marker blue-marker">•</span> Контактные данные исполнителя</li>
-                  <li><span class="marker blue-marker">•</span> Курс доллара</li>
+                  <li>Период (год)</li>
+                  <li>Вид документа</li>
+                  <li>Наименование организации</li>
+                  <li>Код ОКПО (12 знаков)</li>
+                  <li>Региональное управление</li>
+                  <li>Должность и ФИО руководителя</li>
+                  <li>Контактные данные исполнителя</li>
+                  <li>Курс доллара</li>
                 </ul>
               </div>
 
@@ -1506,13 +1577,10 @@
                   <h4>Часть 1. Показатели ТЭР</h4>
                 </div>
                 <ul class="control-list">
-                  <li><span class="marker green-marker">✓</span> Сумма строк 2–22 = строка 1</li>
-                  <li><span class="marker green-marker">✓</span> Электроэнергия: т у.т. = тыс. кВт·ч × 0,123</li>
-                  <li><span class="marker green-marker">✓</span> Теплоэнергия: т у.т. = Гкал × 0,143</li>
-                  <li><span class="marker green-marker">✓</span> СПТЭР = КПТ + ЭЭ + ТЭ (с учетом знаков)</li>
-                  <li><span class="marker green-marker">✓</span> Экономия ТЭР ≥ заданию на титуле</li>
-                  <li><span class="marker green-marker">✓</span> Доля местных ТЭР ≥ заданию на титуле</li>
-                  <li><span class="marker green-marker">✓</span> Доля ВИЭ ≥ заданию на титуле</li>
+                  <li>Экономия ТЭР ≥ заданию на титуле</li>
+                  <li>Доля местных ТЭР ≥ заданию на титуле</li>
+                  <li>Доля ВИЭ ≥ заданию на титуле</li>
+                  <li>Целевой показатель энергосбережения ≤ заданию на титульном листе</li>
                 </ul>
               </div>
 
@@ -1522,12 +1590,12 @@
                   <h4>Часть 2. Мероприятия по экономии</h4>
                 </div>
                 <ul class="control-list">
-                  <li><span class="marker orange-marker">•</span> Сквозная нумерация строк</li>
-                  <li><span class="marker orange-marker">•</span> Код направления из справочника</li>
-                  <li><span class="marker orange-marker">•</span> Эффект (руб.) = Эффект (т у.т.) × стоимость 1 т у.т. × курс</li>
-                  <li><span class="marker orange-marker">•</span> Эффект в текущем году ≤ общему эффекту</li>
-                  <li><span class="marker orange-marker">•</span> Срок окупаемости ≤ 10 лет</li>
-                  <li><span class="marker orange-marker">•</span> Сумма источников = общему финансированию</li>
+                  <li>Сквозная нумерация строк</li>
+                  <li>Код направления из справочника</li>
+                  <li>Эффект (руб.) = Эффект (т у.т.) × стоимость 1 т у.т. × курс</li>
+                  <li>Эффект в текущем году ≤ общему эффекту</li>
+                  <li>Срок окупаемости ≤ 10 лет</li>
+                  <li>Сумма источников = общему финансированию</li>
                 </ul>
               </div>
 
@@ -1537,10 +1605,10 @@
                   <h4>Часть 3. Увеличение местных ТЭР</h4>
                 </div>
                 <ul class="control-list">
-                  <li><span class="marker purple-marker">•</span> Коды направлений только 1610–1699</li>
-                  <li><span class="marker purple-marker">•</span> Сквозная нумерация строк</li>
-                  <li><span class="marker purple-marker">•</span> Эффект (руб.) = Эффект (т у.т.) × стоимость 1 т у.т. × курс</li>
-                  <li><span class="marker purple-marker">•</span> Сумма источников = общему финансированию</li>
+                  <li>Коды направлений только 1610–1699</li>
+                  <li>Сквозная нумерация строк</li>
+                  <li>Эффект (руб.) = Эффект (т у.т.) × стоимость 1 т у.т. × курс</li>
+                  <li>Сумма источников = общему финансированию</li>
                 </ul>
               </div>
 
